@@ -1,7 +1,7 @@
 <template>
     <ul>
         <li v-for="(item,i) in showList" :key='i' class='spellCard'>
-           <spell-cell :title='item.s_name'></spell-cell>
+           <spell-cell :title='item.法术名称'></spell-cell>
         </li>
     </ul>
 </template>

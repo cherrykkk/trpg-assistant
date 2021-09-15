@@ -2,7 +2,7 @@
     <div class='info-cell'>
         <h5>{{title}}</h5>
         <ul>
-            <li v-for="(item,i) in list" :key='i'>
+            <li v-for="(item,i) in list" :key='i' class='clickable'>
                 {{item}}
             </li>
         </ul>
@@ -36,7 +36,7 @@ export default {
         //console.log("infoBrief beforeMount")
     },
     mounted(){
-        //console.log("infoBrief mounted")
+        console.log("infoBrief mounted")
     },
     methods:{
     }

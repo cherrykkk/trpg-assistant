@@ -15,7 +15,10 @@
 import DICTIONARY from '../dictionary.json'
 export default {
     props:{
-        title:String
+        title:{
+            type:String,
+            default:"无"
+        }
     },
     data () {
         return {

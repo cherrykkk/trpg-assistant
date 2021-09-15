@@ -3,14 +3,13 @@
         <div class='close-btn' v-on:click='returnMain()'>×</div>
         <player-bag :bag='$route.query.bag'></player-bag>
         <div class="selectBar">
-            <input type="text" v-model="dictionarySearchString" placeholder="输入搜索内容" />
+            <input type="text" v-model="search" placeholder="输入搜索内容" />
         </div>
-        <spell-list :showList="filterDictionary"></spell-list>
+        <spell-list :showList="filterSpells"></spell-list>
     </div>
 </template>
 
 <script>
-import DICTIONARY from '@/dictionary.json'
 import PlayerBag from './components/PlayerBag.vue'
 import SpellList from './components/SpellList.vue'
 export default {
@@ -21,12 +20,22 @@ export default {
     },
     data () {
         return {
-            dictionarySearchString:''
+            search:'',
+            dictionary:[]
         }
     },
     created(){
     },
     mounted(){
+        const that = this
+        this.$axios.get('/api/spellDescription.json')
+            .then(function (response) {
+                console.log(response.data);
+                that.dictionary = response.data
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     },
     methods:{
         returnMain(){
@@ -34,32 +43,33 @@ export default {
         }
     },
     computed:{
-        filterDictionary: function () {
-            let e_array = DICTIONARY.spell_dictionary;
-            let searchString = this.dictionarySearchString;
-			let selected = this.selected;
+        filterSpells: function () {
+            let filtered = this.dictionary;
+            let searchString = this.search;
+			// let selected = this.selected;
+            let selected = null
 
             if(!searchString && !selected){
-				return e_array;
+				return filtered;
             }
-			else if(!searchString && selected){
-				e_array = e_array.filter(function(item){
-					if(item.e_type.toLowerCase().indexOf(selected) !== -1){
-						return item;
-					}
-				})
-			}
+			// else if(!searchString && selected){
+			// 	filtered = filtered.filter(function(item){
+			// 		if(item.e_type.toLowerCase().indexOf(selected) !== -1){
+			// 			return item;
+			// 		}
+			// 	})
+			// }
 			else{
 				searchString = searchString.trim().toLowerCase();
 
-				e_array = e_array.filter(function(item){
-					if(item.s_name.toLowerCase().indexOf(searchString) !== -1){
+				filtered = filtered.filter(function(item){
+					if(item['法术名称'].toLowerCase().indexOf(searchString) !== -1){
 						return item;
 					}
 				})
             }
             // 返回过来后的数组
-            return e_array;
+            return filtered;
         },
     }
 }

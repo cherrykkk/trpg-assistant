@@ -8,21 +8,17 @@
         <div class='moreInfo'>
             <info-more :newData='showMoreData' :random='random'></info-more>
         </div>
-        <extend-description 
-         :title='focusOn'></extend-description>
     </div>
 </template>
 
 <script>
 import InfoBrief from './components/InfoBrief.vue'
 import InfoMore from './components/InfoMore.vue'
-import ExtendDescription from '@/components/ExtendDescription.vue'
 import initDataP from './init.json'
 export default {
     components:{
         InfoBrief,
-        InfoMore,
-        ExtendDescription
+        InfoMore
     },
     data () {
         return {
@@ -44,6 +40,13 @@ export default {
     },
     mounted(){
         //console.log("players mounted")
+        console.log("player mounted")
+        let clickable = document.getElementsByClassName("clickable")
+        console.log(clickable)
+        for(let i in clickable){
+            console.log(clickable[i])
+            // clickable[i].addEventListener("click",function(){console.log("clicked")})
+        }
     },
     beforeUpdate(){
         // console.log("players beforeUpdate")
