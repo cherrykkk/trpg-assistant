@@ -6,7 +6,7 @@
                 <info-cell title='基础' :list='list.base'></info-cell>
             </li>
             <li>
-                <info-cell title='属性' :list='list.ability'></info-cell>
+                <ability-cell title='属性' :listData='list.ability'></ability-cell>
             </li>
             <li>
                 <info-cell title='装备' :list='list.equipment'></info-cell>
@@ -25,10 +25,12 @@
 
 <script>
 import InfoCell from './components/InfoCell.vue'
+import AbilityCell from './components/AbilityCell.vue'
 import initDataP from './init.json'
 export default {
     components:{
-        InfoCell
+        InfoCell,
+        AbilityCell
     },
     data(){
         return {
