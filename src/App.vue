@@ -26,4 +26,9 @@ export default {
   list-style-type: none;
   padding-inline-start: 0;
 }
+
+.shadowStyle{
+   box-shadow: 0px 0px 30px 1px;
+}
+
 </style>

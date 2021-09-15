@@ -1,0 +1,43 @@
+[{
+		"p_name": "天璇虺",
+		"p_sex": "女",
+		"p_class": "术士",
+		"p_race": "半精灵",
+		"p_HP": "16",
+		"strength": "10",
+		"dexterity": "17",
+		"constitution": "15",
+		"intelligence": "14",
+		"wisdom": "14",
+		"charisma": "20",
+		"p_equipment": ["法杖","轻弩","标枪"],
+		"p_spells": ["剑刃防护","护盾术","法师之手","火焰箭","电爪", "繁彩球","魔法飞弹"]
+	}, {
+		"p_name": "温斯顿",
+		"p_sex": "男",
+		"p_class": "圣骑士",
+		"p_race": "龙裔",
+		"p_HP": "5",
+		"strength": "20",
+		"dexterity": "10",
+		"constitution": "15",
+		"intelligence": "9",
+		"wisdom": "11",
+		"charisma": "14",
+		"p_equipment": ["重弩","标枪","巨锤", "链甲"],
+		"p_spells": ["强令对决","疗伤术","虔诚护盾"]
+	}, {
+		"p_name": "诸葛墨",
+		"p_sex": "男",
+		"p_class": "吟游诗人",
+		"p_race": "提夫林",
+		"p_HP": "19",
+		"strength": "9",
+		"dexterity": "17",
+		"constitution": "16",
+		"intelligence": "10",
+		"wisdom": "12",
+		"charisma": "20",
+		"p_equipment": [ "长剑","轻弩","镶钉皮甲","盾牌"],
+		"p_spells": ["修复术","剑刃防护","奇术","易容术","治愈真言","疗伤术", "英雄气概","雷鸣波"]
+}]
