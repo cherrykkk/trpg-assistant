@@ -23,7 +23,7 @@ export default {
     },
     mounted(){
         const that = this
-        this.$axios.get('/api/spellDescription.json')
+        this.$axios.get('../api/spellDescription.json')
             .then(function (response) {
                 that.originDictionary = response.data
             })
@@ -35,7 +35,7 @@ export default {
         filterSpells: function () {
             let filtered = this.originDictionary;
             let filterType = this.filterType
-            
+
             if(this.spellName){
 				let searchString = this.spellName.trim().toLowerCase();
 				filtered = filtered.filter(function(item){
