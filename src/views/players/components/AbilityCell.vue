@@ -12,7 +12,7 @@
 <script>
 export default {
     props:{
-        listData:Object
+        listData:Array
     },
     data () {
         return {

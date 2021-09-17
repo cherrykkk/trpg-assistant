@@ -25,10 +25,16 @@ export default {
 #app ul{
   list-style-type: none;
   padding-inline-start: 0;
+  margin:0;
 }
 
 .shadowStyle{
    box-shadow: 0px 0px 30px 1px;
 }
+
+.search-able{
+  cursor: pointer;
+}
+
 
 </style>

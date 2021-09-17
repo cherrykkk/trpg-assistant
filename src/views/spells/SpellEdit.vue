@@ -1,11 +1,36 @@
 <template>
     <div class="page">
-        <div class='close-btn' v-on:click='returnMain()'>×</div>
-        <player-bag :bag='$route.query.bag'></player-bag>
         <div class="selectBar">
-            <input type="text" v-model="search" placeholder="输入搜索内容" />
+            <div class='close-btn' v-on:click='returnMain()'>×</div>
+            <div class='search-tag-bar'>
+                <input type="text" v-model="searchString" placeholder="输入搜索内容" />
+            </div>
+            <div class='search-tag-bar' >
+                <ul>
+                    <label v-for='(e,i) in schoolTags' :key='i'>
+                        <span><input v-model="schoolTag" type='radio' :value="e" name='schoolTag'>{{e}}</span>
+                    </label>
+                </ul>
+                <label>
+                    <input v-model="filterType" type='radio' name='filterType' value='schoolTag'>学派
+                </label>
+            </div>
+            <div class='search-tag-bar'>
+                <ul>
+                    <label v-for='(e,i) in classTags' :key='i'>
+                        <span><input v-model="classTag" type='radio' :value="e" name='classTags'>{{e}}</span>
+                    </label>
+                </ul>
+                <label>
+                    <input v-model="filterType" type='radio' name='filterType' value='classTag'>职业
+                </label>
+            </div>
         </div>
-        <spell-list :showList="filterSpells"></spell-list>
+        <spell-list 
+         :filterType="filterType"
+         :spellName="searchString"
+         :schoolTag="schoolTag"
+         :classTag="classTag"></spell-list>
     </div>
 </template>
 
@@ -20,57 +45,20 @@ export default {
     },
     data () {
         return {
-            search:'',
-            dictionary:[]
+            searchString:'',
+            schoolTags:["防护","咒法","预言","附魔","塑能","幻术","死灵","变化"],
+            schoolTag:"",
+            classTags:['圣武士','德鲁伊','术士','法师','游侠','牧师','诗人','邪术士'],
+            classTag:"",
+            filterType:""
         }
     },
     created(){
-    },
-    mounted(){
-        const that = this
-        this.$axios.get('/api/spellDescription.json')
-            .then(function (response) {
-                console.log(response.data);
-                that.dictionary = response.data
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
     },
     methods:{
         returnMain(){
             this.$router.push({ path: '/'});
         }
-    },
-    computed:{
-        filterSpells: function () {
-            let filtered = this.dictionary;
-            let searchString = this.search;
-			// let selected = this.selected;
-            let selected = null
-
-            if(!searchString && !selected){
-				return filtered;
-            }
-			// else if(!searchString && selected){
-			// 	filtered = filtered.filter(function(item){
-			// 		if(item.e_type.toLowerCase().indexOf(selected) !== -1){
-			// 			return item;
-			// 		}
-			// 	})
-			// }
-			else{
-				searchString = searchString.trim().toLowerCase();
-
-				filtered = filtered.filter(function(item){
-					if(item['法术名称'].toLowerCase().indexOf(searchString) !== -1){
-						return item;
-					}
-				})
-            }
-            // 返回过来后的数组
-            return filtered;
-        },
     }
 }
 </script>
@@ -79,7 +67,7 @@ export default {
 .page{
     display:flex;
     flex-direction:column;
-    border: medium double rgb(250,0,255);
+    padding-top:160px;
 }
 .exitButton{
     position: fixed;
@@ -87,5 +75,30 @@ export default {
     background-color: white;
     margin: 0 auto;
     padding: 10px;
+}
+.selectBar{
+    position: fixed;
+    background-color: white;
+    top:0;
+    left:0;
+    box-shadow: 0px 0px 3px 1px;
+}
+
+.search-tag-bar{
+    position: relative;
+    box-shadow: 0px 0px 3px 1px;
+}
+.search-tag-bar>ul{
+    position: relative;
+    display:inline-block;
+    width:75%;
+}
+.search-tag-bar>label{
+    position: relative;
+    display:inline-block;
+    width:20%;
+}
+span{
+    white-space: nowrap;
 }
 </style>
