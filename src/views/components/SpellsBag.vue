@@ -12,12 +12,18 @@
 <script>
 
 export default {
-    props:{
-        player:Object
-    },
     data(){
         return {
-            fold:true
+            fold:true,
+            player:{}
+        }
+    },
+    created(){
+        this.player = this.$root.players[this.$root.playerIndex]
+    },
+    watch:{
+        'this.$root.players'(){
+            this.player = this.$root.players[this.$root.playerIndex]
         }
     }
 }

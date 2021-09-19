@@ -4,7 +4,7 @@ import Router from 'vue-router'
 // import Players from '@/views/players/index.vue'
 import SpellEdit from '@/views/spells/SpellEdit/SpellEdit.vue'
 import Detail from '@/views/player/Detail/Detail.vue'
-import Scene from '@/views/scene/index.vue'
+import Scene from '@/views/Scene/Scene.vue'
 import SpellBrowse from '@/views/spells/SpellBrowse/SpellBrowse.vue'
 
 Vue.use(Router)

@@ -1,7 +1,7 @@
 <template>
     <div>
         <spells-bag :player='player'></spells-bag>
-        <router-link :to="{path: '/spellEdit', query: {player:JSON.stringify(player)}}">编辑</router-link>
+        <router-link :to="{path: '/spellEdit'}">编辑</router-link>
     </div>
 </template>
 

@@ -2,11 +2,11 @@
     <v-touch @swipeleft='openDetail()' @swipeup='fold()'
     class='player-in-scene'>
         <div class='brief' @click='unfold()'>
-            {{data.p_name}}
+            {{$root.players[playerIndex].p_name}}
         </div>
         <div
         :class="['more',[briefView? 'fold':'unfold']]">
-            {{data}}
+            {{$root.players[playerIndex]}}
         </div>
     </v-touch>
 </template>
@@ -15,7 +15,8 @@
 
 export default {
     props:{
-        data:Object
+        data:Object,
+        playerIndex:Number
     },
     data(){
         return{
@@ -30,8 +31,7 @@ export default {
             this.briefView = true
         },
         openDetail(){
-            console.log(this.data)
-            this.$router.push({ path: '/player/Detail', query: { player: JSON.stringify(this.data) } });
+            this.$router.push({ path: '/player/Detail', query: { playerIndex:this.playerIndex } });
         }
     }
 }

@@ -1,6 +1,6 @@
 <template>
     <div class="page">
-        <spells-bag :player='player'></spells-bag>
+        <spells-bag></spells-bag>
         <proviso-bar @provisoChange='setProvisoArgs'></proviso-bar>
         <spell-list 
          :filterType="provisoArgs.filterType"
@@ -26,11 +26,12 @@ export default {
         return {
             provisoArgs:{},
             spellsBag:[],
-            player:{}
+            player:{},
+            playerIndex:""
         }
     },
     created(){
-        this.player = JSON.parse(this.$route.query.player)
+        this.player = this.$root.players[this.$root.playerIndex]
     },
     methods:{
         returnMain(){
@@ -41,13 +42,20 @@ export default {
         },
         addSpell(){
             const that = this
-            this.$axios.get(`../api/addSpell.php?p_name=${this.player}`)
+            this.$axios.get(`../api/addSpell.php?playerName=${this.player.p_name}&newSpell=hao`)
                 .then(function (response) {
-                    console.log("add success")
+                    let data = response.data
+                    console.log(data)
+                    that.$root.getPlayers()
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
+        }
+    },
+    watch:{
+        '$root.players'(){
+            this.player = this.$root.players[this.$root.playerIndex]
         }
     }
 }

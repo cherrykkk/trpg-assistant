@@ -7,6 +7,7 @@ import axios from 'axios';
 Vue.prototype.$axios = axios;
 Vue.config.productionTip = false
 
+
 import VueTouch from 'vue-touch'
 Vue.use(VueTouch, {name: 'v-touch'})
 
@@ -15,5 +16,31 @@ new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  data(){
+    return{
+      players:[],
+      playerIndex:0
+    }
+  },
+  created(){
+    this.getPlayers()
+  },
+  methods:{
+    getPlayers(){
+      const that = this
+      this.$axios.get('../api/pllayers.json')
+        .then(function (response) {
+            that.players = response.data
+            console.log("ok")
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    },
+    setPlayerIndex(index){
+      this.playerIndex = index
+      console.log("set "+index)
+    }
+  },
 })

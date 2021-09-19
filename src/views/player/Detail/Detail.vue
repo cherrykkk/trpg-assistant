@@ -11,7 +11,7 @@
                 <info-cell :player='player'></info-cell>
             </li>
             <li>
-                <spells-bar  :player='player'></spells-bar>
+                <spells-bar></spells-bar>
             </li>
             <li>
                 <info-cell :player='player'></info-cell>
@@ -33,10 +33,17 @@ export default {
     data(){
         return {
             player:{},
+            playerIndex:""
         }
     },
     created(){
-        this.player = JSON.parse(this.$route.query.data)
+        this.$root.setPlayerIndex( this.$route.query.playerIndex )
+        this.player = this.$root.players[this.$root.playerIndex]
+    },
+    watch:{
+        '$root.players'(){
+            this.player = this.$root.player[this.$root.playerIndex]
+        }
     }
 }
 </script>
