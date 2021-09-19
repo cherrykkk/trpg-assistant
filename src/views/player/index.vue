@@ -1,9 +1,5 @@
 <template>
-    <div class='container'>
-        <!--简略属性 -->
-        <div v-for='(item,i) in playersData' :key='i' v-on:click='showMore(i)'>
-            <brief :playerData="item" class='brief shadowStyle'>ddd</brief>
-        </div>
+    <div class='container' v-on:click='showMore(i)'>
     </div>
 </template>
 
@@ -16,10 +12,10 @@ export default {
     },
     data () {
         return {
-            playersData:[],
-            showMoreData:{},
-            random:0,
-            focusOn:'D&D'
+            playersData: [],
+            showMoreData: {},
+            random: 0,
+            focusOn: 'D&D'
         };
     },
     mounted(){

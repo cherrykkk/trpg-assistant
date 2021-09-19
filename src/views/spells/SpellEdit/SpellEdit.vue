@@ -1,26 +1,36 @@
 <template>
     <div class="page">
+        <spells-bag :player='player'></spells-bag>
         <proviso-bar @provisoChange='setProvisoArgs'></proviso-bar>
         <spell-list 
          :filterType="provisoArgs.filterType"
          :spellName="provisoArgs.searchString"
          :schoolTag="provisoArgs.schoolTag"
-         :classTag="provisoArgs.classTag"></spell-list>
+         :classTag="provisoArgs.classTag"
+         :operable="true"
+         @addSpell='addSpell'></spell-list>
     </div>
 </template>
 
 <script>
 import SpellList from '../components/SpellList.vue'
 import ProvisoBar from '../components/ProvisoBar.vue'
+import SpellsBag from '@/views/components/SpellsBag.vue'
 export default {
     components:{
         SpellList,
         ProvisoBar,
+        SpellsBag
     },
     data() {
         return {
-            provisoArgs:{}
+            provisoArgs:{},
+            spellsBag:[],
+            player:{}
         }
+    },
+    created(){
+        this.player = JSON.parse(this.$route.query.player)
     },
     methods:{
         returnMain(){
@@ -28,6 +38,16 @@ export default {
         },
         setProvisoArgs(args){
             this.provisoArgs = args
+        },
+        addSpell(){
+            const that = this
+            this.$axios.get(`../api/addSpell.php?p_name=${this.player}`)
+                .then(function (response) {
+                    console.log("add success")
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         }
     }
 }

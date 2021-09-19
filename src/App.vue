@@ -29,7 +29,7 @@ export default {
 }
 
 .shadowStyle{
-   box-shadow: 0px 0px 30px 1px;
+   box-shadow: 0px 0px 3px 1px;
 }
 
 .search-able{

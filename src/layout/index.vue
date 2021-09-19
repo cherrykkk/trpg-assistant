@@ -1,8 +1,21 @@
 <template>
   <div class='layout'>
-    <router-view/>
+    <top-bar></top-bar>
+    <router-view />
   </div>
 </template>
+
+<script>
+import TopBar from './TopBar/TopBar.vue'
+
+export default {
+  components:{
+    TopBar
+  }
+}
+
+</script>
+
 
 <style>
 .layout{

@@ -1,6 +1,5 @@
 <template>
     <div class='container'>
-        <h1>{{title}}</h1>
         <ul>
             <li>
                 <info-cell title='基础' :list='list.base'></info-cell>
@@ -12,9 +11,7 @@
                 <info-cell title='装备' :list='list.equipment'></info-cell>
             </li>
             <li>
-                <info-cell title='法术' :list='list.spell'></info-cell>
-                <!-- <router-link to='/a'>编辑</router-link> -->
-                <router-link :to="{path: '/spellEdit', query: {bag:list.spell}}">编辑</router-link>
+                <spell-cell title='法术' :player='player'></spell-cell>
             </li>
             <li>
                 <info-cell title='背包' :list='list.bag'></info-cell>
@@ -24,17 +21,19 @@
 </template>
 
 <script>
-import InfoCell from './components/InfoCell.vue'
-import AbilityCell from './components/AbilityCell.vue'
-import initDataP from './init.json'
+import InfoCell from '../components/InfoCell.vue'
+import AbilityCell from '../components/AbilityCell.vue'
+import SpellCell from './SpellCell/SpellsBar.vue'
 export default {
     components:{
         InfoCell,
-        AbilityCell
+        AbilityCell,
+        SpellCell
     },
     data(){
         return {
             playerData:{},
+            player:{},
             newData:{},
             showOrNot:false,
             title:'maintitle',
@@ -48,9 +47,11 @@ export default {
         }
     },
     mounted(){
-        this.playerData = initDataP[this.$route.query.i]
+        this.player = JSON.parse(this.$route.query.data)
+        console.log("detail")
+        console.log(this.player)
+        this.playerData = JSON.parse(this.$route.query.data)
         this.newData = this.playerData
-        console.log(this.playerData)
         this.init()
     },
     methods:{
@@ -64,6 +65,7 @@ export default {
             this.valueEquipment()
             this.valueSpell()
             this.valueBag()
+            console.log(this.list)
         },
         valueBase(){
             let arr = []
@@ -93,12 +95,7 @@ export default {
             this.list.equipment = arr
         },
         valueSpell(){
-            let arr = []
-            let data = this.newData.p_spells
-            for(let e of data){
-                arr.push(e.s_name)
-            }
-            this.list.spell = arr
+            this.list.spell = this.newData.p_spells
         },
         valueBag(){
         },
@@ -118,10 +115,14 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang='less' scoped>
 .container{
     position: relative;
     width:90%;
     margin:0 auto;
+    li{
+        padding:10px;
+        box-shadow: 0px 0px 3px 1px;
+    }
 }
 </style>

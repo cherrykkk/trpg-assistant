@@ -5,10 +5,10 @@
         <h1>{{title}}</h1>
         <ul>
             <li>
-                <info-cell title='基础' :list='list.base'></info-cell>
+                <info-cell  :list='list.base'></info-cell>
             </li>
             <li>
-                <info-cell title='属性' :list='list.ability'></info-cell>
+                <info-cell :list='list.ability'></info-cell>
             </li>
             <li>
                 <info-cell title='装备' :list='list.equipment'></info-cell>

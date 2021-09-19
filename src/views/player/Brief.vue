@@ -23,7 +23,8 @@ export default {
     },
     methods:{
         routerTo(){
-            this.$router.push({ path: '/Spell', query: { playerData: this.playerData }});
+            console.log(JSON.stringif(this.playerData))
+            //this.$router.push({ path: '/Spell', query: { playerData: JSON.stringif(this.playerData) } });
         }
     }
 }

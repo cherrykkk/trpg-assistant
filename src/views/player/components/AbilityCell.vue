@@ -1,6 +1,5 @@
 <template>
-    <div class='shadowStyle'>
-        <h5>属性值</h5>
+    <div>
         <ul>
             <li v-for="(item,i) in listData" :key='i'>
                 {{item}}
@@ -28,5 +27,6 @@ export default {
 li{
     display:inline-block;
     margin-left:10px;
+    width:2em;
 }
 </style>
