@@ -20,7 +20,8 @@ new Vue({
   data(){
     return{
       players:[],
-      playerIndex:0
+      playerIndex:0,
+      refresh:true  //每次需要重新取players值时，置反
     }
   },
   created(){
@@ -29,14 +30,18 @@ new Vue({
   methods:{
     getPlayers(){
       const that = this
-      this.$axios.get('../api/pllayers.json')
+      this.$axios.get(`../api/pllayers.json?${Math.random()}`)
         .then(function (response) {
             that.players = response.data
-            console.log("ok")
+            that.refresh = !that.refresh
+            console.log("refresh="+that.refresh)
         })
         .catch(function (error) {
             console.log(error);
         });
+    },
+    getPlayer(){
+      return this.players[this.playerIndex]
     },
     setPlayerIndex(index){
       this.playerIndex = index

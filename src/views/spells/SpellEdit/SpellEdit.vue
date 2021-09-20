@@ -40,12 +40,11 @@ export default {
         setProvisoArgs(args){
             this.provisoArgs = args
         },
-        addSpell(){
+        addSpell(item){
             const that = this
-            this.$axios.get(`../api/addSpell.php?playerName=${this.player.p_name}&newSpell=hao`)
+            this.$axios.get(`../api/addSpell.php?playerName=${this.player.p_name}&newSpell=${item['法术名称']}`)
                 .then(function (response) {
-                    let data = response.data
-                    console.log(data)
+                    //let data = response.data
                     that.$root.getPlayers()
                 })
                 .catch(function (error) {

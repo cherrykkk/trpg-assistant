@@ -22,7 +22,7 @@ export default {
         this.player = this.$root.players[this.$root.playerIndex]
     },
     watch:{
-        'this.$root.players'(){
+        '$root.refresh'(){
             this.player = this.$root.players[this.$root.playerIndex]
         }
     }

@@ -38,11 +38,11 @@ export default {
     },
     created(){
         this.$root.setPlayerIndex( this.$route.query.playerIndex )
-        this.player = this.$root.players[this.$root.playerIndex]
+        this.player = this.$root.getPlayer()
     },
     watch:{
         '$root.players'(){
-            this.player = this.$root.player[this.$root.playerIndex]
+            this.player = this.$root.getPlayer()
         }
     }
 }
