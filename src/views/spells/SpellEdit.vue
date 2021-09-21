@@ -1,26 +1,37 @@
 <template>
     <div class="page">
+        <spells-bag></spells-bag>
         <proviso-bar @provisoChange='setProvisoArgs'></proviso-bar>
         <spell-list 
          :filterType="provisoArgs.filterType"
          :spellName="provisoArgs.searchString"
          :schoolTag="provisoArgs.schoolTag"
-         :classTag="provisoArgs.classTag"></spell-list>
+         :classTag="provisoArgs.classTag"
+         :operable="true"
+         @addSpell='addSpell'></spell-list>
     </div>
 </template>
 
 <script>
-import SpellList from '../components/SpellList.vue'
-import ProvisoBar from '../components/ProvisoBar.vue'
+import SpellList from './components/SpellList.vue'
+import ProvisoBar from './components/ProvisoBar.vue'
+import SpellsBag from '@/views/components/SpellsBag.vue'
 export default {
     components:{
         SpellList,
         ProvisoBar,
+        SpellsBag
     },
     data() {
         return {
-            provisoArgs:{}
+            provisoArgs:{},
+            spellsBag:[],
+            player:{},
+            playerIndex:""
         }
+    },
+    created(){
+        this.player = this.$root.players[this.$root.playerIndex]
     },
     methods:{
         returnMain(){
@@ -28,6 +39,22 @@ export default {
         },
         setProvisoArgs(args){
             this.provisoArgs = args
+        },
+        addSpell(item){
+            const that = this
+            this.$axios.get(`../api/addSpell.php?playerName=${this.player.p_name}&newSpell=${item['法术名称']}`)
+                .then(function (response) {
+                    //let data = response.data
+                    that.$root.getPlayers()
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    },
+    watch:{
+        '$root.players'(){
+            this.player = this.$root.players[this.$root.playerIndex]
         }
     }
 }

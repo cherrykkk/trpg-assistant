@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import SpellList from '../components/SpellList.vue'
-import ProvisoBar from '../components/ProvisoBar.vue'
+import SpellList from './components/SpellList.vue'
+import ProvisoBar from './components/ProvisoBar.vue'
 export default {
     components:{
         SpellList,

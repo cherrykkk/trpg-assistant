@@ -60,7 +60,7 @@ export default {
 .title{
     display: inline-block;
     padding:10px 20px;
-    background-image: url("../../../assets/border7.png");
+    background-image: url("../../assets/border7.png");
     background-size: 100% 100%;
     background-position: center;
     margin:2px;

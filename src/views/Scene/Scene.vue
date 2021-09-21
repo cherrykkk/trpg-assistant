@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import PlayerInScene from '@/views/player/PlayerInScene/index.vue'
+import PlayerInScene from '@/views/player/PlayerInScene.vue'
 
 export default {
     components:{

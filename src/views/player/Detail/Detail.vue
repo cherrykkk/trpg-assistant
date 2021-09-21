@@ -2,31 +2,20 @@
     <div class='container'>
         <ul>
             <li>
-                <info-cell  :player='player'></info-cell>
-            </li>
-            <li>
                 <ability-cell :player='player'></ability-cell>
             </li>
             <li>
-                <info-cell :player='player'></info-cell>
-            </li>
-            <li>
                 <spells-bar></spells-bar>
-            </li>
-            <li>
-                <info-cell :player='player'></info-cell>
             </li>
         </ul>
     </div>
 </template>
 
 <script>
-import InfoCell from '../components/InfoCell.vue'
-import AbilityCell from '../components/AbilityCell.vue'
-import SpellsBar from './SpellsBar/SpellsBar.vue'
+import AbilityCell from './AbilityCell.vue'
+import SpellsBar from './SpellsBar.vue'
 export default {
     components:{
-        InfoCell,
         AbilityCell,
         SpellsBar
     },

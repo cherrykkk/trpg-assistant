@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import SpellCell from './SpellCell'
+import SpellCell from '@/views/components/SpellCell.vue'
 export default {
     components: { SpellCell },
     props:{

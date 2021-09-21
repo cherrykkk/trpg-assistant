@@ -2,10 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 // import HelloWorld from '@/components/HelloWorld'
 // import Players from '@/views/players/index.vue'
-import SpellEdit from '@/views/spells/SpellEdit/SpellEdit.vue'
+import SpellEdit from '@/views/spells/SpellEdit.vue'
 import Detail from '@/views/player/Detail/Detail.vue'
 import Scene from '@/views/Scene/Scene.vue'
-import SpellBrowse from '@/views/spells/SpellBrowse/SpellBrowse.vue'
+import SpellBrowse from '@/views/spells/SpellBrowse.vue'
 
 Vue.use(Router)
 
