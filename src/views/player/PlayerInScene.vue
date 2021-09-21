@@ -4,6 +4,7 @@
         <div class='brief'>
             {{$root.players[playerIndex].p_name}}
         </div>
+        <right-arrow style='float:right;' @click.native='openDetail()'></right-arrow>
         <div
         :class="['more',[briefView? 'fold':'unfold']]">
             {{$root.players[playerIndex]}}
@@ -12,8 +13,12 @@
 </template>
 
 <script>
+import RightArrow from '@/components/RightArrow.vue'
 
 export default {
+    components:{
+        RightArrow
+    },
     props:{
         data:Object,
         playerIndex:Number

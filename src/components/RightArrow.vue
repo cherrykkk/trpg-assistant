@@ -1,24 +1,15 @@
 <template>
-    <div class='border'>
-        <div class='arrow' style='transform:rotate(45deg)'>
-        </div>
+    <div class='arrow'>
     </div>
 </template>
 
 <style scoped>
-.border{
-    display: inline-block;
-    width:14px;
-    height:14px;
-    background-color:green;
-    border-radius: 7px;
-    line-height: 14px;
-}
 .arrow{
-    position: relative;
-    height:14px;
-    width:14px;
-    background-color: white;
-    margin:0 auto;
+    display: inline-block;
+    width:10px;
+    height:10px;
+    border-right:solid 2px green;
+    border-top:solid 2px green;
+    transform:rotate(45deg)
 }
 </style>
