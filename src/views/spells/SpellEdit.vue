@@ -1,13 +1,15 @@
 <template>
     <div class="page">
-        <spells-bag></spells-bag>
+        <spells-bag :removing='removing'></spells-bag>
+        <div @click='removing=true' v-if='!removing'>开启删除</div>
+        <div @click='removing=false' v-if='removing'>关闭删除</div>
         <proviso-bar @provisoChange='setProvisoArgs'></proviso-bar>
         <spell-list 
          :filterType="provisoArgs.filterType"
          :spellName="provisoArgs.searchString"
          :schoolTag="provisoArgs.schoolTag"
          :classTag="provisoArgs.classTag"
-         :operable="true"
+         :adding="true"
          @addSpell='addSpell'></spell-list>
     </div>
 </template>
@@ -27,7 +29,8 @@ export default {
             provisoArgs:{},
             spellsBag:[],
             player:{},
-            playerIndex:""
+            playerIndex:"",
+            removing:false
         }
     },
     created(){

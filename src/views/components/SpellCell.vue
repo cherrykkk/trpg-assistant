@@ -1,6 +1,9 @@
 <template>
     <div>
-        <div class='title' @click='changeFold()'>{{data.法术名称}}</div>
+        <spell-head 
+        :name='data.法术名称'  
+        :adding='adding'
+        @click.native='changeFold()'></spell-head>
         <div class='detail' :class="{'unfold':!fold}">
             <div class='description'>
                 <p>{{data.法术说明}}</p>
@@ -25,9 +28,17 @@
 </template>
 
 <script>
+import SpellHead from './SpellHead.vue'
+import SpellBody from './SpellBody.vue'
+
 export default {
+    components:{
+        SpellHead,
+        SpellBody
+    },
     props:{
-        data:Object
+        data:Object,
+        adding:Boolean
     },
     data(){
         return{

@@ -22,7 +22,6 @@ export default{
     methods:{
         unfold(){
             this.briefView = false
-            console.log("undold")
         },
         fold(){
             this.briefView = true

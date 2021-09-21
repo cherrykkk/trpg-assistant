@@ -1,8 +1,7 @@
 <template>
     <ul>
         <li v-for="(item,i) in filterSpells" :key='i' class='spellCard'>
-            <spell-cell :data='item'></spell-cell>
-            <div class='operator' v-if='operable' @click='addSpell(item)'>添加</div>
+            <spell-cell :data='item' :adding='adding' @click.native='addSpell(item)'></spell-cell>
         </li>
     </ul>
 </template>
@@ -16,7 +15,7 @@ export default {
         spellName:String,
         classTag:String,
         schoolTag:String,
-        operable:Boolean
+        adding:Boolean
     },
     data(){
         return{

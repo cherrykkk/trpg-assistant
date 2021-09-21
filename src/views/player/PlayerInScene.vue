@@ -1,7 +1,7 @@
 <template>
-    <v-touch @swipeleft='openDetail()' @swipeup='fold()'
+    <v-touch @swipeleft='openDetail()' @swipeup='fold()' @click.native='unfold()'
     class='player-in-scene'>
-        <div class='brief' @click='unfold()'>
+        <div class='brief'>
             {{$root.players[playerIndex].p_name}}
         </div>
         <div
@@ -40,6 +40,11 @@ export default {
 
 <style lang='less' scoped>
 
+.player-in-scene{
+    min-height:50px;
+    margin:20px 5px;
+    box-shadow: 0px 0px 3px 1px;
+}
 .brief{
     width:90%;
     margin:0 auto;
