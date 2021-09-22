@@ -36,6 +36,7 @@ export default {
             this.briefView = true
         },
         openDetail(){
+            this.$root.setPlayerIndex( this.playerIndex )
             this.$router.push({ path: '/player/Detail', query: { playerIndex:this.playerIndex } });
         }
     }

@@ -10,7 +10,7 @@ function SpellDictionary(){
         .then(function (response) {
             //console.log(response.data)
             that.dictionary = response.data
-            this.refresh = !that.refresh
+            that.refresh = !that.refresh
             console.log("got dictionary")
             // that.originDictionary = response.data
         })

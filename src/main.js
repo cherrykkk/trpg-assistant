@@ -25,6 +25,10 @@ new Vue({
     }
   },
   created(){
+    //重定向判定:若用户刷新时不在主页面，则回到主页面
+    if(this.$route.path != '/Scene')
+      this.$router.push({path:'/Scene'})
+
     this.getPlayers()
   },
   methods:{
@@ -34,13 +38,14 @@ new Vue({
         .then(function (response) {
             that.players = response.data
             that.refresh = !that.refresh
-            console.log("refresh="+that.refresh)
+            console.log("getPlayers done")
         })
         .catch(function (error) {
             console.log(error);
         });
     },
     getPlayer(){
+      console.log("players="+this.players+" playerIndex="+this.playerIndex)
       return this.players[this.playerIndex]
     },
     setPlayerIndex(index){

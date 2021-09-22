@@ -2,7 +2,10 @@
     <div class='container'>
         <ul>
             <li>
-                <ability-cell :player='player'></ability-cell>
+                <base-info></base-info>
+            </li>
+            <li>
+                <ability-cell></ability-cell>
             </li>
             <li>
                 <spells-bar></spells-bar>
@@ -14,24 +17,24 @@
 <script>
 import AbilityCell from './AbilityCell.vue'
 import SpellsBar from './SpellsBar.vue'
+import BaseInfo from './BaseInfo.vue'
 export default {
     components:{
         AbilityCell,
-        SpellsBar
+        SpellsBar,
+        BaseInfo
     },
     data(){
         return {
-            player:{},
-            playerIndex:""
+            player:{}
         }
     },
-    created(){
-        this.$root.setPlayerIndex( this.$route.query.playerIndex )
-        this.player = this.$root.getPlayer()
-    },
     watch:{
-        '$root.players'(){
-            this.player = this.$root.getPlayer()
+         '$root.refresh': {
+            handler() {
+                this.player = this.$root.getPlayer()
+            },
+            immediate: true
         }
     }
 }

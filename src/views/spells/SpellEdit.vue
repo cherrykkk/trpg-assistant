@@ -1,10 +1,10 @@
 <template>
     <div class="page">
-        <spells-bag :removing='removing'></spells-bag>
+        <spells-bag :removing='removing' class='bag'></spells-bag>
         <div @click='removing=true' v-if='!removing'>开启删除</div>
         <div @click='removing=false' v-if='removing'>关闭删除</div>
-        <proviso-bar @provisoChange='setProvisoArgs'></proviso-bar>
-        <spell-list 
+        <proviso-bar @provisoChange='setProvisoArgs' class='proviso'></proviso-bar>
+        <spell-list class='list'
          :filterType="provisoArgs.filterType"
          :spellName="provisoArgs.searchString"
          :schoolTag="provisoArgs.schoolTag"
@@ -65,48 +65,21 @@ export default {
 
 <style scoped>
 .page{
-    display:flex;
-    flex-direction:column;
-    padding-top:160px;
-}
-.exitButton{
     position: fixed;
-    bottom: 0;
-    background-color: white;
-    margin: 0 auto;
-    padding: 10px;
+    height:100%;
 }
-.selectBar{
-    position: fixed;
-    background-color: white;
-    top:0;
-    left:0;
-    width:100%;
-    box-shadow: 0px 0px 3px 1px;
+.bag{
+    position:relative;
+    height:30%;
+    overflow: scroll;
+}
+.proviso{
+    height:20%;
+}
+.list{
+    position: relative;
+    height:40%;
+    overflow: scroll;
 }
 
-.search-tag-bar{
-    position: relative;
-    box-shadow: 0px 0px 3px 1px;
-}
-.search-tag-bar>ul{
-    position: relative;
-    display:inline-block;
-    width:75%;
-    text-align: left;
-}
-.search-tag-bar>label{
-    position: relative;
-    display:inline-block;
-    width:20%;
-}
-.tag{
-    display: inline-block;
-    width:24%;
-}
-.tag2{
-    display: inline-block;
-    width:33%;
-    text-align: left;
-}
 </style>

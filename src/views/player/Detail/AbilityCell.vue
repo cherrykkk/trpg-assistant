@@ -38,9 +38,11 @@ export default {
             ability:[]
         }
     },
-    created(){
-        let data = this.$root.getPlayer()
-        this.ability.push(   
+    methods:{
+        init(){
+            let data = this.$root.getPlayer()
+            this.ability = []
+            this.ability.push(   
                     ['力量'+data.strength,'运动'],
                     ['敏捷'+data.dexterity,'体操','巧手','隐匿'],
                     ['体质'+data.constitution],
@@ -48,6 +50,15 @@ export default {
                     ['感知'+data.wisdom,'驯兽','洞悉','医药','察觉','求生'],
                     ['魅力'+data.charisma,'欺瞒','威吓','表演','游说']
                 )
+        }
+    },
+    watch:{
+        '$root.refresh': {
+            handler() {
+                this.init()
+            },
+            immediate: true
+        }
     }
 }
 </script>

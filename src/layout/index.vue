@@ -1,27 +1,25 @@
 <template>
   <div class='layout'>
-    <top-bar></top-bar>
+    <bottom-bar></bottom-bar>
     <router-view />
   </div>
 </template>
 
 <script>
-import TopBar from './TopBar/TopBar.vue'
+import BottomBar from './BottomBar.vue'
 
 export default {
   components:{
-    TopBar
+     BottomBar
   }
 }
-
 </script>
-
 
 <style>
 .layout{
   position: relative;
-  height:100%;
+  margin:5% 0 0 0;
+  height:95%;
   width:100%;
-  box-shadow: 0px 0px 3px 1px;
 }
 </style>
