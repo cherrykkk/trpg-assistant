@@ -8,6 +8,9 @@
                 <ability-cell></ability-cell>
             </li>
             <li>
+                <equipment-bar></equipment-bar>
+            </li>
+            <li>
                 <spells-bar></spells-bar>
             </li>
         </ul>
@@ -18,11 +21,13 @@
 import AbilityCell from './AbilityCell.vue'
 import SpellsBar from './SpellsBar.vue'
 import BaseInfo from './BaseInfo.vue'
+import EquipmentBar from './EquipmentBar.vue'
 export default {
     components:{
         AbilityCell,
         SpellsBar,
-        BaseInfo
+        BaseInfo,
+        EquipmentBar
     },
     data(){
         return {

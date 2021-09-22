@@ -6,6 +6,7 @@ import SpellEdit from '@/views/spells/SpellEdit.vue'
 import Detail from '@/views/player/Detail/Detail.vue'
 import Scene from '@/views/Scene/Scene.vue'
 import SpellBrowse from '@/views/spells/SpellBrowse.vue'
+import EquipmentEdit from '@/views/equipment/EquipmentEdit.vue'
 
 Vue.use(Router)
 
@@ -31,6 +32,9 @@ export default new Router({
     },{
       path:'/SpellBrowse',
       component:SpellBrowse
+    },{
+      path:'/equipmentEdit',
+      component:EquipmentEdit
     }
   ]
 })
