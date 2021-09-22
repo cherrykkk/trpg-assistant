@@ -9,7 +9,7 @@
             </ul>
         </template>
         <template v-slot:detail v-if='filtered'>
-            <equipment-description :data='filtered[0]'></equipment-description>
+            <description-ctl :data='filtered[0]'></description-ctl>
         </template>
     </touch-fold>
 </template>
@@ -18,13 +18,13 @@
 import TouchFold from '@/components/TouchFold.vue'
 import {getEquipmentDescription} from '@/api/getEquipmentDescription.js'
 import Cha from '@/components/Cha.vue'
-import EquipmentDescription from './EquipmentDescription.vue'
+import DescriptionCtl from './DescriptionCtl.vue'
 
 export default {
     components:{
         TouchFold,
         Cha,
-        EquipmentDescription
+        DescriptionCtl
     },
     props:{
         removing:Boolean
