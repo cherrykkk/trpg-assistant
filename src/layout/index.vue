@@ -10,7 +10,7 @@ import BottomBar from './BottomBar.vue'
 
 export default {
   components:{
-     BottomBar
+    BottomBar
   }
 }
 </script>

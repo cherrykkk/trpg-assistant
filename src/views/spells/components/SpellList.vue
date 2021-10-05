@@ -69,6 +69,10 @@ export default {
 			else{
                 return filtered
             }
+            //按环排
+            filtered.sort(function(a,b){ 
+                return a['等级']-b['等级'] 
+            });
             // 返回过来后的数组
             return filtered;
         }

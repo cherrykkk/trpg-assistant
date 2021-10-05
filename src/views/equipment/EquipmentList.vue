@@ -1,15 +1,15 @@
 <template>
     <ul>
-        <li v-for="(item,i) in filterSpells" :key='i' class='spellCard'>
-            <spell-cell :data='item' :adding='adding' @click.native='addSpell(item)'></spell-cell>
+        <li v-for="(item,i) in filtered" :key='i' class='spellCard'>
+            <span v-if='item.武器名称'>{{item.武器名称}}</span>
         </li>
     </ul>
 </template>
 
 <script>
-import SpellCell from '@/views/components/SpellCell.vue'
+import DescriptionCtl from '@/views/components/description/DescriptionCtl.vue'
 export default {
-    components: { SpellCell },
+    components: { DescriptionCtl },
     props:{
         filterType:String,
         spellName:String,
@@ -19,18 +19,20 @@ export default {
     },
     data(){
         return{
-            originDictionary:[]
+            originDictionary:[],
+            weaponDictionary:[],
+            armorDictionary:[]
         }
     },
     mounted(){
         const that = this
-        this.$axios.get('../api/spellDescription.json')
-            .then(function (response) {
-                that.originDictionary = response.data
+        fetch('../api/equipment.json')
+            .then(response => response.json())
+            .then(response=>{
+                this.originDictionary = response
+                this.weaponDictionary = response.weapon
+                this.armorDictionary = response.armor
             })
-            .catch(function (error) {
-                console.log(error);
-            });
     },
     methods:{
         addSpell(item){
@@ -38,8 +40,12 @@ export default {
         },
     },
     computed:{
-        filterSpells: function () {
-            let filtered = this.originDictionary;
+        filtered: function () {
+            let filtered
+            if(filterType == 'armor')
+                filtered = this.armorDictionary;
+            else
+                filtered = this.weaponDictionary;
             let filterType = this.filterType
 
             if(this.spellName){

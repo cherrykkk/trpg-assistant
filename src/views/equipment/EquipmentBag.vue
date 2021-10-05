@@ -18,7 +18,7 @@
 import TouchFold from '@/components/TouchFold.vue'
 import {getEquipmentDescription} from '@/api/getEquipmentDescription.js'
 import Cha from '@/components/Cha.vue'
-import DescriptionCtl from './DescriptionCtl.vue'
+import DescriptionCtl from '@/views/components/description/DescriptionCtl.vue'
 
 export default {
     components:{

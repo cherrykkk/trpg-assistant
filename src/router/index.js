@@ -7,6 +7,7 @@ import Detail from '@/views/player/Detail/Detail.vue'
 import Scene from '@/views/Scene/Scene.vue'
 import SpellBrowse from '@/views/spells/SpellBrowse.vue'
 import EquipmentEdit from '@/views/equipment/EquipmentEdit.vue'
+import EquipmentBrowse from '@/views/equipment/EquipmentBrowse.vue'
 
 Vue.use(Router)
 
@@ -35,6 +36,9 @@ export default new Router({
     },{
       path:'/equipmentEdit',
       component:EquipmentEdit
+    },{
+      path:'/equipmentBrowse',
+      component:EquipmentBrowse
     }
   ]
 })

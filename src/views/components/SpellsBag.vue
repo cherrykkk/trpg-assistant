@@ -9,14 +9,14 @@
             </ul>
         </template>
         <template v-slot:detail v-if='filtered'>
-            <spell-cell :data='filtered[0]'></spell-cell>
+            <description-ctl :data='filtered[0]'></description-ctl>
         </template>
     </touch-fold>
 </template>
 
 <script>
 import TouchFold from '@/components/TouchFold.vue'
-import SpellCell from './SpellCell.vue'
+import DescriptionCtl from '@/views/components/description/DescriptionCtl.vue'
 import {getSpellDescription} from '@/api/getSpellDescription.js'
 import {removeSpell} from '@/api/removeSpell.js'
 import Cha from '@/components/Cha.vue'
@@ -24,7 +24,7 @@ import Cha from '@/components/Cha.vue'
 export default {
     components:{
         TouchFold,
-        SpellCell,
+        DescriptionCtl,
         Cha
     },
     props:{
@@ -68,4 +68,5 @@ li{
 .detail{
     overflow: hidden;
 }
+
 </style>

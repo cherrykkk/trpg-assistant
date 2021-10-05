@@ -2,6 +2,7 @@
     <div class='bottom-bar'>
         <router-link :to="{path: '/Scene'}">场景</router-link>
         <router-link :to="{path: '/SpellBrowse'}">法术</router-link>
+        <router-link :to="{path: '/EquipmentBrowse'}">装备</router-link>
     </div>
 </template>
 
@@ -13,6 +14,7 @@
     bottom:0;
     box-shadow: 0px 0px 3px 1px;
     background-color: white;
+    z-index: 1;
 }
 
 

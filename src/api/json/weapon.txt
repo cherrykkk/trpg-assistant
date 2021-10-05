@@ -17,3 +17,22 @@
 链枷 flail	军用	近战	10gp	1 d8	钝击	2 磅	-
 大砍刀 glaive	军用	近战	20gp	1 d10	挥砍	6 磅	重型，触及，双手
 巨斧 greataxe	30gp	军用	近战	1 d12	挥砍	7 磅	重型，双手
+巨剑 greatsword	军用	近战	50 gp	2 d6	挥砍	6 磅	重型，双手
+戟 hallerd	军用	近战	20 gp	1 d10	挥砍	6 磅	重型，触及，双手
+骑枪 lance	军用	近战	10 gp	1 d12	穿刺	6 磅	触及，特殊
+长剑 longsword	军用	近战	15 gp	1 d8	挥砍	3 磅	两用（1d10）
+巨锤 maul	军用	近战	10 gp	2 d6	钝击	10 磅	重型，双手
+钉头锤 morningstar	军用	近战	15 gp	1 d8	穿刺	4 磅	－
+长矛 pike	军用	近战	5 gp	1 d10	穿刺	18 磅	重型，触及，双手
+刺剑 rapier	军用	近战	25 gp	1 d8	穿刺	2 磅	灵巧
+弯刀 scimiar	军用	近战	25 gp	1 d6	挥砍	3 磅	灵巧，轻型
+短剑 shortsword	军用	近战	10 gp	1 d6	穿刺	2 磅	灵巧，轻型
+三叉戟 trident	军用	近战	5 gp	1 d6	穿刺	4 磅	投掷（射程 20/60），两用（1d8）
+战镐 war pick	军用	近战	5 gp	1 d8	穿刺	2 磅	—
+战锤 warhammer	军用	近战	15 gp	1 d8	钝击	2 磅	两用（1d10）
+鞭 whip	军用	近战	2 gp	1 d4	挥砍	3 磅	灵巧，触及
+吹箭筒 blowgun	军用	远程	10 gp	1	穿刺	1 磅	弹药（射程 25/100）装填
+手弩 crossbow,hand	军用	远程	75 gp	1 d6	穿刺	3 磅	弹药（射程 30/120），轻型，装填
+重弩 crossbow,heavy	军用	远程	50 gp	1 d10	穿刺	18 磅	弹药（射程 100/400），重型，装填，双手
+长弓 longbow	军用	远程	50 gp	1 d8	穿刺	2 磅	弹药（射程 150/600），重型，双手
+捕网 net 	军用	远程	1 gp	—	-	3 磅	特殊，投掷（射程 5/15）

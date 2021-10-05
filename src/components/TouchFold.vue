@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-touch @swipeup='fold()'>
+        <v-touch @swipeup='fold()' >
             <div @click='unfold()'>
                 <slot name='brief'></slot>    
             </div>
@@ -26,6 +26,10 @@ export default{
         fold(){
             this.briefView = true
         },
+        changeFold(){
+            this.briefView = !this.briefView
+            console.log("changefold")
+        }
     }
 }
 </script>

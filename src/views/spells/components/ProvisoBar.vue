@@ -1,9 +1,10 @@
 <template>
     <div class="selectBar">
         <div class='filter-type'>
-            <span @click="filterType='spellName'">名称</span>
-            <span @click="filterType='schoolTag'">学派</span>
-            <span @click="filterType='classTag'">职业</span>
+            <div @click="filterTypeChange('spellName')" ref='spellName'>名称</div>
+            <div @click="filterTypeChange('schoolTag')" ref='schoolTag'>学派</div>
+            <div @click="filterTypeChange('classTag')" ref='classTag'>职业</div>
+            <div @click="filterTypeChange('levelTag')" ref='levelTag'>环级</div>
         </div>
         <div class='select-tag-bar' v-if="filterType=='spellName'">
             <input type="text" v-model="searchString" placeholder="输入搜索内容" />
@@ -22,6 +23,8 @@
                 </label>
             </ul>
         </div>
+        <div class='select-tag-bar' v-if="filterType=='levelTag'">
+        </div>
     </div>
 </template>
 
@@ -38,10 +41,8 @@ export default {
             filterType:""
         }
     },
-    created(){
-    },
     methods:{
-        provisoChange(){
+        reSearch(){
             let provisoArgs = {
                 searchString:this.searchString,
                 schoolTag:this.schoolTag,
@@ -49,20 +50,26 @@ export default {
                 filterType:this.filterType
             }
             this.$emit('provisoChange',provisoArgs)
+        },
+        filterTypeChange(changeType){
+            this.filterType = changeType
+            this.reSearch()
+            this.$refs['spellName'].classList.remove('selected')
+            this.$refs['schoolTag'].classList.remove('selected')
+            this.$refs['classTag'].classList.remove('selected')
+            this.$refs['levelTag'].classList.remove('selected')
+            this.$refs[changeType].classList.add('selected')
         }
     },
     watch:{
         searchString(){
-            this.provisoChange()
+            this.reSearch()
         },
         schoolTag(){
-            this.provisoChange()
+            this.reSearch()
         },
         classTag(){
-            this.provisoChange()
-        },
-        filterType(){
-            this.provisoChange()
+            this.reSearch()
         }
     }
 }
@@ -73,10 +80,22 @@ export default {
     background-color: white;
     width:100%;
     box-shadow: 0px 0px 3px 1px;
+    .filter-type{
+        display: flex;
+        div{
+            flex-grow: 1;
+            box-shadow: 0px 0px 3px 1px;
+        }
+        .selected{
+            box-shadow: 0px 0px 0px 0px;
+        }
+    }
+    .order-by{
+        width:30%;
+    }
 }
 .select-tag-bar{
     position: relative;
-    box-shadow: 0px 0px 3px 1px;
     height:60px;
     >ul{
         position: relative;
@@ -88,6 +107,9 @@ export default {
         position: relative;
         display:inline-block;
         width:20%;
+    }
+    >input{
+        margin-top:10px;
     }
 }
 .tag{
