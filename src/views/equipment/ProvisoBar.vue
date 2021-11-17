@@ -48,35 +48,5 @@ export default {
             box-shadow: 0px 0px 0px 0px;
         }
     }
-    .order-by{
-        width:30%;
-    }
-}
-.select-tag-bar{
-    position: relative;
-    height:60px;
-    >ul{
-        position: relative;
-        display:inline-block;
-        width:75%;
-        text-align: left;
-    }
-    >label{
-        position: relative;
-        display:inline-block;
-        width:20%;
-    }
-    >input{
-        margin-top:10px;
-    }
-}
-.tag{
-    display: inline-block;
-    width:24%;
-}
-.tag2{
-    display: inline-block;
-    width:33%;
-    text-align: left;
 }
 </style>

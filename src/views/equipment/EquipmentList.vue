@@ -1,15 +1,20 @@
 <template>
     <ul>
         <li v-for="(item,i) in filtered" :key='i' class='spellCard'>
-            <span v-if='item.武器名称'>{{item.武器名称}}</span>
+            <equipment-cell :data='item'></equipment-cell>
         </li>
     </ul>
 </template>
 
 <script>
 import DescriptionCtl from '@/views/components/description/DescriptionCtl.vue'
+import EquipmentCell from './EquipmentCell.vue'
+
 export default {
-    components: { DescriptionCtl },
+    components: { 
+        DescriptionCtl,
+        EquipmentCell
+    },
     props:{
         filterType:String,
         spellName:String,

@@ -2,10 +2,7 @@
     <div class="page">
         <proviso-bar @provisoChange='setProvisoArgs' class='proviso'></proviso-bar>
         <equipment-list class='list'
-         :filterType="provisoArgs.filterType"
-         :spellName="provisoArgs.searchString"
-         :schoolTag="provisoArgs.schoolTag"
-         :classTag="provisoArgs.classTag"></equipment-list>
+         :filterType="provisoArgs.filterType"></equipment-list>
     </div>
 </template>
 
@@ -37,9 +34,6 @@ export default {
     position: fixed;
     height:100%;
     width:100%;
-}
-.proviso{
-    height:20%;
 }
 
 </style>
