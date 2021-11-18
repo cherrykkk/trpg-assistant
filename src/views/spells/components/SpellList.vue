@@ -8,6 +8,7 @@
 
 <script>
 import SpellCell from '@/views/components/SpellCell.vue'
+import {filteredSpell} from "@/views/components/filter.js"
 export default {
   components: { SpellCell },
   props:{
@@ -33,30 +34,14 @@ export default {
   },
   methods:{
     addSpell(item){
-        this.$emit('addSpell',item)
+      this.$emit('addSpell',item)
     },
   },
   computed:{
     filterSpells: function () {
       if( !(this.provisoType&&this.provisoTitle)) return
-      let filtered = this.originDictionary;
-      let searching = this.provisoSearching
-      let titleMap = {
-        spellName: "法术名称",
-        "职业": "职业",
-        "学派": "派系"
-      }
-      let filterTitle = titleMap[this.provisoTitle]
-      filtered = filtered.filter(function(item){
-        if( 
-          (item[filterTitle]&&item[filterTitle]==searching) || 
-          item[searching] ||
-          item['法术名称'].toLowerCase().indexOf(searching)!=-1
-        ){
-          console.log( item['法术名称'].toLowerCase().indexOf(searching),searching)
-          return item;
-        }
-      })
+      
+      let filtered = filteredSpell(this.originDictionary,this.provisoType,this.provisoTitle,this.provisoSearching)
       //按环排
       filtered.sort(function(a,b){ 
           return a['等级']-b['等级'] 

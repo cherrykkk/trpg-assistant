@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <proviso-bar class="proviso-bar" @provisoChange='setProvisoArgs'></proviso-bar>
+    <proviso-bar class="proviso-bar" @provisoChange='setProvisoArgs' usage="法术"></proviso-bar>
     <spell-list 
       :provisoType="provisoConfig.type"
       :provisoSearching="provisoConfig.searching"
@@ -11,7 +11,6 @@
 
 <script>
 import SpellList from './components/SpellList.vue'
-// import ProvisoBar from './components/ProvisoBar.vue'
 import ProvisoBar from '@/views/components/ProvisoBar/ProvisoBar.vue'
 export default {
   components:{
@@ -38,7 +37,8 @@ export default {
 .page{
   display:flex;
   flex-direction:column;
-  padding-top:160px;
+  padding-top:100px;
+  padding-bottom: 50px;
 }
 .exitButton{
   position: fixed;

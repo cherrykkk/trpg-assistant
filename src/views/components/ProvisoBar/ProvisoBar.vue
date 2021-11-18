@@ -1,6 +1,6 @@
 <template>
   <div class="proviso-bar">
-    <div v-for="(e,i) in OPTION" :key="i" class="tab">
+    <div v-for="(e,i) in option" :key="i" class="tab">
       <div class="title" :class="{'title-actived':i==activedIndex}" @click="activeTab(i)">{{e.title}}</div>
       <div v-if="i==activedIndex && e.type=='text-input'" class="radio-panel">
         <input v-model="e.searching" @change="activeSearching()"/>
@@ -15,50 +15,41 @@
 <script>
 import OPTION from "./ProvisoBar.js"
 export default {
-name: 'SpellEdit',
-data () {
-  return {
-    searchString:'',
-    schoolTag:"",
-    classTag:"",
-    filterType:"",
-    OPTION,
-    activedIndex: 0
-  }
-},
-methods:{
-  activeTab(index){
-    this.activedIndex = index
-  },
-  activeSearching(index){
-    if( ! OPTION[this.activedIndex].searching )
-      this.$set(OPTION[this.activedIndex],"searching","")
-    if( OPTION[this.activedIndex].type=="radio"){
-      OPTION[this.activedIndex].searching = OPTION[this.activedIndex].data[index]
+  name: 'SpellEdit',
+  props: ["usage"],
+  data () {
+    return {
+      filterType:"",
+      option: OPTION[this.usage],
+      activedIndex: 0
     }
-    this.search()
   },
-  search(){
-    // let provisoArgs = {
-    //   searchString:this.searchString,
-    //   schoolTag:this.schoolTag,
-    //   classTag:this.classTag,
-    //   filterType:this.filterType
-    // }
-    // this.$emit('provisoChange',provisoArgs)
-    let provisoConfig = {
-      title: OPTION[this.activedIndex].title, 
-      type:  OPTION[this.activedIndex].type,
-      searching: OPTION[this.activedIndex].searching
+  methods:{
+    activeTab(index){
+      this.activedIndex = index
+    },
+    activeSearching(index){
+      if( ! this.option[this.activedIndex].searching )
+        this.$set(this.option[this.activedIndex],"searching","")
+      if( this.option[this.activedIndex].type=="radio"){
+        this.option[this.activedIndex].searching = this.option[this.activedIndex].data[index]
+      }
+      this.search()
+    },
+    search(){
+      let provisoConfig = {
+        title: this.option[this.activedIndex].title, 
+        type:  this.option[this.activedIndex].type,
+        searching: this.option[this.activedIndex].searching
+      }
+      console.log("正在搜索",provisoConfig)
+      this.$emit('provisoChange',provisoConfig)
+    },
+    filterTypeChange(changeType){
+      this.filterType = changeType
+      this.reSearch()
     }
-    console.log(provisoConfig)
-    this.$emit('provisoChange',provisoConfig)
-  },
-  filterTypeChange(changeType){
-    this.filterType = changeType
-    this.reSearch()
   }
-}
 }
 </script>
 

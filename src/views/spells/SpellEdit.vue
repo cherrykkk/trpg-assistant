@@ -1,22 +1,21 @@
 <template>
-    <div class="page">
-        <spells-bag :removing='removing' class='bag'></spells-bag>
-        <div @click='removing=true' v-if='!removing'>开启删除</div>
-        <div @click='removing=false' v-if='removing'>关闭删除</div>
-        <proviso-bar @provisoChange='setProvisoArgs' class='proviso'></proviso-bar>
-        <spell-list class='list'
-         :filterType="provisoArgs.filterType"
-         :spellName="provisoArgs.searchString"
-         :schoolTag="provisoArgs.schoolTag"
-         :classTag="provisoArgs.classTag"
-         :adding="true"
-         @addSpell='addSpell'></spell-list>
-    </div>
+  <div class="page">
+    <spells-bag :removing='removing' class='bag'></spells-bag>
+    <div @click='removing=true' v-if='!removing'>开启删除</div>
+    <div @click='removing=false' v-if='removing'>关闭删除</div>
+    <proviso-bar @provisoChange='setProvisoArgs' class='proviso'></proviso-bar>
+    <spell-list class='list'
+     :provisoType="provisoConfig.type"
+     :provisoSearching="provisoConfig.searching"
+     :provisoTitle="provisoConfig.title"
+     :adding="true"
+     @addSpell='addSpell'></spell-list>
+  </div>
 </template>
 
 <script>
 import SpellList from './components/SpellList.vue'
-import ProvisoBar from './components/ProvisoBar.vue'
+import ProvisoBar from '@/views/components/ProvisoBar/ProvisoBar.vue'
 import SpellsBag from '@/views/components/SpellsBag.vue'
 export default {
     components:{
@@ -26,7 +25,7 @@ export default {
     },
     data() {
         return {
-            provisoArgs:{},
+            provisoConfig:{},
             spellsBag:[],
             player:{},
             playerIndex:"",
@@ -41,7 +40,7 @@ export default {
             this.$router.push({ path: '/'});
         },
         setProvisoArgs(args){
-            this.provisoArgs = args
+            this.provisoConfig = args
         },
         addSpell(item){
             const that = this
