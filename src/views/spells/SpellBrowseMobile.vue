@@ -14,21 +14,21 @@ import SpellList from './components/SpellList.vue'
 import ProvisoBar from '@/views/components/ProvisoBar/ProvisoBar.vue'
 export default {
   components:{
-    SpellList,
-    ProvisoBar,
+      SpellList,
+      ProvisoBar,
   },
   data() {
-    return {
-      provisoConfig:{}
-    }
+      return {
+        provisoConfig:{}
+      }
   },
   methods:{
-    returnMain(){
-      this.$router.push({ path: '/'});
-    },
-    setProvisoArgs(provisoConfig){
-      this.provisoConfig = provisoConfig
-    }
+      returnMain(){
+          this.$router.push({ path: '/'});
+      },
+      setProvisoArgs(provisoConfig){
+        this.provisoConfig = provisoConfig
+      }
   }
 }
 </script>

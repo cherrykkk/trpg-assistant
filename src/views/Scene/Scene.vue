@@ -1,18 +1,26 @@
 <template>
+  <div class="scene-view">
     <div class='players'>
-        <player-in-scene v-for='(item,index) in $root.players' :key='index'
-         :playerIndex="index">
-        </player-in-scene>
+      <player-card v-for='(item,index) in $root.players' :key='index'
+        :playerIndex="index">
+      </player-card>
     </div>
+  </div>
 </template>
 
 <script>
-import PlayerInScene from '@/views/player/PlayerInScene.vue'
+import PlayerCard from './cards/Player.vue'
 
 export default {
-    components:{
-        PlayerInScene
-    }
+  components:{
+    PlayerCard
+  }
 }
-
 </script>
+<style lang="less" scoped>
+.scene-view {
+  .players {
+    width: 300px;
+  }
+}
+</style>

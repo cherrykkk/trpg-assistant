@@ -7,10 +7,14 @@
 
 <script>
 import BottomBar from './BottomBar.vue'
-
 export default {
   components:{
     BottomBar
+  },
+  data () {
+    return {
+
+    }
   }
 }
 </script>

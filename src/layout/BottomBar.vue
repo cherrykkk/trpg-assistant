@@ -3,6 +3,7 @@
     <router-link :to="{path: '/Scene'}">场景</router-link>
     <router-link :to="{path: '/SpellBrowse'}">法术</router-link>
     <router-link :to="{path: '/EquipmentBrowse'}">装备</router-link>
+    <router-link :to="{path: '/fight'}">战斗</router-link>
   </div>
 </template>
 
