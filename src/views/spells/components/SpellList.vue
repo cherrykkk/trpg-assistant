@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import SpellCell from '@/views/components/SpellCell.vue'
+import SpellCell from './SpellCell.vue'
 import {filteredSpell} from "@/views/components/filter.js"
 export default {
   components: { SpellCell },
