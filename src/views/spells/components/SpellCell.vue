@@ -30,28 +30,28 @@
 <script>
 
 export default {
-    props:{
-      data:Object,
-      adding:Boolean
-    },
-    data(){
-      return{
-        state: {
-          showEnglishName: false,
-          showDetail: false
-        },
-      }
-    },
-    computed:{
-        classArr:function(){
-            let classArr = ['圣武士','德鲁伊','术士','法师','游侠','牧师','诗人','邪术士']
-            const that = this
-            let result = classArr.filter(function(el){
-                return that.data[el] != ""
-            })
-            return result
-        }
+  props:{
+    data:Object,
+    adding:Boolean
+  },
+  data(){
+    return{
+      state: {
+        showEnglishName: false,
+        showDetail: false
+      },
     }
+  },
+  computed:{
+    classArr:function(){
+      let classArr = ['圣武士','德鲁伊','术士','法师','游侠','牧师','诗人','邪术士']
+      const that = this
+      let result = classArr.filter(function(el){
+          return that.data[el] != ""
+      })
+      return result
+    }
+  }
 }
 </script>
 

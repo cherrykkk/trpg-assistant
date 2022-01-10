@@ -1,18 +1,20 @@
 <template>
-  <div class="player-card" @click="state.showDetail=!state.showDetail">
+  <div class="non-player-card" @click="state.showDetail=!state.showDetail">
     <img class="url-arrow" src="@/assets/icon/more.svg" @click='openDetail()' />
     <div class="brief">
-      {{$root.players[playerIndex].p_name}}
+      {{data.name}}
     </div>
     <div :class="['more',[state.showDetail? 'unfold':'fold']]">
-      {{$root.players[playerIndex].p_race}}
-      {{$root.players[playerIndex].p_sex}}
-      {{$root.players[playerIndex].p_class}}
-      HP:{{$root.players[playerIndex].p_HP}}
+      {{data.race}}
+      {{data.sex}}
+      {{data.class}}
+      <div class="description">
+        <p v-for="(e,i) in data.description" :key="i">{{e}}</p>
+      </div>
       <div class="ability-board">
         <div v-for='(e,i) in ability' :key='i'>
           <img :src="e.icon" />
-          <div class="number">{{$root.players[playerIndex][e.name]}}</div>
+          <div class="number"></div>
         </div>
       </div>
     </div>
@@ -20,15 +22,11 @@
 </template>
 
 <script>
-import RightArrow from '@/components/RightArrow.vue'
 
 export default {
-  components:{
-    RightArrow
-  },
   props:{
-    data:Object,
-    playerIndex:Number
+    data: Object,
+    playerIndex: Number
   },
   data() {
     return{
@@ -60,8 +58,7 @@ export default {
   },
   methods:{
     openDetail(){
-      this.$root.setPlayerIndex( this.playerIndex )
-      this.$router.push({ path: '/player/Detail', query: { playerIndex:this.playerIndex } });
+      this.$router.push({ path: '/character/nonPlayerCharacter', query: { id: this.data.id } });
     }
   }
 }
@@ -70,12 +67,13 @@ export default {
 
 <style lang='less' scoped>
 
-.player-card {
+.non-player-card {
   position: relative;
-  min-height:50px;
+  //min-height:50px;
   margin:20px 5px;
   box-shadow: 0px 0px 3px 1px;
   padding: 10px;
+  border-radius: 20px;
   .url-arrow {
     position: absolute;
     right: 0;
@@ -89,12 +87,17 @@ export default {
   .more{
     overflow: hidden;
     transition: 0.5s 0s;
+    .description {
+      font-size: 10px;
+      text-align: left;
+      white-space: nowrap;
+    }
   }
   .fold{
     max-height:0;
   }
-    .unfold{
-    max-height: 200px;
+  .unfold{
+    max-height: 300px;
   }
   .ability-board {
     display: flex;

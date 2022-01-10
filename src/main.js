@@ -26,9 +26,8 @@ new Vue({
   },
   created(){
     //重定向判定:若用户刷新时不在主页面，则回到主页面
-    if(this.$route.path != '/Scene')
-      this.$router.push({path:'/Scene'})
-
+    if(this.$route.path != '/')
+      this.$router.push({path:'/'})
     this.getPlayers()
   },
   methods:{
