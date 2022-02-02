@@ -21,13 +21,13 @@ new Vue({
     return{
       players:[],
       playerIndex:0,
-      refresh:true  //每次需要重新取players值时，置反
+      refresh:true  //每次需要重新取 players 值时，置反
     }
   },
   created(){
     //重定向判定:若用户刷新时不在主页面，则回到主页面
-    if(this.$route.path != '/')
-      this.$router.push({path:'/'})
+    // if(this.$route.path != '/' && this.$route.path != '/memo')
+    //   this.$router.push({path:'/'})
     this.getPlayers()
   },
   methods:{

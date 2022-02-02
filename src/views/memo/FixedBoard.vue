@@ -7,10 +7,8 @@
 <script>
 export default {
   props: {
-    title: String,
-    x: String,
-    y: String,
-    setStyleConfig: Function
+    index: Number,
+    globalStyleConfig: Array
   },
   data () {
     return {
@@ -21,22 +19,22 @@ export default {
     }
   },
   created () {
-    if(this.x&&this.y) {
-      console.log("已读取缓存数据 ",this.position.left,this.position.top)
-      this.position.left = this.x 
-      this.position.top = this.y
+    const x = this.globalStyleConfig[this.index][0]
+    const y = this.globalStyleConfig[this.index][1]
+    if( x&&y ) {
+      this.position.left = x + 'px' 
+      this.position.top = y + 'px'
     }
-  },
-  mounted() {
-    console.log("mounted,see props",this.x,this.y,this.setStyleConfig)
   },
   methods: {
     move(e) {
+      const { index } = this
       if(e.clientX+e.clientY != 0) {//过滤最后一下的drag事件
         this.position.left = e.clientX+'px'
         this.position.top = e.clientY+'px'
-        const setStyleConfig = this.setStyleConfig
-        setStyleConfig(this.title,e.clientX+'px',e.clientY+'px')
+        const newStyleConfig = this.globalStyleConfig.slice(0) //数组深拷贝
+        newStyleConfig[index] = [e.clientX,e.clientY]
+        localStorage.setItem("memoStyleConfig",JSON.stringify(newStyleConfig))
       }
     }
   }

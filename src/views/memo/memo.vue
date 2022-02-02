@@ -1,14 +1,15 @@
 <template>
   <div class="scene-view">
-    <fixed-board class='player-character-board' title="pcBoard" :x='memoStyleConfig.pcBoard.x' :y='memoStyleConfig.pcBoard.y' :setStyleConfig='setStyleConfig'>
-      <player-card v-for='(item,index) in $root.players' :key='index'
-        :playerIndex="index">
+    <fixed-board class='non-player-character-board' :globalStyleConfig='styleConfig' :index='0'>
+      <non-player-card v-for='(item,index) in moduleData.nonPlayerCharacter' :key='index' :data="item">
+      </non-player-card>
+    </fixed-board>
+    <fixed-board class='non-player-character-board' :globalStyleConfig='styleConfig' :index='1'>
+      <player-card v-for='(item,index) in $root.players' :key='index' :playerIndex="index">
       </player-card>
     </fixed-board>
-    <fixed-board class='non-player-character-board' title='npcBoard' :x='memoStyleConfig.npcBoard.x' :y='memoStyleConfig.npcBoard.y' :setStyleConfig='setStyleConfig'>
-      <non-player-card v-for='(item,index) in moduleData.nonPlayerCharacter' :key='index'
-        :data="item">
-      </non-player-card>
+    <fixed-board class="scene-board" :globalStyleConfig='styleConfig' :index='2'>
+      <single-scene v-for="(item,index) in moduleData.scene" :key="index" :data="item"></single-scene>
     </fixed-board>
   </div>
 </template>
@@ -27,19 +28,28 @@ export default {
   data () {
     return {
       moduleConfig: {
-        nonPlayerCharacter: "1,2,3",
+        nonPlayerCharacter: "1,2,3,4,5,6,7,8",
         players: null,
+        scene: "1"
       },
       moduleData: {
         nonPlayerCharacter: null,
         players: null,
+        scene: null,
       },
+      styleConfig: [
+        [10,20],[10,20],[10,20]
+      ],
       memoStyleConfig: {
         pcBoard: {
           x: "10px",
           y: "20px"
         },
         npcBoard: {
+          x: "30px",
+          y: "40px"
+        },
+        sceneBoard: {
           x: "30px",
           y: "40px"
         }
@@ -52,15 +62,18 @@ export default {
     .then(res=>{
       this.moduleData.nonPlayerCharacter = res
     })
+    // fetch('http://localhost:3000/scene?id='+this.moduleConfig.scene).then(res=>res.json())
+    // .then(res=>{
+    //   this.moduleData.scene = res
+    // })
     // 获取布局配置
-    this.memoStyleConfig = JSON.parse(localStorage.getItem("memoStyleConfig"))
+    const memoStyleConfig = localStorage.getItem("memoStyleConfig")
+    if(memoStyleConfig) {
+      console.log(memoStyleConfig)
+      this.styleConfig = JSON.parse(localStorage.getItem("memoStyleConfig"))
+    }
   },
   methods: {
-    setStyleConfig(boardName,x,y) {
-      this.memoStyleConfig[boardName].x = x
-      this.memoStyleConfig[boardName].y = y
-      localStorage.setItem("memoStyleConfig",JSON.stringify(this.memoStyleConfig))
-    },
   }
 }
 </script>
@@ -71,7 +84,7 @@ export default {
     width: 300px;
   }
   .non-player-character-board {
-    width: 300px;
+    width: 200px;
   }
 }
 </style>

@@ -1,8 +1,13 @@
 <template>
   <div class="non-player-card" @click="state.showDetail=!state.showDetail">
-    <img class="url-arrow" src="@/assets/icon/more.svg" @click='openDetail()' />
-    <div class="brief">
+    <div class="button-detail" @click='openDetail()'>
+      <img class="url-arrow" src="@/assets/icon/more.svg" />
+    </div>
+    <div class="npc-name">
       {{data.name}}
+    </div>
+    <div class="npc-title">
+      <div v-for="(e,i) in data.title" :key="i">{{e}}</div>
     </div>
     <div :class="['more',[state.showDetail? 'unfold':'fold']]">
       {{data.race}}
@@ -69,20 +74,37 @@ export default {
 
 .non-player-card {
   position: relative;
-  //min-height:50px;
-  margin:20px 5px;
+  margin:10px 5px;
   box-shadow: 0px 0px 3px 1px;
   padding: 10px;
   border-radius: 20px;
-  .url-arrow {
+  .button-detail {
     position: absolute;
     right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    height: 100%;
+    width: 20px;
+    top: 0;
+    border-radius: 0 21px 21px 0;
+    cursor: pointer;
+    .url-arrow {
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    &:hover {
+      background: rgba(0,0,0,0.2);
+    }
   }
-  .brief{
+  .npc-title {
+    font-size: 12px;
+  }
+  .npc-title{
     width:90%;
     margin:0 auto;
+    display: flex;
+    div {
+      padding: 0 2px;
+    }
   }
   .more{
     overflow: hidden;

@@ -67,9 +67,8 @@ export default {
 
 .player-card {
   position: relative;
-  min-height:50px;
   margin:20px 5px;
-  box-shadow: 0px 0px 3px 1px;
+  box-shadow: 0px 0px 2px 2px;
   padding: 10px;
   .url-arrow {
     position: absolute;
