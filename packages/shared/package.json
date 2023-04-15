@@ -1,0 +1,15 @@
+{
+  "name": "@trpg/shared",
+  "private": true,
+  "version": "0.0.0",
+  "main": "constants.ts",
+  "exports": {
+    ".": {
+      "import": "./constants.ts",
+      "require": "./constants.ts"
+    }
+  },
+  "devDependencies": {
+    "mongodb": "^5.1.0"
+  }
+}

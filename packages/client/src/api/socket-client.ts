@@ -1,0 +1,49 @@
+import { io, Socket } from "socket.io-client";
+import { ClientEvents, ServerEvents } from "@trpg/shared";
+import { useSocketStore } from "@/stores/useSocketStore";
+import { useSceneStore } from "@/stores/useSceneStore";
+import { useCharactersStore } from "@/stores/useCharactersStore";
+
+export function createSocketAndInitAbility(password: string) {
+  const socket: Socket<ServerEvents, ClientEvents> = io("localhost:3333");
+
+  socket.on("connect", () => {
+    socket.emit("login: password", password);
+    useSocketStore().connectedSocket = socket;
+  });
+  socket.on("disconnect", () => {
+    useSocketStore().connectedSocket = null;
+  });
+
+  socket.on("data: allCharactersInfo", (data) => {
+    useCharactersStore().characters = data;
+  });
+
+  socket.on("data: allSpellInfo", (data) => {
+    useSocketStore().allSpellInfo = data;
+  });
+
+  socket.on("data: allScenes", (data) => {
+    useSceneStore().scenes = data;
+    useSceneStore().refresh();
+  });
+
+  socket.on("data: allMessage", (data) => {
+    useSocketStore().messageList = data;
+  });
+
+  return socket;
+}
+
+export function createPlayerSocketClient(playerPassword: string) {
+  const socket: Socket<ServerEvents, ClientEvents> = io("localhost:3333");
+  socket.on("connect", () => {
+    socket.emit("login: password", playerPassword);
+  });
+
+  socket.on("data: allMessage", (data) => {
+    useSocketStore().messageList = data;
+  });
+
+  return socket;
+}

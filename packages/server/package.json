@@ -1,0 +1,23 @@
+{
+  "name": "@trpg/server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node index.ts",
+    "dev-tsc": "tsc server/DND/index.ts -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@trpg/shared": "workspace:*",
+    "dotenv": "^16.0.3",
+    "mongodb": "^5.1.0",
+    "socket.io": "^4.5.1"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1"
+  }
+}
