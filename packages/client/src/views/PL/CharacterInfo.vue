@@ -65,31 +65,15 @@
       </div>
     </div>
 
-    <el-input
-      v-model="characterInfo.appearance"
-      placeholder="角色外貌描述"
-      type="textarea"
-      :autosize="{ minRows: 2, maxRows: 4 }"
-    />
-    <el-input
-      v-model="characterInfo.backgroundStory"
-      placeholder="角色背景故事"
-      type="textarea"
-      :autosize="{ minRows: 2, maxRows: 8 }"
-    />
+    <el-input v-model="characterInfo.appearance" placeholder="角色外貌描述" type="textarea"
+      :autosize="{ minRows: 2, maxRows: 4 }" />
+    <el-input v-model="characterInfo.backgroundStory" placeholder="角色背景故事" type="textarea"
+      :autosize="{ minRows: 2, maxRows: 8 }" />
     <el-input v-model="characterInfo.location.sceneName">
       <template #prepend>所处地点</template>
       <template #append>
-        <el-select
-          v-model="characterInfo.location.sceneName"
-          placeholder="Select"
-          style="width: 115px"
-        >
-          <el-option
-            v-for="scene in useSceneStore().scenes"
-            :key="scene.name"
-            :value="scene.name"
-          />
+        <el-select v-model="characterInfo.location.sceneName" placeholder="Select" style="width: 115px">
+          <el-option v-for="scene in useSceneStore().scenes" :key="scene.name" :value="scene.name" />
         </el-select>
       </template>
     </el-input>
@@ -104,7 +88,7 @@
 import { computed, PropType, reactive, ref } from "vue";
 import { createNewCharacterInfoTemplate } from "@/stores/useCharactersStore";
 import { useSceneStore } from "@/stores/useSceneStore";
-import { updateCharacterInfo, createCharacterInfo } from "@/api/updateCharacterInfo";
+import { updateCharacterInfo, createCharacterInfo } from "@/api/socket-tasks";
 import InfoCell from "./components/InfoCell.vue";
 import { CharacterInfo } from "@/types";
 import { ElMessage } from "element-plus";
@@ -119,7 +103,8 @@ defineProps({
 .el-form-item {
   margin-bottom: 4px;
 }
-.ability-and-skills-area > div {
+
+.ability-and-skills-area>div {
   display: flex;
   align-items: center;
 }

@@ -34,14 +34,35 @@ export const useSceneStore = defineStore("scene", {
   },
   actions: {
     refresh() {
+      this.sortTree();
+
       if (!this.currentScene) {
         this.currentScene = this.scenes[0];
+      } else {
+        const currentSceneId = this.currentScene.id
+        if (this.currentScene) {
+          this.currentScene = this.scenes.find(e => e.id === currentSceneId) ?? null
+
+          if (!this.currentScene) {
+            this.currentScene = this.scenes[0]
+          }
+        }
       }
-      this.sortTree();
     },
     back() {
       const father = this.scenes.find((scene) => scene.name === this.currentScene?.father);
       this.currentScene = father || null;
+    },
+    updateScene(property: { [key: string]: any }, id: string) {
+      fetch(`/api/scene/${id}`, {
+        method: "PUT",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(property),
+      }).then((res) => {
+        this.refresh();
+      });
     },
     createNewScene(sceneData: { [key: string]: any }) {
       fetch("/api/createScene", {
@@ -55,6 +76,7 @@ export const useSceneStore = defineStore("scene", {
       });
     },
     sortTree() {
+      this.sceneTree = []
       const nameToScene: Map<string, Scene> = new Map();
       this.scenes.forEach((scene) => {
         scene.children = [];

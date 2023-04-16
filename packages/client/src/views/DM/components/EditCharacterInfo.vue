@@ -93,10 +93,9 @@
 import { computed, PropType, reactive, ref } from "vue";
 import { createNewCharacterInfoTemplate } from "@/stores/useCharactersStore";
 import { useSceneStore } from "@/stores/useSceneStore";
-import { updateCharacterInfo, createCharacterInfo, deleteChcaracterInfo } from "@/api/updateCharacterInfo";
+import { updateCharacterInfo, createCharacterInfo, deleteChcaracterInfo } from "@/api/socket-tasks";
 import EditCell from "./EditCell.vue";
-import { CharacterInfo } from "@trpg/shared";
-import { ElMessage } from "element-plus";
+import type { CharacterInfo } from "@trpg/shared";
 import { abilityType } from "@/stores/types";
 import SpellsOfCharacter from "./SpellsOfCharacter.vue";
 

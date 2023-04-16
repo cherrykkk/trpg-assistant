@@ -1,10 +1,10 @@
-import { ObjectId } from "mongodb";
-
 export interface ClientEvents {
   "login: password": (password: string) => void;
   "operator: rollDice": (characterId: string | "DM", value: number) => void;
   "operator: createCharacterInfo": (value: CharacterInfo) => void;
   "operator: updateCharacterInfo": (characterId: string, value: Partial<CharacterInfo>) => void;
+  "operator: updateSceneInfo": (characterId: string, value: Partial<Scene>) => void;
+  "operator: updateSpellInfo": (characterId: string, value: Partial<SpellInfo>) => void;
   "operator: deleteCharacterInfo": (characterId: string) => void;
   "operator: changeHP": (characterId: string, value: number) => void;
   "operator: abilityCheck": (characterId: string, ability: string, skill: string) => void;
@@ -20,7 +20,7 @@ export interface ServerEvents {
 }
 
 export interface CharacterInfo {
-  id: String;
+  id: string;
   scope: "monster" | "NPC" | "PC";
   name: string;
   titles: string; //头衔

@@ -17,6 +17,7 @@
 <script lang="ts" setup>
 import { useSceneStore } from "@/stores/useSceneStore";
 import { PropType, reactive } from "vue";
+import { updateSceneInfo } from '@/api/socket-tasks'
 import type { Scene } from '@trpg/shared'
 
 const props = defineProps({
@@ -56,7 +57,7 @@ function updateEdit() {
     return;
   }
   if (props.scene) {
-    useSceneStore().updateScene(editedScene, props.scene.id);
+    updateSceneInfo(props.scene.id, editedScene)
   } else {
     useSceneStore().createNewScene(editedScene);
   }

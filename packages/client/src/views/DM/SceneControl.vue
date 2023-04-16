@@ -18,13 +18,10 @@
           </el-breadcrumb-item>
         </el-breadcrumb>
         <div v-if="!useSceneStore().isEditing">
-          <el-button type="primary" @click="
-            useSceneStore().isEditing = true;
-          useSceneStore().currentScene = null;
-                                                ">
+          <el-button type="primary" @click="handleClickAddButton">
             Add
           </el-button>
-          <el-button type="primary" @click="useSceneStore().isEditing = true">Edit</el-button>
+          <el-button type="primary" @click="() => useSceneStore().isEditing = true">Edit</el-button>
         </div>
       </div>
       <SceneInfo v-if="currentScene && !useSceneStore().isEditing" :scene="currentScene" />
@@ -45,6 +42,11 @@ function handleNodeClick(scene: Scene) {
 }
 
 const { currentScene } = storeToRefs(useSceneStore());
+
+function handleClickAddButton() {
+  useSceneStore().isEditing = true;
+  useSceneStore().currentScene = null;
+}
 </script>
 
 <style lang="less" scoped>
