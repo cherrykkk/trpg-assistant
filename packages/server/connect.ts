@@ -13,9 +13,14 @@ export const collections = {} as {
 
 export async function connectToMongoDB() {
   dotenv.config();
+  if (!process.env.DB_CONN_STRING  ) {
+    throw Error("未配置正确的 mongoDB 连接地址");
+  } 
+  if (!process.env.DB_NAME) {
+    throw Error("未配置正确的 mongoDB 数据库名称");
+  }
 
   const connString = process.env.DB_CONN_STRING;
-  if (!connString) throw Error("未配置正确的 mongoDB 连接地址");
   const client: mongoDB.MongoClient = new mongoDB.MongoClient(connString);
 
   await client.connect();
