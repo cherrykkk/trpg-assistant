@@ -1,6 +1,7 @@
 import { Server, Socket } from "socket.io";
 import {
   createCharacterInfo,
+  deleteCharacterInfoById,
   getAllCharactersInfo,
   getAllMessage,
   getAllScenes,
@@ -86,6 +87,11 @@ function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>) {
     const allCharactersInfo = await getAllCharactersInfo();
     socket.emit("data: allCharactersInfo", allCharactersInfo);
   });
+  socket.on("operator: deleteCharacterInfo", async (characterId) => {
+    await deleteCharacterInfoById(characterId)
+    const allCharactersInfo = await getAllCharactersInfo();
+    socket.emit("data: allCharactersInfo", allCharactersInfo);
+  })
   socket.on("operator: rollDice", async (characterId, diceType) => {
     let characterName = "DM";
     if (characterId !== "DM") {

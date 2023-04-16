@@ -32,6 +32,12 @@ export async function getCharacterInfoById(characterId: ObjectId) {
   return characterInfo as unknown as CharacterInfo;
 }
 
+export async function deleteCharacterInfoById(characterId: ObjectId) {
+  const query = { _id: characterId };
+  const result = await collections.characters.deleteOne(query);
+  return result
+}
+
 export async function getAllMessage() {
   const messages = await collections.messages.find({}).toArray();
   return messages as Message[];

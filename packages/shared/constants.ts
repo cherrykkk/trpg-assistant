@@ -5,6 +5,7 @@ export interface ClientEvents {
   "operator: rollDice": (characterId: ObjectId | "DM", value: number) => void;
   "operator: createCharacterInfo": (value: Partial<CharacterInfo>) => void;
   "operator: updateCharacterInfo": (characterId: ObjectId, value: Partial<CharacterInfo>) => void;
+  "operator: deleteCharacterInfo": (characterId: ObjectId) => void;
   "operator: changeHP": (characterId: ObjectId, value: number) => void;
   "operator: abilityCheck": (characterId: ObjectId, ability: string, skill: string) => void;
 }

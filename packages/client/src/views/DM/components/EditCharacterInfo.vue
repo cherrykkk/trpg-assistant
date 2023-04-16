@@ -109,7 +109,7 @@
 import { computed, PropType, reactive, ref } from "vue";
 import { createNewCharacterInfoTemplate } from "@/stores/useCharactersStore";
 import { useSceneStore } from "@/stores/useSceneStore";
-import { updateCharacterInfo, createCharacterInfo } from "@/api/updateCharacterInfo";
+import { updateCharacterInfo, createCharacterInfo, deleteChcaracterInfo } from "@/api/updateCharacterInfo";
 import EditCell from "./EditCell.vue";
 import { CharacterInfo } from "@trpg/shared";
 import { ElMessage } from "element-plus";
@@ -143,17 +143,16 @@ function handleCreateCharacter() {
 
 let deleteLock = true;
 function handleDeleteCharacter() {
-  ElMessage.error("暂未实现！");
-
-  // if (!props.character) return;
-  // if (deleteLock === true) {
-  //   deleteLock = false;
-  //   setTimeout(() => {
-  //     deleteLock = true;
-  //   }, 1000);
-  //   return;
-  // }
-  // emit("closeDialog");
+  if (!props.character) return;
+  if (deleteLock === true) {
+    deleteLock = false;
+    setTimeout(() => {
+      deleteLock = true;
+    }, 1000);
+    return;
+  }
+  deleteChcaracterInfo(props.character?._id)
+  emit("closeDialog");
 }
 
 function handleUpdateCharacter() {
