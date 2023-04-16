@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Scene } from "@/types";
+import { Scene } from "@trpg/shared";
 
 export const useSceneStore = defineStore("scene", {
   state: () => ({
@@ -42,17 +42,6 @@ export const useSceneStore = defineStore("scene", {
     back() {
       const father = this.scenes.find((scene) => scene.name === this.currentScene?.father);
       this.currentScene = father || null;
-    },
-    updateScene(property: { [key: string]: any }, _id: string) {
-      fetch(`/api/scene/${_id}`, {
-        method: "PUT",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(property),
-      }).then((res) => {
-        this.refresh();
-      });
     },
     createNewScene(sceneData: { [key: string]: any }) {
       fetch("/api/createScene", {

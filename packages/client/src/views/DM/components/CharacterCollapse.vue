@@ -1,6 +1,6 @@
 <template>
   <el-collapse v-model="chosenCharacter" accordion>
-    <el-collapse-item v-for="character in characters" :key="character._id" class="character-item">
+    <el-collapse-item v-for="character in characters" :key="character.id" class="character-item">
       <template #title>
         <div class="collapse-title">
           <span>{{ character.name }}</span>
@@ -16,11 +16,8 @@
       </div>
       <div>{{ character.backgroundStory }}</div>
       <el-button @click="emit('editStory', character)" size="small">编辑信息</el-button>
-      <el-button
-        @click="useCharactersStore().createCharacter(character)"
-        v-if="character.scope === 'monster'"
-        size="small"
-      >
+      <el-button @click="useCharactersStore().createCharacter(character)" v-if="character.scope === 'monster'"
+        size="small">
         复制角色
       </el-button>
       <el-divider />
@@ -40,7 +37,7 @@
 import { ref } from "vue";
 import { PropType } from "vue";
 import { useCharactersStore } from "@/stores/useCharactersStore";
-import { CharacterInfo } from "@/types";
+import { CharacterInfo } from "@trpg/shared";
 
 const chosenCharacter = ref();
 const props = defineProps({
@@ -58,15 +55,18 @@ const emit = defineEmits<{
   span {
     margin: 10px;
   }
+
   .collapse-title {
     font-size: 16px;
     font-weight: 600;
     white-space: nowrap;
   }
+
   .character-location {
     position: absolute;
     right: 20px;
   }
+
   .el-divider {
     margin: 4px;
   }

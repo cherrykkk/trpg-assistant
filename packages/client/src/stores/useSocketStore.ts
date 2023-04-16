@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
-import { Message } from "@/types";
 import { Socket } from "socket.io-client";
-import { ServerEvents, ClientEvents, SpellInfo } from "@/types";
+import type { ServerEvents, ClientEvents, SpellInfo, Message } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 
 export const useSocketStore = defineStore("socket", {

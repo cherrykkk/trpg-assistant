@@ -15,20 +15,3 @@ export const raceData = [
   { race: "半精灵", charisma: 2, intelligence: 1, speed: 30 },
   { race: "龙裔", charisma: 2, intelligence: 1, speed: 30 },
 ];
-
-export interface Spell {
-  _id: string;
-  level: number;
-  name: string;
-  派系: string;
-  施法时间: string;
-  施法距离: string;
-  法术成分: string;
-  持续时间: string;
-  专注: boolean;
-  豁免: boolean;
-  仪式: boolean;
-  施法材料: string;
-  法术说明: string;
-  法术升阶: string;
-}

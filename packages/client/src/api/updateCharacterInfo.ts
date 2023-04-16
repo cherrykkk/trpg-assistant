@@ -1,6 +1,6 @@
 import { useSocketStore } from "@/stores/useSocketStore";
 import { CharacterInfo } from "@trpg/shared";
-import type {ObjectId} from 'mongodb'
+import type { ObjectId } from 'mongodb'
 
 export function updateCharacterInfo(characterId: String, property: Partial<CharacterInfo>) {
   useSocketStore().socket.emit("operator: updateCharacterInfo", characterId, property);

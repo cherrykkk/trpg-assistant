@@ -1,15 +1,8 @@
 <template>
   <div class="tab-page">
     <div class="scene-tree-content">
-      <el-tree
-        :data="useSceneStore().sceneTree"
-        node-key="_id"
-        default-expand-all
-        :props="{ label: 'name' }"
-        :current-node-key="currentScene?._id"
-        :highlight-current="true"
-        @node-click="handleNodeClick"
-      >
+      <el-tree :data="useSceneStore().sceneTree" node-key="id" default-expand-all :props="{ label: 'name' }"
+        :current-node-key="currentScene?.id" :highlight-current="true" @node-click="handleNodeClick">
         <template #default="{ node, data }">
           <span class="custom-tree-node">
             <span>{{ node.label }}</span>
@@ -20,21 +13,15 @@
     <div class="scene-control">
       <div class="scene-header">
         <el-breadcrumb separator="/">
-          <el-breadcrumb-item
-            v-for="scene in useSceneStore().path"
-            @click="useSceneStore().currentScene = scene"
-          >
+          <el-breadcrumb-item v-for="scene in useSceneStore().path" @click="useSceneStore().currentScene = scene">
             <a>{{ scene.name }}</a>
           </el-breadcrumb-item>
         </el-breadcrumb>
         <div v-if="!useSceneStore().isEditing">
-          <el-button
-            type="primary"
-            @click="
-              useSceneStore().isEditing = true;
-              useSceneStore().currentScene = null;
-            "
-          >
+          <el-button type="primary" @click="
+            useSceneStore().isEditing = true;
+          useSceneStore().currentScene = null;
+                                                ">
             Add
           </el-button>
           <el-button type="primary" @click="useSceneStore().isEditing = true">Edit</el-button>
@@ -51,7 +38,7 @@ import { useSceneStore } from "@/stores/useSceneStore";
 import SceneInfo from "./components/SceneInfo.vue";
 import EditScene from "./components/EditScene.vue";
 import { storeToRefs } from "pinia";
-import { Scene } from "@/types";
+import type { Scene } from "@trpg/shared";
 
 function handleNodeClick(scene: Scene) {
   useSceneStore().currentScene = scene;
@@ -63,6 +50,7 @@ const { currentScene } = storeToRefs(useSceneStore());
 <style lang="less" scoped>
 .tab-page {
   display: flex;
+
   .scene-tree-content {
     width: 400px;
   }
@@ -70,11 +58,14 @@ const { currentScene } = storeToRefs(useSceneStore());
 
 :deep(.scene-control) {
   margin-top: 10px;
+
   p {
     text-align: left;
   }
+
   :deep(.character-drawer) {
     text-align: left;
+
     :deep(.el-drawer__body) {
       p {
         text-align: left;
@@ -82,6 +73,7 @@ const { currentScene } = storeToRefs(useSceneStore());
     }
   }
 }
+
 .scene-header {
   display: flex;
   justify-content: space-between;

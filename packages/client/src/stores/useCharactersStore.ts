@@ -1,5 +1,4 @@
-import { updateCharacterInfo } from "@/api/updateCharacterInfo";
-import type { CharacterInfo } from "@/types";
+import type { CharacterInfo } from "@trpg/shared";
 import { defineStore } from "pinia";
 import { useSceneStore } from "./useSceneStore";
 
@@ -11,7 +10,7 @@ export const useCharactersStore = defineStore("character", {
     chosenCharacter: null as CharacterInfo | null,
   }),
   getters: {
-    chosenCharacters(state) {},
+    chosenCharacters(state) { },
     charactersInCurrentScene(): CharacterInfo[] {
       const sceneName = useSceneStore().currentScene?.name;
       if (!sceneName) return [];
@@ -82,7 +81,7 @@ export type PlayerInfo = CharacterInfo & {};
 
 export function createNewCharacterInfoTemplate(): CharacterInfo {
   return {
-    _id: "",
+    id: "",
     scope: "monster",
     name: "",
     titles: "", //头衔

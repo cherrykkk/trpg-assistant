@@ -1,21 +1,30 @@
 import * as mongoDB from "mongodb";
 import * as dotenv from "dotenv";
+import { CharacterInfo, Message, Scene, SpellInfo } from "@trpg/shared";
+
+interface Document {
+  _id: mongoDB.ObjectId;
+}
+type CharacterDocument = Omit<CharacterInfo, "id"> & Document
+type MessageDocument = Omit<Message, "id"> & Document
+type SpellDocument = Omit<SpellInfo, "id"> & Document
+type SceneDocument = Omit<Scene, "id"> & Document
 
 // 用断言是为了在赋值前导出不会报错。逻辑上应该是能保证先赋值再调用的
 export const collections = {} as {
   games: mongoDB.Collection;
-  characters: mongoDB.Collection;
-  spells: mongoDB.Collection;
+  characters: mongoDB.Collection<CharacterDocument>;
+  spells: mongoDB.Collection<SpellDocument>;
   equipments: mongoDB.Collection;
-  scenes: mongoDB.Collection;
-  messages: mongoDB.Collection;
+  scenes: mongoDB.Collection<SceneDocument>;
+  messages: mongoDB.Collection<MessageDocument>;
 };
 
 export async function connectToMongoDB() {
   dotenv.config();
-  if (!process.env.DB_CONN_STRING  ) {
+  if (!process.env.DB_CONN_STRING) {
     throw Error("未配置正确的 mongoDB 连接地址");
-  } 
+  }
   if (!process.env.DB_NAME) {
     throw Error("未配置正确的 mongoDB 数据库名称");
   }

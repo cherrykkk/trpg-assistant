@@ -67,31 +67,15 @@
       </div>
     </div>
 
-    <el-input
-      v-model="characterInfo.appearance"
-      placeholder="角色外貌描述"
-      type="textarea"
-      :autosize="{ minRows: 2, maxRows: 4 }"
-    />
-    <el-input
-      v-model="characterInfo.backgroundStory"
-      placeholder="角色背景故事"
-      type="textarea"
-      :autosize="{ minRows: 2, maxRows: 8 }"
-    />
+    <el-input v-model="characterInfo.appearance" placeholder="角色外貌描述" type="textarea"
+      :autosize="{ minRows: 2, maxRows: 4 }" />
+    <el-input v-model="characterInfo.backgroundStory" placeholder="角色背景故事" type="textarea"
+      :autosize="{ minRows: 2, maxRows: 8 }" />
     <el-input v-model="characterInfo.location.sceneName">
       <template #prepend>所处地点</template>
       <template #append>
-        <el-select
-          v-model="characterInfo.location.sceneName"
-          placeholder="Select"
-          style="width: 115px"
-        >
-          <el-option
-            v-for="scene in useSceneStore().scenes"
-            :key="scene.name"
-            :value="scene.name"
-          />
+        <el-select v-model="characterInfo.location.sceneName" placeholder="Select" style="width: 115px">
+          <el-option v-for="scene in useSceneStore().scenes" :key="scene.name" :value="scene.name" />
         </el-select>
       </template>
     </el-input>
@@ -151,13 +135,13 @@ function handleDeleteCharacter() {
     }, 1000);
     return;
   }
-  deleteChcaracterInfo(props.character?._id)
+  deleteChcaracterInfo(props.character?.id)
   emit("closeDialog");
 }
 
 function handleUpdateCharacter() {
   if (!props.character) return;
-  updateCharacterInfo(props.character._id, uploadData.value);
+  updateCharacterInfo(props.character.id, uploadData.value);
   emit("closeDialog");
 }
 </script>
@@ -166,7 +150,8 @@ function handleUpdateCharacter() {
 .el-form-item {
   margin-bottom: 4px;
 }
-.ability-and-skills-area > div {
+
+.ability-and-skills-area>div {
   display: flex;
   align-items: center;
 }

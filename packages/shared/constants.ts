@@ -2,12 +2,12 @@ import { ObjectId } from "mongodb";
 
 export interface ClientEvents {
   "login: password": (password: string) => void;
-  "operator: rollDice": (characterId: ObjectId | "DM", value: number) => void;
-  "operator: createCharacterInfo": (value: Partial<CharacterInfo>) => void;
-  "operator: updateCharacterInfo": (characterId: ObjectId, value: Partial<CharacterInfo>) => void;
-  "operator: deleteCharacterInfo": (characterId: ObjectId) => void;
-  "operator: changeHP": (characterId: ObjectId, value: number) => void;
-  "operator: abilityCheck": (characterId: ObjectId, ability: string, skill: string) => void;
+  "operator: rollDice": (characterId: string | "DM", value: number) => void;
+  "operator: createCharacterInfo": (value: CharacterInfo) => void;
+  "operator: updateCharacterInfo": (characterId: string, value: Partial<CharacterInfo>) => void;
+  "operator: deleteCharacterInfo": (characterId: string) => void;
+  "operator: changeHP": (characterId: string, value: number) => void;
+  "operator: abilityCheck": (characterId: string, ability: string, skill: string) => void;
 }
 export interface ServerEvents {
   "data: allCharactersInfo": (data: CharacterInfo[]) => void;
@@ -20,7 +20,7 @@ export interface ServerEvents {
 }
 
 export interface CharacterInfo {
-  _id: ObjectId;
+  id: String;
   scope: "monster" | "NPC" | "PC";
   name: string;
   titles: string; //头衔
@@ -49,7 +49,7 @@ export interface CharacterInfo {
 }
 
 export interface SpellInfo {
-  _id: ObjectId;
+  id: string;
   等级: number;
   法术名称: string;
   派系: string;
@@ -74,12 +74,12 @@ export interface SpellInfo {
 }
 
 export interface Message {
-  _id: ObjectId;
+  id: string;
   content: string;
 }
 
 export interface Scene {
-  _id: ObjectId;
+  id: string;
   name: string;
   father?: string;
   description?: string;
