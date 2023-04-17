@@ -35,6 +35,7 @@ export async function updateDocument(
 
 
 export async function createCharacterInfo(characterInfo: CharacterInfo) {
+  delete characterInfo.id;
   return collections.characters.insertOne({ ...characterInfo, _id: new ObjectId() });
 }
 

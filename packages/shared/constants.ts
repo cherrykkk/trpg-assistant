@@ -42,10 +42,16 @@ export interface CharacterInfo {
   wisdom: number;
   charism: number;
   equipment: string[];
-  spells: string[];
+  spellsKnown: SpellOnCharacter[];
+  spellsPrepared: SpellOnCharacter[];
   appearance: "";
   speed: 30;
   location: { sceneName: string; x: number; y: number };
+}
+
+export interface SpellOnCharacter {
+  spellId: string;
+  reason: string;
 }
 
 export interface SpellInfo {
