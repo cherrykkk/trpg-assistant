@@ -4,37 +4,28 @@
       <el-tab-pane label="PC" name="PC">
         <CharacterCollapse
           :characters="useCharactersStore().characters.filter((e) => e.scope === 'PC')"
-          @edit-story="handleEditStory"
-          @edit-spell="handleEditSpell"
-          @edit-ability="handleEditAbility"
+          @edit-story="openEditBoard"
         />
       </el-tab-pane>
       <el-tab-pane label="NPC" name="NPC">
         <CharacterCollapse
           :characters="useCharactersStore().characters.filter((e) => e.scope === 'NPC')"
-          @edit-story="handleEditStory"
-          @edit-spell="handleEditSpell"
-          @edit-ability="handleEditAbility"
+          @edit-story="openEditBoard"
         />
       </el-tab-pane>
       <el-tab-pane label="monster" name="monster">
         <CharacterCollapse
           :characters="useCharactersStore().characters.filter((e) => e.scope === 'monster')"
-          @edit-story="handleEditStory"
-          @edit-spell="handleEditSpell"
-          @edit-ability="handleEditAbility"
+          @edit-story="openEditBoard"
         />
       </el-tab-pane>
     </el-tabs>
-    <el-button @click="isEditingCharacterStory = true">新增角色</el-button>
-    <el-dialog v-model="isEditing" fullscreen @close="closeDialog()">
-      <h1>{{ editedCharacter?.name || "新增角色" }}</h1>
-      <EditCharacterInfo
-        v-if="isEditingCharacterStory"
-        :character="editedCharacter"
-        @close-dialog="closeDialog"
-      />
-    </el-dialog>
+    <el-button @click="() => openEditBoard(null)">新增角色</el-button>
+    <EditCharacterInfo
+      v-if="isEditing"
+      :character="editedCharacter"
+      @close-dialog="closeEditBoard"
+    />
   </div>
 </template>
 
@@ -42,39 +33,21 @@
 import { useCharactersStore } from "@/stores/useCharactersStore";
 import EditCharacterInfo from "./components/EditCharacterInfo.vue";
 import CharacterCollapse from "./components/CharacterCollapse.vue";
-import { ref, watchEffect } from "vue";
+import { ref } from "vue";
 import { CharacterInfo } from "@trpg/shared";
 
 const characterScope = ref<"star" | CharacterInfo["scope"]>("PC");
 
-const isEditingSpell = ref(false);
-const isEditingCharacterStory = ref(false);
-const isEditingAbility = ref(false);
-
 const editedCharacter = ref<CharacterInfo | null>(null);
 const isEditing = ref(false);
-watchEffect(() => {
-  isEditing.value = isEditingSpell.value || isEditingCharacterStory.value || isEditingAbility.value;
-});
 
-function closeDialog() {
-  isEditingSpell.value = false;
-  isEditingCharacterStory.value = false;
-  isEditingAbility.value = false;
+function openEditBoard(c: CharacterInfo | null) {
+  editedCharacter.value = c;
+  isEditing.value = true;
+}
+function closeEditBoard() {
+  isEditing.value = false;
   editedCharacter.value = null;
-}
-
-function handleEditStory(character: CharacterInfo) {
-  isEditingCharacterStory.value = true;
-  editedCharacter.value = character;
-}
-function handleEditSpell(character: CharacterInfo) {
-  isEditingSpell.value = true;
-  editedCharacter.value = character;
-}
-function handleEditAbility(character: CharacterInfo) {
-  isEditingAbility.value = true;
-  editedCharacter.value = character;
 }
 </script>
 

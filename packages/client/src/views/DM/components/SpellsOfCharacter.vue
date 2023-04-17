@@ -6,11 +6,7 @@
           :show-description="spellIdToShowDescription.includes(s.spellId)"
           @switch-description="handleSwitchDescription" />
         <div v-if="spellIdToShowDescription.includes(s.spellId)" class="spell-on-character-info">
-          <div @click="() => handleEditReason(s.spellId)" class="reason">
-            来源：<el-input size="small" v-if="isEditingReasonOfSpellId === s.spellId" v-model="s.reason" id="reason_input"
-              @blur="() => isEditingReasonOfSpellId = null" style="display: inline" />
-            <span v-else>{{ s.reason }}</span>
-          </div>
+          <TapToEditDescription v-model="s.reason" />
           <div class="delete-button" @click="() => handleDeleteSpell(s.spellId)">-</div>
         </div>
       </div>
@@ -37,6 +33,7 @@ import { PropType, computed, nextTick, ref } from "vue";
 import { CharacterInfo } from "@trpg/shared";
 import SpellItem from "./SpellItem.vue";
 import { useSocketStore } from "@/stores/useSocketStore";
+import TapToEditDescription from "./TapToEditDescription.vue";
 
 const props = defineProps({
   character: {
@@ -138,13 +135,9 @@ function getSpellInfoById(spellId: string) {
     display: flex;
     justify-content: space-between;
     margin: 2px;
-    line-height: 26px;
+    line-height: 24px;
   }
 
-  .reason {
-    cursor: pointer;
-    color: #999;
-  }
 }
 
 .spells-in-database {
@@ -158,7 +151,7 @@ function getSpellInfoById(spellId: string) {
 .delete-button {
   background-color: #e18989;
   color: white;
-  width: 26px;
+  width: 24px;
   border-radius: 50%;
 }
 

@@ -16,18 +16,16 @@
       </div>
       <div>{{ character.backgroundStory }}</div>
       <el-button @click="emit('editStory', character)" size="small">编辑信息</el-button>
-      <el-button @click="useCharactersStore().createCharacter(character)" v-if="character.scope === 'monster'"
-        size="small">
+      <el-button
+        @click="() => copyCharacter(character)"
+        v-if="character.scope === 'monster'"
+        size="small"
+      >
         复制角色
       </el-button>
       <el-divider />
       <div>
         <span v-for="item in character.equipment">{{ item }}</span>
-      </div>
-      <el-divider />
-      <div>
-        <span v-for="item in character.spells">{{ item }}</span>
-        <el-button @click="emit('editSpell', character)" size="small">详细</el-button>
       </div>
     </el-collapse-item>
   </el-collapse>
@@ -36,8 +34,8 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { PropType } from "vue";
-import { useCharactersStore } from "@/stores/useCharactersStore";
-import { CharacterInfo } from "@trpg/shared";
+import { copyCharacter } from "@/utils/index";
+import type { CharacterInfo } from "@trpg/shared";
 
 const chosenCharacter = ref();
 const props = defineProps({

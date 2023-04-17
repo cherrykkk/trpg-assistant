@@ -26,57 +26,6 @@ export const useCharactersStore = defineStore("character", {
   },
 });
 
-// export class Character {
-//   _id = "";
-//   scope = "monster";
-//   name = "";
-//   titles = ""; //头衔
-//   alignment = "";
-//   sex = "";
-//   class = ""; //职业
-//   race = "";
-//   subRace = ""; //亚种
-//   currentHP = 0;
-//   maxHP = 0;
-//   力量 = 0;
-//   敏捷 = 0;
-//   体质 = 0;
-//   智力 = 0;
-//   感知 = 0;
-//   魅力 = 0;
-//   equipment = [] as string[];
-//   spells = [] as string[];
-//   background = "";
-//   location = "";
-//   x = 1;
-//   y = 1;
-//   appearance = "";
-//   speed = 30;
-//   技能熟练项 = [] as string[];
-//   experience = 0;
-//   [key: string]: any;
-
-//   constructor(characterData: { [key: string]: any }) {
-//     for (let key in characterData) {
-//       if (this[key]) {
-//         this[key] = characterData[key];
-//       }
-//     }
-//   }
-
-//   updateCharacter(property: { [key: string]: any }) {
-//     fetch(`/api/character/${this._id}`, {
-//       method: "PUT",
-//       headers: {
-//         "content-type": "application/json",
-//       },
-//       body: JSON.stringify(property),
-//     }).then((res) => {
-//       this.init();
-//     });
-//   }
-// }
-
 export type PlayerInfo = CharacterInfo & {};
 
 export function createNewCharacterInfoTemplate(): CharacterInfo {
