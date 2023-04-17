@@ -10,7 +10,7 @@ export async function getUserAccountInfo(password: string) {
 /** character */
 export async function getAllCharactersInfo() {
   const players = await collections.characters.find({}).toArray();
-  return transformID(players) as CharacterInfo[]
+  return transformID(players) as CharacterInfo[];
 }
 
 export async function updateDocument(
@@ -19,20 +19,17 @@ export async function updateDocument(
   document: Partial<CharacterInfo> | Partial<Scene>
 ) {
   delete document.id;
-  let targetCollection
-  if (database === 'characterInfo') {
-    targetCollection = collections.characters
-  } else if (database === 'sceneInfo') {
-    targetCollection = collections.scenes
-  } else if (database === 'spellInfo') {
-    targetCollection = collections.spells
+  let targetCollection;
+  if (database === "characterInfo") {
+    targetCollection = collections.characters;
+  } else if (database === "sceneInfo") {
+    targetCollection = collections.scenes;
+  } else if (database === "spellInfo") {
+    targetCollection = collections.spells;
   }
 
   return targetCollection.updateOne({ _id: new ObjectId(id) }, { $set: document });
 }
-
-
-
 
 export async function createCharacterInfo(characterInfo: CharacterInfo) {
   delete characterInfo.id;
@@ -49,7 +46,7 @@ export async function getCharacterInfoById(characterId: string) {
 export async function deleteCharacterInfoById(characterId: string) {
   const query = { _id: new ObjectId(characterId) };
   const result = await collections.characters.deleteOne(query);
-  return result
+  return result;
 }
 
 /** message */
@@ -79,12 +76,26 @@ export function rollDice(diceType: number) {
   return Math.ceil(Math.random() * diceType);
 }
 
-function transformID<T extends { _id: ObjectId }>(serverData: T[]): (T & { id: string })[] {
-  const clientData = serverData.map(e => {
-    const newE = { ...e, id: e._id.toString() }
-    delete newE._id
-    return newE
+export async function changeHP(characterId: string, value: number) {
+  const characterList = await getAllCharactersInfo();
+  const character = characterList.find((e) => e.id === characterId);
+  if (!character) {
+    console.log(`error: characterId ${characterId} not exist`);
+    return;
+  }
 
-  })
-  return clientData
+  const previousValue = character.currentHP;
+  character.currentHP += value;
+  const message = `${character.name}的HP改变了：${previousValue} -> ${character.currentHP}`;
+  writeMessage(message);
+  return message;
+}
+
+function transformID<T extends { _id: ObjectId }>(serverData: T[]): (T & { id: string })[] {
+  const clientData = serverData.map((e) => {
+    const newE = { ...e, id: e._id.toString() };
+    delete newE._id;
+    return newE;
+  });
+  return clientData;
 }

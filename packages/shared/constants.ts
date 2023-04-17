@@ -1,11 +1,17 @@
 export interface ClientEvents {
   "login: password": (password: string) => void;
   "operator: rollDice": (characterId: string | "DM", value: number) => void;
+  // create
   "operator: createCharacterInfo": (value: CharacterInfo) => void;
+  "operator: createSceneInfo": (value: Scene) => void;
+  // update
   "operator: updateCharacterInfo": (characterId: string, value: Partial<CharacterInfo>) => void;
   "operator: updateSceneInfo": (characterId: string, value: Partial<Scene>) => void;
   "operator: updateSpellInfo": (characterId: string, value: Partial<SpellInfo>) => void;
+  // delete
   "operator: deleteCharacterInfo": (characterId: string) => void;
+  "operator: deleteSceneInfo": (characterId: string) => void;
+  // actions with system message
   "operator: changeHP": (characterId: string, value: number) => void;
   "operator: abilityCheck": (characterId: string, ability: string, skill: string) => void;
 }

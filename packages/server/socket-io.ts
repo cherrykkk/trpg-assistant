@@ -82,31 +82,31 @@ function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>) {
     socket.emit("data: allCharactersInfo", allCharactersInfo);
   });
   socket.on("operator: updateCharacterInfo", async (characterId, characterInfo) => {
-    const result = await updateDocument('characterInfo', characterId, characterInfo);
+    const result = await updateDocument("characterInfo", characterId, characterInfo);
 
     const allCharactersInfo = await getAllCharactersInfo();
     socket.emit("data: allCharactersInfo", allCharactersInfo);
   });
 
   socket.on("operator: updateSceneInfo", async (id, data) => {
-    await updateDocument('sceneInfo', id, data)
+    await updateDocument("sceneInfo", id, data);
 
     const allScenes = await getAllScenes();
     socket.emit("data: allScenes", allScenes);
-  })
+  });
 
   socket.on("operator: updateSpellInfo", async (id, data) => {
-    await updateDocument('spellInfo', id, data)
+    await updateDocument("spellInfo", id, data);
 
     const allSpellInfo = await getAllSpellInfo();
     socket.emit("data: allSpellInfo", allSpellInfo);
-  })
+  });
 
   socket.on("operator: deleteCharacterInfo", async (characterId) => {
-    await deleteCharacterInfoById(characterId)
+    await deleteCharacterInfoById(characterId);
     const allCharactersInfo = await getAllCharactersInfo();
     socket.emit("data: allCharactersInfo", allCharactersInfo);
-  })
+  });
 
   socket.on("operator: rollDice", async (characterId, diceType) => {
     let characterName = "DM";
