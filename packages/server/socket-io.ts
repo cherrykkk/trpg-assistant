@@ -121,4 +121,11 @@ function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>) {
       io.emit("data: allMessage", messages);
     });
   });
+
+  socket.on("message: sendMessage", (message) => {
+    writeMessage(message);
+    getAllMessage().then((messages) => {
+      io.emit("data: allMessage", messages);
+    });
+  });
 }

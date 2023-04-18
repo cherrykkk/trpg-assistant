@@ -68,7 +68,7 @@
           </el-checkbox-group>
         </div>
         <div>
-          <EditCell v-model="characterInfo.charism" prefix="魅力" />
+          <EditCell v-model="characterInfo.charisma" prefix="魅力" />
           <el-checkbox-group v-model="characterInfo.技能熟练项">
             <el-checkbox v-for="skill in abilityType.魅力" :label="skill">
               {{ skill }}

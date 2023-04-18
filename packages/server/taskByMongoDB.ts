@@ -76,20 +76,6 @@ export function rollDice(diceType: number) {
   return Math.ceil(Math.random() * diceType);
 }
 
-export async function changeHP(characterId: string, value: number) {
-  const characterList = await getAllCharactersInfo();
-  const character = characterList.find((e) => e.id === characterId);
-  if (!character) {
-    console.log(`error: characterId ${characterId} not exist`);
-    return;
-  }
-
-  const previousValue = character.currentHP;
-  character.currentHP += value;
-  const message = `${character.name}的HP改变了：${previousValue} -> ${character.currentHP}`;
-  writeMessage(message);
-  return message;
-}
 
 function transformID<T extends { _id: ObjectId }>(serverData: T[]): (T & { id: string })[] {
   const clientData = serverData.map((e) => {

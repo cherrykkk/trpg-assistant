@@ -18,5 +18,9 @@ export function createCharacterInfo(data: CharacterInfo) {
 }
 
 export function deleteChcaracterInfo(characterId: string) {
-  useSocketStore().socket.emit("operator: deleteCharacterInfo", characterId)
+  useSocketStore().socket.emit("operator: deleteCharacterInfo", characterId);
+}
+
+export function sendMessage(message: string) {
+  useSocketStore().socket.emit("message: sendMessage", message);
 }

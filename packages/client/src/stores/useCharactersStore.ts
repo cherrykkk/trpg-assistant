@@ -10,7 +10,7 @@ export const useCharactersStore = defineStore("character", {
     chosenCharacter: null as CharacterInfo | null,
   }),
   getters: {
-    chosenCharacters(state) { },
+    chosenCharacters(state) {},
     charactersInCurrentScene(): CharacterInfo[] {
       const sceneName = useSceneStore().currentScene?.name;
       if (!sceneName) return [];
@@ -50,12 +50,13 @@ export function createNewCharacterInfoTemplate(): CharacterInfo {
     constitution: 0,
     intelligence: 0,
     wisdom: 0,
-    charism: 0,
+    charisma: 0,
     equipment: [],
     spellsKnown: [],
     spellsPrepared: [],
     appearance: "",
     speed: 30,
-    location: { sceneName: "", x: 0, y: 0 },
+    location: { sceneName: "", x: 1, y: 1 },
+    currentInitiative: 0,
   };
 }

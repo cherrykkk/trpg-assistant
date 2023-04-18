@@ -56,7 +56,7 @@
         </el-checkbox-group>
       </div>
       <div>
-        <InfoCell v-model="characterInfo.charism" prefix="魅力" />
+        <InfoCell v-model="characterInfo.charisma" prefix="魅力" />
         <el-checkbox-group v-model="characterInfo.技能熟练项">
           <el-checkbox v-for="skill in abilityType.魅力" :label="skill">
             {{ skill }}
@@ -65,15 +65,31 @@
       </div>
     </div>
 
-    <el-input v-model="characterInfo.appearance" placeholder="角色外貌描述" type="textarea"
-      :autosize="{ minRows: 2, maxRows: 4 }" />
-    <el-input v-model="characterInfo.backgroundStory" placeholder="角色背景故事" type="textarea"
-      :autosize="{ minRows: 2, maxRows: 8 }" />
+    <el-input
+      v-model="characterInfo.appearance"
+      placeholder="角色外貌描述"
+      type="textarea"
+      :autosize="{ minRows: 2, maxRows: 4 }"
+    />
+    <el-input
+      v-model="characterInfo.backgroundStory"
+      placeholder="角色背景故事"
+      type="textarea"
+      :autosize="{ minRows: 2, maxRows: 8 }"
+    />
     <el-input v-model="characterInfo.location.sceneName">
       <template #prepend>所处地点</template>
       <template #append>
-        <el-select v-model="characterInfo.location.sceneName" placeholder="Select" style="width: 115px">
-          <el-option v-for="scene in useSceneStore().scenes" :key="scene.name" :value="scene.name" />
+        <el-select
+          v-model="characterInfo.location.sceneName"
+          placeholder="Select"
+          style="width: 115px"
+        >
+          <el-option
+            v-for="scene in useSceneStore().scenes"
+            :key="scene.name"
+            :value="scene.name"
+          />
         </el-select>
       </template>
     </el-input>
@@ -90,7 +106,7 @@ import { createNewCharacterInfoTemplate } from "@/stores/useCharactersStore";
 import { useSceneStore } from "@/stores/useSceneStore";
 import { updateCharacterInfo, createCharacterInfo } from "@/api/socket-tasks";
 import InfoCell from "./components/InfoCell.vue";
-import { CharacterInfo } from "@/types";
+import { CharacterInfo } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 import { abilityType } from "@/stores/types";
 
@@ -104,7 +120,7 @@ defineProps({
   margin-bottom: 4px;
 }
 
-.ability-and-skills-area>div {
+.ability-and-skills-area > div {
   display: flex;
   align-items: center;
 }

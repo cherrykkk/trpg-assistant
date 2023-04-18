@@ -5,7 +5,7 @@ import { useSceneStore } from "@/stores/useSceneStore";
 import { useCharactersStore } from "@/stores/useCharactersStore";
 
 export function createSocketAndInitAbility(password: string) {
-  const socket: Socket<ServerEvents, ClientEvents> = io("localhost:3333");
+  const socket: Socket<ServerEvents, ClientEvents> = io("192.168.1.17:3333");
 
   socket.on("connect", () => {
     socket.emit("login: password", password);

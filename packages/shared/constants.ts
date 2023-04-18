@@ -12,7 +12,7 @@ export interface ClientEvents {
   "operator: deleteCharacterInfo": (characterId: string) => void;
   "operator: deleteSceneInfo": (characterId: string) => void;
   // actions with system message
-  "operator: changeHP": (characterId: string, value: number) => void;
+  "message: sendMessage": (message: string) => void;
   "operator: abilityCheck": (characterId: string, ability: string, skill: string) => void;
 }
 export interface ServerEvents {
@@ -30,7 +30,7 @@ export interface CharacterInfo {
   scope: "monster" | "NPC" | "PC";
   name: string;
   titles: string; //头衔
-  alignment: "";
+  alignment: string;
   sex: string;
   age: number;
   class: string; //职业
@@ -40,19 +40,20 @@ export interface CharacterInfo {
   maxHP: number;
   backgroundStory: string;
   技能熟练项: string[];
-  experience: 0;
+  experience: number;
   strength: number;
   dexterity: number;
   constitution: number;
   intelligence: number;
   wisdom: number;
-  charism: number;
+  charisma: number;
   equipment: string[];
   spellsKnown: SpellOnCharacter[];
   spellsPrepared: SpellOnCharacter[];
-  appearance: "";
-  speed: 30;
+  appearance: string;
+  speed: number;
   location: { sceneName: string; x: number; y: number };
+  currentInitiative: number;
 }
 
 export interface SpellOnCharacter {
@@ -100,3 +101,34 @@ export interface Scene {
   picture?: string;
   children: Scene[];
 }
+
+// export const AbilityType = {
+//   力量: ["运动"],
+//   敏捷: ["体操", "巧手", "隐匿"],
+//   体质: [],
+//   智力: ["奥秘", "历史", "调查", "自然", "宗教"],
+//   感知: ["驯兽", "洞悉", "医药", "察觉", "求生"],
+//   魅力: ["欺瞒", "威吓", "表演", "游说"],
+// };
+
+export const AbilityType = {
+  strength: ["运动"],
+  dexterity: ["体操", "巧手", "隐匿"],
+  constitution: [],
+  intelligence: ["奥秘", "历史", "调查", "自然", "宗教"],
+  wisdom: ["驯兽", "洞悉", "医药", "察觉", "求生"],
+  charisma: ["欺瞒", "威吓", "表演", "游说"],
+};
+
+export const AbilityPropertyList = Object.keys(AbilityType) as AbilityProperty[];
+
+export type AbilityProperty = keyof typeof AbilityType;
+
+export const AbilityPropertyToName = {
+  strength: "力量",
+  dexterity: "敏捷",
+  constitution: "体质",
+  intelligence: "智力",
+  wisdom: "感知",
+  charisma: "魅力",
+};
