@@ -58,5 +58,6 @@ export function createNewCharacterInfoTemplate(): CharacterInfo {
     speed: 30,
     location: { sceneName: "", x: 1, y: 1 },
     currentInitiative: 0,
+    backpack: [],
   };
 }

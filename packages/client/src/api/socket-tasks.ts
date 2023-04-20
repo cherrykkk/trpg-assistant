@@ -17,7 +17,7 @@ export function createCharacterInfo(data: CharacterInfo) {
   useSocketStore().socket.emit("operator: createCharacterInfo", data);
 }
 
-export function deleteChcaracterInfo(characterId: string) {
+export function deleteCharacterInfo(characterId: string) {
   useSocketStore().socket.emit("operator: deleteCharacterInfo", characterId);
 }
 

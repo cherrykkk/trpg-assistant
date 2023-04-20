@@ -1,7 +1,7 @@
 <template>
   <div class="edit-character-info" v-if="characterInfo">
     <div class="page-header">
-      <h3 style="display: inline">{{ props.character?.name || "新增角色" }}</h3>
+      <h3 style="display: inline">{{ character?.name || "新增角色" }}</h3>
       <el-button @click="() => emit('closeDialog')" v-if="!character">取消</el-button>
       <el-button @click="handleCreateCharacter" v-if="!character">确认创建新角色</el-button>
       <el-button @click="handleDeleteCharacter" v-if="character" type="danger"
@@ -106,7 +106,9 @@
         </template>
       </el-input>
     </div>
-    <EditCell prefix="装备" />
+    <div class="backpack-container">
+      <BackpackContent :character-info="characterInfo" />
+    </div>
     <SpellsOfCharacter v-if="character" :character="character" />
   </div>
 </template>
@@ -115,11 +117,12 @@
 import { computed, PropType, reactive, ref } from "vue";
 import { createNewCharacterInfoTemplate } from "@/stores/useCharactersStore";
 import { useSceneStore } from "@/stores/useSceneStore";
-import { updateCharacterInfo, createCharacterInfo, deleteChcaracterInfo } from "@/api/socket-tasks";
+import { updateCharacterInfo, createCharacterInfo, deleteCharacterInfo } from "@/api/socket-tasks";
 import EditCell from "./EditCell.vue";
 import type { CharacterInfo } from "@trpg/shared";
 import { abilityType } from "@/stores/types";
 import SpellsOfCharacter from "./SpellsOfCharacter.vue";
+import BackpackContent from "@/views/components/BackpackContent.vue";
 
 const props = defineProps({
   character: {
@@ -156,7 +159,7 @@ function handleDeleteCharacter() {
     }, 1000);
     return;
   }
-  deleteChcaracterInfo(props.character?.id);
+  deleteCharacterInfo(props.character?.id);
   emit("closeDialog");
 }
 
@@ -197,5 +200,9 @@ function handleUpdateCharacter() {
 .ability-and-skills-area > div {
   display: flex;
   align-items: center;
+}
+
+.backpack-container {
+  margin: 10px 0;
 }
 </style>

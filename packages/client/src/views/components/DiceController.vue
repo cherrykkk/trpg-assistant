@@ -14,6 +14,6 @@ const emit = defineEmits<{ (event: "doRollDice", diceType: number): void }>();
 
 function rollDice(diceType: number) {
   emit("doRollDice", diceType);
-  useSocketStore().socket.emit("operator: rollDice", -1, diceType);
+  useSocketStore().socket.emit("operator: rollDice", "DM", diceType);
 }
 </script>

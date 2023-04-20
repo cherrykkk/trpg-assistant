@@ -54,6 +54,15 @@ export interface CharacterInfo {
   speed: number;
   location: { sceneName: string; x: number; y: number };
   currentInitiative: number;
+  backpack: ItemInBackpack[];
+}
+
+export interface ItemInBackpack {
+  id: number;
+  name: string;
+  description: string;
+  ounce: number;
+  pound: number;
 }
 
 export interface SpellOnCharacter {
