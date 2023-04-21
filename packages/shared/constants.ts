@@ -110,7 +110,17 @@ export interface Scene {
   areaX?: number;
   areaY?: number;
   picture?: string;
+  items: SceneItem[];
   children: Scene[];
+}
+
+export interface SceneItem {
+  id: number;
+  name: string;
+  description: string;
+  points: { x: number; y: number }[];
+  showForPlayer: boolean;
+  backgroundColor: string;
 }
 
 // export const AbilityType = {

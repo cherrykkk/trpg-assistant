@@ -36,7 +36,7 @@
 <script lang="ts" setup>
 import { PropType, computed, nextTick, ref } from "vue";
 import { CharacterInfo } from "@trpg/shared";
-import SpellItem from "./SpellItem.vue";
+import SpellItem from "@/views/components/SpellItem.vue";
 import { useSocketStore } from "@/stores/useSocketStore";
 import TapToEditDescription from "./TapToEditDescription.vue";
 

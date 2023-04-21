@@ -1,0 +1,97 @@
+<template>
+  <div
+    class="resizable-panel"
+    :style="{ width: `${currentWidth}px`, 'user-select': startPoint ? 'none' : 'auto' }"
+  >
+    <div class="slot-container">
+      <slot></slot>
+    </div>
+    <div
+      class="resize-handler"
+      @mousedown="handleOnMouseDown"
+      :style="{
+        right: resizeDirection === 'left' ? 'auto' : '0',
+        left: resizeDirection === 'left' ? '0' : 'auto',
+      }"
+    ></div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { PropType, ref } from "vue";
+
+const props = defineProps({
+  defaultWidth: {
+    type: Number,
+    default: 300,
+  },
+  maxWidth: {
+    type: Number,
+    default: 400,
+  },
+  minWidth: {
+    type: Number,
+    default: 200,
+  },
+  resizeDirection: {
+    type: String as PropType<"left" | "right">,
+    default: "right",
+  },
+});
+
+let startPoint: { x: number; y: number } | null = null;
+
+function handleOnMouseDown(e: MouseEvent) {
+  startPoint = e;
+}
+function handleOnMouseMove(e: MouseEvent) {
+  if (startPoint) {
+    const offset = e.x - startPoint.x;
+    if (props.resizeDirection === "right") {
+      currentWidth.value += offset;
+    } else {
+      currentWidth.value -= offset;
+    }
+    if (currentWidth.value < props.minWidth) {
+      currentWidth.value = props.minWidth;
+    }
+    currentWidth.value = Math.max(props.minWidth, currentWidth.value);
+    currentWidth.value = Math.min(props.maxWidth, currentWidth.value);
+
+    startPoint = e;
+  }
+}
+function handleOnMouseUp(e: MouseEvent) {
+  if (startPoint) {
+    startPoint = null;
+  }
+}
+
+addEventListener("mousemove", handleOnMouseMove);
+addEventListener("mouseup", handleOnMouseUp);
+
+const currentWidth = ref(props.defaultWidth);
+</script>
+
+<style lang="less" scoped>
+.resizable-panel {
+  position: relative;
+  z-index: 100;
+  display: flex;
+  flex-shrink: 0;
+  background-color: white;
+  overflow: hidden;
+  .slot-container {
+    width: 100%;
+  }
+  .resize-handler {
+    flex-shrink: 0;
+    width: 2px;
+    height: 100%;
+    border-right: 2px solid #ccc;
+    cursor: ew-resize;
+    position: absolute;
+    right: 0;
+  }
+}
+</style>

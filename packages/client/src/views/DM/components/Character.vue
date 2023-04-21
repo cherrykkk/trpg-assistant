@@ -1,6 +1,5 @@
 <template>
   <div v-if="character" class="character-in-combat">
-    <div>{{ character.name }}</div>
     <div>
       <div>HP: {{ character.currentHP }} / {{ character.maxHP }}</div>
       <el-input-number v-model="changeOfHP" size="small"></el-input-number>
@@ -34,13 +33,11 @@
 import { PropType, ref } from "vue";
 import AbilityCheck from "./AbilityCheck.vue";
 import SpellTag from "@/views/components/SpellTag.vue";
-import { ElMessage } from "element-plus";
 import type { CharacterInfo, Scene } from "@trpg/shared";
 import { updateCharacterInfo, sendMessage } from "@/api/socket-tasks";
 
 const props = defineProps({
   character: { type: Object as PropType<CharacterInfo>, required: true },
-  scene: { type: Object as PropType<Scene>, required: true },
 });
 
 const changeOfHP = ref(0);
@@ -67,17 +64,11 @@ function handleSubmitChangeInitiative() {
 function move(dx: number, dy: number) {
   const _x = props.character.location.x;
   const _y = props.character.location.y;
-  const { areaX, areaY } = props.scene;
 
   const x = _x + dx;
   const y = _y + dy;
 
-  console.log(x, y);
-  if (areaX && areaY && x > 0 && y > 0 && x <= areaX && y <= areaY) {
-    moveAndUpdateInfo(x, y);
-  } else {
-    ElMessage("不可行走");
-  }
+  moveAndUpdateInfo(x, y);
 }
 
 function resetPosition() {

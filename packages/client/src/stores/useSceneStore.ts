@@ -6,6 +6,7 @@ export const useSceneStore = defineStore("scene", {
     scenes: [] as Scene[],
     currentScene: null as null | Scene,
     isEditing: false,
+    isCombating: false,
     sceneTree: [] as Scene[],
   }),
   getters: {
@@ -39,12 +40,12 @@ export const useSceneStore = defineStore("scene", {
       if (!this.currentScene) {
         this.currentScene = this.scenes[0];
       } else {
-        const currentSceneId = this.currentScene.id
+        const currentSceneId = this.currentScene.id;
         if (this.currentScene) {
-          this.currentScene = this.scenes.find(e => e.id === currentSceneId) ?? null
+          this.currentScene = this.scenes.find((e) => e.id === currentSceneId) ?? null;
 
           if (!this.currentScene) {
-            this.currentScene = this.scenes[0]
+            this.currentScene = this.scenes[0];
           }
         }
       }
@@ -76,7 +77,7 @@ export const useSceneStore = defineStore("scene", {
       });
     },
     sortTree() {
-      this.sceneTree = []
+      this.sceneTree = [];
       const nameToScene: Map<string, Scene> = new Map();
       this.scenes.forEach((scene) => {
         scene.children = [];

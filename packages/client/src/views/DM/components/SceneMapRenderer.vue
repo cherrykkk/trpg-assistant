@@ -1,13 +1,5 @@
 <template>
   <div v-if="currentScene">
-    <div class="page-header">
-      <h1>{{ currentScene.name }}</h1>
-      <div>
-        <span> x:<el-input-number size="small" v-model="currentScene.areaX" /> </span>
-        <span> y:<el-input-number size="small" v-model="currentScene.areaY" /> </span>
-        <el-button size="small" @click="handleChangeAreaSize">提交修改</el-button>
-      </div>
-    </div>
     <div class="combat-control">
       <div class="map-container">
         <div
@@ -21,21 +13,22 @@
         >
           {{ c.name }}
         </div>
+        <div
+          v-for="item in currentScene.items"
+          :key="item.id"
+          :style="{
+            'grid-column': item.points[0].x,
+            'grid-row': item.points[0].y,
+            fontSize: `${30 / item.name.length}px`,
+            backgroundColor: item.backgroundColor,
+          }"
+        >
+          {{ item.name }}
+        </div>
         <!-- <img
-        v-if="useSceneStore().currentScene?.picture"
-        :src="useSceneStore().currentScene?.picture"
-      /> -->
-      </div>
-      <div class="characters-content">
-        <el-tabs tab-position="right" class="character-tabs">
-          <el-tab-pane
-            v-for="c in useCharactersStore().charactersInCurrentScene"
-            :key="c.id"
-            :label="c.name"
-          >
-            <CharacterInCombat :character="c" :scene="currentScene" />
-          </el-tab-pane>
-        </el-tabs>
+          v-if="useSceneStore().currentScene?.picture"
+          :src="useSceneStore().currentScene?.picture"
+        /> -->
       </div>
     </div>
   </div>
@@ -44,18 +37,10 @@
 <script lang="ts" setup>
 import { useCharactersStore } from "@/stores/useCharactersStore";
 import { useSceneStore } from "@/stores/useSceneStore";
-import CharacterInCombat from "./components/CharacterInCombat.vue";
 import { storeToRefs } from "pinia";
 import { computed } from "vue";
-import { updateSceneInfo } from "@/api/socket-tasks";
 
 const { currentScene } = storeToRefs(useSceneStore());
-
-function handleChangeAreaSize() {
-  if (!currentScene.value) return;
-
-  updateSceneInfo(currentScene.value.id, currentScene.value);
-}
 
 const areaX = computed(() => {
   return currentScene.value?.areaX || 10;

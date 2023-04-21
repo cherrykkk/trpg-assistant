@@ -1,7 +1,12 @@
 <template>
   <div>
     <el-input v-model="editedScene.name" placeholder="请输入唯一场景名" />
-    <el-input type="textarea" v-model="editedScene.description" placeholder="请输入场景描述" autosize />
+    <el-input
+      type="textarea"
+      v-model="editedScene.description"
+      placeholder="请输入场景描述"
+      autosize
+    />
     <el-upload drag :on-change="handleChangePicture" :auto-upload="false" class="picture-upload">
       <div>放入场景图</div>
     </el-upload>
@@ -17,27 +22,26 @@
 <script lang="ts" setup>
 import { useSceneStore } from "@/stores/useSceneStore";
 import { PropType, reactive } from "vue";
-import { updateSceneInfo } from '@/api/socket-tasks'
-import type { Scene } from '@trpg/shared'
+import { updateSceneInfo } from "@/api/socket-tasks";
+import type { Scene } from "@trpg/shared";
 
 const props = defineProps({
-  scene: Object as PropType<Scene>,
+  scene: Object as PropType<Scene | null>,
 });
 
-const editedScene = reactive<{ [key: string]: any }>({
-  picture: null,
-  name: null,
-  description: null,
-  father: null,
-  areaX: null,
-  areaY: null,
-});
-
-if (props.scene) {
-  for (let e in editedScene) {
-    if (props.scene[e] && e !== "id") editedScene[e] = props.scene[e];
+const editedScene = reactive<Scene>(
+  props.scene || {
+    id: "",
+    picture: undefined,
+    name: "",
+    description: "",
+    father: undefined,
+    areaX: 10,
+    areaY: 10,
+    items: [],
+    children: [],
   }
-}
+);
 
 function handleChangePicture(uploadFile: any) {
   const scene = useSceneStore().currentScene;
@@ -57,7 +61,7 @@ function updateEdit() {
     return;
   }
   if (props.scene) {
-    updateSceneInfo(props.scene.id, editedScene)
+    updateSceneInfo(props.scene.id, editedScene);
   } else {
     useSceneStore().createNewScene(editedScene);
   }
