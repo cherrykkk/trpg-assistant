@@ -1,11 +1,12 @@
 import { defineStore } from "pinia";
 import { Socket } from "socket.io-client";
-import type { ServerEvents, ClientEvents, SpellInfo, Message } from "@trpg/shared";
+import type { ServerEvents, ClientEvents, SpellInfo, Message, CharacterInfo } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 
 export const useSocketStore = defineStore("socket", {
   state: () => ({
     connectedSocket: null as Socket<ServerEvents, ClientEvents> | null,
+    playerCharacterInfo: null as CharacterInfo | null,
     messageList: [] as Message[],
     allSpellInfo: [] as SpellInfo[],
   }),

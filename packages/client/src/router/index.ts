@@ -6,7 +6,8 @@ const routes: Array<RouteRecordRaw> = [
     redirect: "/DM",
   },
   {
-    path: "/player",
+    path: "/player/:id",
+    name: "player",
     component: () => import("@/views/PL/index.vue"),
   },
   {

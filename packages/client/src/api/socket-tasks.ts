@@ -24,3 +24,7 @@ export function deleteCharacterInfo(characterId: string) {
 export function sendMessage(message: string) {
   useSocketStore().socket.emit("message: sendMessage", message);
 }
+
+export function signInAsPlayer(characterId: string) {
+  useSocketStore().socket.emit("signIn: signInAsPlayer", characterId);
+}

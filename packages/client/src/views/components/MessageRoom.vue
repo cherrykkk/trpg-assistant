@@ -1,5 +1,6 @@
 <template>
   <div class="message-room-vue">
+    <DiceController />
     <div class="history-area" ref="historyAreaRef">
       <div v-for="e in useSocketStore().messageList">
         {{ e.content }}
@@ -9,8 +10,9 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { onBeforeUpdate, onUpdated, ref } from "vue";
+import DiceController from "./DiceController.vue";
 import { useSocketStore } from "@/stores/useSocketStore";
-import { onBeforeUpdate, onMounted, onUpdated, ref, watch } from "vue";
 
 const historyAreaRef = ref();
 

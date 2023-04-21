@@ -37,10 +37,20 @@ export async function createCharacterInfo(characterInfo: CharacterInfo) {
 }
 
 export async function getCharacterInfoById(characterId: string) {
-  const characterInfo = await collections.characters
-    .find({ _id: new ObjectId(characterId) })
-    .toArray();
-  return characterInfo as unknown as CharacterInfo;
+  console.log(characterId);
+  try {
+    const characterInfo = await collections.characters
+      .find({ _id: new ObjectId(characterId) })
+      .toArray();
+
+    const data = transformID(characterInfo) as CharacterInfo[];
+    if (data.length) {
+      return data[0];
+    }
+  } catch (err) {
+    console.log(err);
+  }
+  return null;
 }
 
 export async function deleteCharacterInfoById(characterId: string) {
@@ -75,7 +85,6 @@ export async function getAllSpellInfo() {
 export function rollDice(diceType: number) {
   return Math.ceil(Math.random() * diceType);
 }
-
 
 function transformID<T extends { _id: ObjectId }>(serverData: T[]): (T & { id: string })[] {
   const clientData = serverData.map((e) => {

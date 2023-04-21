@@ -2,9 +2,11 @@
   <div class="spells-of-character-content">
     <div class="spells-of-character">
       <div v-for="s in spellsOnCharacter" :key="s.spellId">
-        <SpellItem :spell-info="getSpellInfoById(s.spellId)"
+        <SpellItem
+          :spell-info="getSpellInfoById(s.spellId)"
           :show-description="spellIdToShowDescription.includes(s.spellId)"
-          @switch-description="handleSwitchDescription" />
+          @switch-description="handleSwitchDescription"
+        />
         <div v-if="spellIdToShowDescription.includes(s.spellId)" class="spell-on-character-info">
           <TapToEditDescription v-model="s.reason" />
           <div class="delete-button" @click="() => handleDeleteSpell(s.spellId)">-</div>
@@ -16,10 +18,13 @@
     </div>
     <div class="spells-in-database" v-show="showSpellList">
       <div v-for="spellInfo in useSocketStore().allSpellInfo" :key="spellInfo.id">
-        <SpellItem :spell-info="spellInfo" :show-description="spellIdToShowDescription.includes(spellInfo.id)"
-          @switch-description="handleSwitchDescription" />
+        <SpellItem
+          :spell-info="spellInfo"
+          :show-description="spellIdToShowDescription.includes(spellInfo.id)"
+          @switch-description="handleSwitchDescription"
+        />
         <div v-if="spellIdToShowDescription.includes(spellInfo.id)">
-          <div v-if="spellsOnCharacter.map(e => e.spellId).includes(spellInfo.id)">
+          <div v-if="spellsOnCharacter.map((e) => e.spellId).includes(spellInfo.id)">
             该法术已存在列表中
           </div>
           <div v-else class="add-button" @click="() => handleAddSpell(spellInfo.id)">+</div>
@@ -43,47 +48,50 @@ const props = defineProps({
 });
 
 //已知法术/已准备法术
-const knownOrPrepared = ref<"known" | "prepared">("known")
+const knownOrPrepared = ref<"known" | "prepared">("known");
 
 function handleSwitchDescription(id: string) {
   if (spellIdToShowDescription.value.includes(id)) {
-    spellIdToShowDescription.value = spellIdToShowDescription.value.filter(e => e !== id)
+    spellIdToShowDescription.value = spellIdToShowDescription.value.filter((e) => e !== id);
   } else {
-    spellIdToShowDescription.value.push(id)
+    spellIdToShowDescription.value.push(id);
   }
 }
 
 function handleAddSpell(spellId: string) {
-  if (knownOrPrepared.value === 'prepared') {
-    props.character.spellsPrepared.push({ spellId, reason: '' })
+  if (knownOrPrepared.value === "prepared") {
+    props.character.spellsPrepared.push({ spellId, reason: "" });
   } else {
-    props.character.spellsKnown.push({ spellId, reason: '' })
+    props.character.spellsKnown.push({ spellId, reason: "" });
   }
 }
 
 function handleDeleteSpell(spellId: string) {
-  if (knownOrPrepared.value === 'prepared') {
-    props.character.spellsPrepared = props.character.spellsPrepared.filter(e => e.spellId !== spellId)
+  if (knownOrPrepared.value === "prepared") {
+    props.character.spellsPrepared = props.character.spellsPrepared.filter(
+      (e) => e.spellId !== spellId
+    );
   } else {
-    props.character.spellsKnown = props.character.spellsKnown.filter(e => e.spellId !== spellId)
+    props.character.spellsKnown = props.character.spellsKnown.filter((e) => e.spellId !== spellId);
   }
 }
 
-const reasonInputRef = ref()
+const reasonInputRef = ref();
 function handleEditReason(spellId: string) {
-  isEditingReasonOfSpellId.value = spellId
+  isEditingReasonOfSpellId.value = spellId;
   nextTick(() => {
-    document.getElementById("reason_input")?.focus()
-  })
+    document.getElementById("reason_input")?.focus();
+  });
 }
 
-const spellIdToShowDescription = ref<string[]>([])
+const spellIdToShowDescription = ref<string[]>([]);
 const showSpellList = ref(false);
 const isEditingReasonOfSpellId = ref<string | null>(null);
 
 const spellsOnCharacter = computed(() => {
-
-  return knownOrPrepared.value === "prepared" ? props.character.spellsPrepared : props.character.spellsKnown
+  return knownOrPrepared.value === "prepared"
+    ? props.character.spellsPrepared
+    : props.character.spellsKnown;
   // const result: { spellInfo: SpellInfo, reason: string }[] = []
   // props.character.spellsKnown.forEach(e => {
   //   const spellInfo = useSocketStore().allSpellInfo.find(spellInfo => spellInfo.id === e.spellId)
@@ -97,17 +105,16 @@ const spellsOnCharacter = computed(() => {
   //   })
   // })
   // return result
-})
+});
 
 function getSpellInfoById(spellId: string) {
-  const spellInfo = useSocketStore().allSpellInfo.find(spellInfo => spellInfo.id === spellId)
+  const spellInfo = useSocketStore().allSpellInfo.find((spellInfo) => spellInfo.id === spellId);
   if (!spellInfo) {
-    console.log(`无法找到 id 为 ${spellId} 的法术`)
-    throw `无法找到 id 为 ${spellId} 的法术`
+    console.log(`无法找到 id 为 ${spellId} 的法术`);
+    throw `无法找到 id 为 ${spellId} 的法术`;
   }
-  return spellInfo
+  return spellInfo;
 }
-
 
 // function removeSpell(spellName: string) {
 //   props.character.spells.splice(props.character.spells.indexOf(spellName), 1);
@@ -128,7 +135,7 @@ function getSpellInfoById(spellId: string) {
   overflow: auto;
 
   .switch-button {
-    margin: 20px
+    margin: 20px;
   }
 
   .spell-on-character-info {
@@ -137,7 +144,6 @@ function getSpellInfoById(spellId: string) {
     margin: 2px;
     line-height: 24px;
   }
-
 }
 
 .spells-in-database {

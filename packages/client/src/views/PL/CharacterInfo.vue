@@ -1,121 +1,110 @@
 <template>
   <div class="character-info-edit-form">
     <el-descriptions>
-      <el-description-item>
-        <InfoCell :value="characterInfo.name" prefix="姓名" />
-        <InfoCell :value="characterInfo.titles" prefix="头衔" />
-        <InfoCell :value="characterInfo.sex" prefix="性别" />
-        <InfoCell :value="characterInfo.age" prefix="年龄" />
-        <InfoCell :value="characterInfo.class" prefix="职业" />
-        <InfoCell :value="characterInfo.race" prefix="种族" />
-        <InfoCell :value="characterInfo.subRace" prefix="亚种" />
-        <InfoCell :value="characterInfo.alignment" prefix="阵营" />
-        <InfoCell :value="characterInfo.experience" prefix="经验" />
-        <InfoCell :value="characterInfo.maxHP" prefix="最大血量" />
-        <InfoCell :value="characterInfo.currentHP" prefix="当前血量" />
-      </el-description-item>
+      <el-descriptions-item label="姓名">{{ characterInfo.name }}</el-descriptions-item>
+      <el-descriptions-item label="性别">{{ characterInfo.sex }}</el-descriptions-item>
+      <el-descriptions-item label="年龄">{{ characterInfo.age }}</el-descriptions-item>
+      <el-descriptions-item label="职业">{{ characterInfo.class }}</el-descriptions-item>
+      <el-descriptions-item label="种族">{{ characterInfo.race }}</el-descriptions-item>
+      <el-descriptions-item label="亚种">{{ characterInfo.subRace }}</el-descriptions-item>
+      <el-descriptions-item label="阵营">{{ characterInfo.alignment }}</el-descriptions-item>
+      <el-descriptions-item label="经验">{{ characterInfo.experience }}</el-descriptions-item>
+      <el-descriptions-item label="速度">{{ characterInfo.speed }}</el-descriptions-item>
+      <el-descriptions-item label="最高血量">{{ characterInfo.maxHP }}</el-descriptions-item>
+      <el-descriptions-item label="当前血量">{{ characterInfo.currentHP }}</el-descriptions-item>
+      <el-descriptions-item label="力量">{{ characterInfo.strength }}</el-descriptions-item>
+      <el-descriptions-item label="敏捷">{{ characterInfo.dexterity }}</el-descriptions-item>
+      <el-descriptions-item label="体质">{{ characterInfo.constitution }}</el-descriptions-item>
+      <el-descriptions-item label="智力">{{ characterInfo.intelligence }}</el-descriptions-item>
+      <el-descriptions-item label="感知">{{ characterInfo.wisdom }}</el-descriptions-item>
+      <el-descriptions-item label="魅力">{{ characterInfo.charisma }}</el-descriptions-item>
+      <el-descriptions-item label="技能熟练项">{{ characterInfo.技能熟练项 }}</el-descriptions-item>
     </el-descriptions>
-
-    <div class="ability-and-skills-area">
-      <div>
-        <InfoCell v-model="characterInfo.strength" prefix="力量" />
-        <el-checkbox-group v-model="characterInfo.技能熟练项">
-          <el-checkbox v-for="skill in abilityType.力量" :label="skill">
-            {{ skill }}
-          </el-checkbox>
-        </el-checkbox-group>
-      </div>
-      <div>
-        <InfoCell v-model="characterInfo.dexterity" prefix="敏捷" />
-        <el-checkbox-group v-model="characterInfo.技能熟练项">
-          <el-checkbox v-for="skill in abilityType.敏捷" :label="skill">
-            {{ skill }}
-          </el-checkbox>
-        </el-checkbox-group>
-      </div>
-      <div>
-        <InfoCell v-model="characterInfo.constitution" prefix="体质" />
-        <el-checkbox-group v-model="characterInfo.技能熟练项">
-          <el-checkbox v-for="skill in abilityType.体质" :label="skill">
-            {{ skill }}
-          </el-checkbox>
-        </el-checkbox-group>
-      </div>
-      <div>
-        <InfoCell v-model="characterInfo.intelligence" prefix="智力" />
-        <el-checkbox-group v-model="characterInfo.技能熟练项">
-          <el-checkbox v-for="skill in abilityType.智力" :label="skill">{{ skill }}</el-checkbox>
-        </el-checkbox-group>
-      </div>
-      <div>
-        <InfoCell v-model="characterInfo.wisdom" prefix="感知" />
-        <el-checkbox-group v-model="characterInfo.技能熟练项">
-          <el-checkbox v-for="skill in abilityType.感知" :label="skill">
-            {{ skill }}
-          </el-checkbox>
-        </el-checkbox-group>
-      </div>
-      <div>
-        <InfoCell v-model="characterInfo.charisma" prefix="魅力" />
-        <el-checkbox-group v-model="characterInfo.技能熟练项">
-          <el-checkbox v-for="skill in abilityType.魅力" :label="skill">
-            {{ skill }}
-          </el-checkbox>
-        </el-checkbox-group>
-      </div>
-    </div>
-
-    <el-input
-      v-model="characterInfo.appearance"
-      placeholder="角色外貌描述"
-      type="textarea"
-      :autosize="{ minRows: 2, maxRows: 4 }"
-    />
-    <el-input
-      v-model="characterInfo.backgroundStory"
-      placeholder="角色背景故事"
-      type="textarea"
-      :autosize="{ minRows: 2, maxRows: 8 }"
-    />
-    <el-input v-model="characterInfo.location.sceneName">
-      <template #prepend>所处地点</template>
-      <template #append>
-        <el-select
-          v-model="characterInfo.location.sceneName"
-          placeholder="Select"
-          style="width: 115px"
-        >
-          <el-option
-            v-for="scene in useSceneStore().scenes"
-            :key="scene.name"
-            :value="scene.name"
-          />
-        </el-select>
-      </template>
-    </el-input>
+    <InfoCell prefix="物品" :text="itemsInBackpackText" />
+    <InfoCell prefix="已准备法术">
+      <SpellItem
+        v-for="e in spellsPreparedInfo"
+        :spell-info="e"
+        @switch-description="switchDescription"
+        :show-description="spellToShowDescription === e.id"
+      ></SpellItem>
+    </InfoCell>
+    <InfoCell prefix="已知法术">
+      <SpellItem
+        v-for="e in spellsKnownInfo"
+        :spell-info="e"
+        @switch-description="switchDescription"
+        :show-description="spellToShowDescription === e.id"
+      ></SpellItem>
+    </InfoCell>
+    <InfoCell prefix="外貌描述" :text="characterInfo.appearance"></InfoCell>
+    <InfoCell prefix="角色背景">
+      <p
+        style="text-align: left; margin: 10px"
+        v-for="e in characterInfo.backgroundStory.split('\n')"
+      >
+        {{ e }}
+      </p>
+    </InfoCell>
   </div>
-  <InfoCell v-model="characterInfo.speed" prefix="速度" />
-  <InfoCell prefix="技能熟练项" />
-  <InfoCell prefix="装备" />
-  <InfoCell prefix="法术" />
 </template>
 
 <script lang="ts" setup>
-import { computed, PropType, reactive, ref } from "vue";
-import { createNewCharacterInfoTemplate } from "@/stores/useCharactersStore";
-import { useSceneStore } from "@/stores/useSceneStore";
-import { updateCharacterInfo, createCharacterInfo } from "@/api/socket-tasks";
+import { PropType, computed, ref } from "vue";
 import InfoCell from "./components/InfoCell.vue";
-import { CharacterInfo } from "@trpg/shared";
-import { ElMessage } from "element-plus";
-import { abilityType } from "@/stores/types";
+import { CharacterInfo, SpellInfo } from "@trpg/shared";
+import SpellItem from "../components/SpellItem.vue";
+import { useSocketStore } from "@/stores/useSocketStore";
 
-defineProps({
+const props = defineProps({
   characterInfo: { type: Object as PropType<CharacterInfo>, required: true },
 });
+
+const itemsInBackpackText = computed(() => {
+  console.log(props.characterInfo.backpack.map((e) => e.name));
+  return props.characterInfo.backpack.map((e) => e.name).join("，");
+});
+
+const spellsPreparedInfo = computed(() => {
+  const result: SpellInfo[] = [];
+  props.characterInfo.spellsPrepared.forEach((e) => {
+    const spellItem = useSocketStore().allSpellInfo.find((info) => info.id === e.spellId);
+    if (spellItem) {
+      result.push(spellItem);
+    }
+  });
+  return result;
+});
+
+const spellsKnownInfo = computed(() => {
+  const result: SpellInfo[] = [];
+  props.characterInfo.spellsKnown.forEach((e) => {
+    const spellItem = useSocketStore().allSpellInfo.find((info) => info.id === e.spellId);
+    if (spellItem) {
+      result.push(spellItem);
+    }
+  });
+  return result;
+});
+
+const spellToShowDescription = ref<string | null>(null);
+function switchDescription(id: string) {
+  if (spellToShowDescription.value === id) {
+    spellToShowDescription.value = null;
+  } else {
+    spellToShowDescription.value = id;
+  }
+}
+console.log(props.characterInfo);
 </script>
 
 <style lang="less" scoped>
+.character-info-edit-form {
+  padding: 5%;
+  :deep(.el-descriptions__label) {
+    white-space: nowrap;
+  }
+}
 .el-form-item {
   margin-bottom: 4px;
 }

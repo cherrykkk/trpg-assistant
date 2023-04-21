@@ -1,16 +1,21 @@
 <template>
-  <DiceController @do-roll-dice="handleRollDice" />
-  <MessageRoom />
+  <CharacterInfo v-if="characterInfo" :character-info="characterInfo" />
+  <MessageRoom v-if="showMessageRoom" />
 </template>
 
 <script lang="ts" setup>
-import DiceController from "../components/DiceController.vue";
-import { createPlayerSocketClient } from "@/api/socket-client";
+import { createSocketAndInitAbility } from "@/api/socket-client";
 import MessageRoom from "../components/MessageRoom.vue";
+import { useRoute } from "vue-router";
+import CharacterInfo from "./CharacterInfo.vue";
+import { storeToRefs } from "pinia";
+import { useSocketStore } from "../../stores/useSocketStore";
+import { ref } from "vue";
 
-const socket = createPlayerSocketClient("DM");
+const showMessageRoom = ref(false);
 
-function handleRollDice(diceType: number) {
-  socket.emit("operator: rollDice", -1, diceType);
-}
+const route = useRoute();
+const characterId = route.params.id as string;
+const { playerCharacterInfo: characterInfo } = storeToRefs(useSocketStore());
+const socket = createSocketAndInitAbility(characterId);
 </script>

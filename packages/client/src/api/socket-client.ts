@@ -7,6 +7,13 @@ import { useCharactersStore } from "@/stores/useCharactersStore";
 export function createSocketAndInitAbility(password: string) {
   const socket: Socket<ServerEvents, ClientEvents> = io("192.168.1.17:3333");
 
+  if (password) {
+    socket.emit("signIn: signInAsPlayer", password);
+    socket.on("data: playerCharacter", (characterInfo) => {
+      useSocketStore().playerCharacterInfo = characterInfo;
+    });
+  }
+
   socket.on("connect", () => {
     socket.emit("login: password", password);
     useSocketStore().connectedSocket = socket;
@@ -26,19 +33,6 @@ export function createSocketAndInitAbility(password: string) {
   socket.on("data: allScenes", (data) => {
     useSceneStore().scenes = data;
     useSceneStore().refresh();
-  });
-
-  socket.on("data: allMessage", (data) => {
-    useSocketStore().messageList = data;
-  });
-
-  return socket;
-}
-
-export function createPlayerSocketClient(playerPassword: string) {
-  const socket: Socket<ServerEvents, ClientEvents> = io("localhost:3333");
-  socket.on("connect", () => {
-    socket.emit("login: password", playerPassword);
   });
 
   socket.on("data: allMessage", (data) => {

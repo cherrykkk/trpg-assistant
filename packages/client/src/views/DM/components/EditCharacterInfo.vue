@@ -4,11 +4,13 @@
       <h3 style="display: inline">{{ character?.name || "新增角色" }}</h3>
       <el-button @click="() => emit('closeDialog')" v-if="!character">取消</el-button>
       <el-button @click="handleCreateCharacter" v-if="!character">确认创建新角色</el-button>
+      <el-button @click="copyPlayerURL" v-if="character && canCopy">复制角色卡片链接</el-button>
       <el-button @click="handleDeleteCharacter" v-if="character" type="danger"
         >删除角色（需快速双击）</el-button
       >
       <el-button @click="handleUpdateCharacter" v-if="character" type="primary">完成</el-button>
     </div>
+    <span @click="copyPlayerURL" v-if="character && !canCopy">角色卡链接：{{ playerInfoURL }}</span>
     <div class="character-info-edit-form">
       <el-radio-group v-model="characterInfo.scope" size="large" style="margin-bottom: 10px">
         <el-radio-button label="PC" />
@@ -123,6 +125,7 @@ import type { CharacterInfo } from "@trpg/shared";
 import { abilityType } from "@/stores/types";
 import SpellsOfCharacter from "./SpellsOfCharacter.vue";
 import BackpackContent from "@/views/components/BackpackContent.vue";
+import { ElMessage } from "element-plus";
 
 const props = defineProps({
   character: {
@@ -167,6 +170,18 @@ function handleUpdateCharacter() {
   if (!props.character) return;
   updateCharacterInfo(props.character.id, uploadData.value);
   emit("closeDialog");
+}
+
+const { canCopy, playerInfoURL, copyPlayerURL } = initClipboard();
+
+function initClipboard() {
+  const canCopy = Boolean(navigator.clipboard);
+  const playerInfoURL = `${location.host}/player/${props.character?.id}`;
+  async function copyPlayerURL() {
+    navigator.clipboard.writeText(playerInfoURL);
+    ElMessage.success("已复制");
+  }
+  return { canCopy, playerInfoURL, copyPlayerURL };
 }
 </script>
 

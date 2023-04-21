@@ -10,7 +10,6 @@
       <div class="router-page"><router-view /></div>
     </div>
     <message-room class="message-room-content" />
-    <DiceController class="dice-controller" @do-roll-dice="handleRollDice" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -28,7 +27,7 @@ function handleSelect(name: string) {
   router.push({ name });
 }
 function handleRollDice(diceType: number) {
-  socket.emit("operator: rollDice", -1, diceType);
+  socket.emit("operator: rollDice", "DM", diceType);
 }
 </script>
 <style lang="less" scoped>
@@ -42,11 +41,6 @@ function handleRollDice(diceType: number) {
   .message-room-content {
     width: 200px;
     flex-shrink: 0;
-  }
-  .dice-controller {
-    position: absolute;
-    right: 0;
-    top: 0;
   }
   .el-menu {
     align-items: center;

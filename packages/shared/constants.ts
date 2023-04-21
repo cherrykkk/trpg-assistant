@@ -1,4 +1,5 @@
 export interface ClientEvents {
+  "signIn: signInAsPlayer": (characterId: string) => void;
   "login: password": (password: string) => void;
   "operator: rollDice": (characterId: string | "DM", value: number) => void;
   // create
@@ -16,6 +17,7 @@ export interface ClientEvents {
   "operator: abilityCheck": (characterId: string, ability: string, skill: string) => void;
 }
 export interface ServerEvents {
+  "data: playerCharacter": (data: CharacterInfo) => void;
   "data: allCharactersInfo": (data: CharacterInfo[]) => void;
   "data: allSpellInfo": (data: SpellInfo[]) => void;
   "data: allMessage": (data: Message[]) => void;

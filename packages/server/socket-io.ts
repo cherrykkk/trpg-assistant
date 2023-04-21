@@ -12,7 +12,7 @@ import {
   updateDocument,
   writeMessage,
 } from "./taskByMongoDB";
-import { ClientEvents, ServerEvents } from "@trpg/shared";
+import { CharacterInfo, ClientEvents, ServerEvents } from "@trpg/shared";
 
 const port = 3333;
 
@@ -22,7 +22,7 @@ const io = new Server<ClientEvents, ServerEvents>({
   },
 });
 
-const userToSocket = new Map<string, Socket>();
+const socketToPlayer = new Map<Socket, { characterId: string; characterName: string }>();
 
 export function initSocket() {
   io.listen(port);
@@ -30,14 +30,24 @@ export function initSocket() {
 }
 
 io.on("connection", async (socket) => {
-  userToSocket.set("player1", socket);
-
   sendInitDataToSingleSocket(socket);
   attachEventToSocket(socket);
+
+  socketToPlayer.forEach((e) => {
+    console.log(e);
+  });
 
   socket.on("login: password", (password) => {
     const userAccountInfo = getUserAccountInfo(password);
     return userAccountInfo;
+  });
+
+  socket.on("signIn: signInAsPlayer", async (characterId) => {
+    const data = await getCharacterInfoById(characterId);
+    if (data) {
+      sendInitDataToSinglePlayerSocket(socket, data);
+      socketToPlayer.set(socket, { characterId, characterName: data.name });
+    }
   });
 
   // socket.on("operator: abilityCheck", async (characterId, ability, skill) => {
@@ -55,14 +65,21 @@ io.on("connection", async (socket) => {
   // });
 });
 
+async function sendInitDataToSinglePlayerSocket(
+  socket: Socket<ClientEvents, ServerEvents>,
+  characterInfo: CharacterInfo
+) {
+  socket.emit("data: playerCharacter", characterInfo);
+}
+
+function broadcastUpdate() {
+  socketToPlayer.forEach((e) => {});
+}
+
 async function sendInitDataToSingleSocket(socket: Socket<ClientEvents, ServerEvents>) {
   const characterList = await getAllCharactersInfo();
 
   socket.emit("data: allCharactersInfo", characterList);
-
-  userToSocket.forEach((socket, user) => {
-    console.log(user);
-  });
 
   getAllMessage().then((messages) => {
     socket.emit("data: allMessage", messages);
