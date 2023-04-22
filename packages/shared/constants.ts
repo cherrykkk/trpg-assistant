@@ -41,7 +41,7 @@ export interface CharacterInfo {
   currentHP: number;
   maxHP: number;
   backgroundStory: string;
-  技能熟练项: string[];
+  proficiencies: string[];
   experience: number;
   strength: number;
   dexterity: number;

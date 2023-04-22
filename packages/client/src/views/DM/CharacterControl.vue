@@ -21,7 +21,7 @@
       </el-tab-pane>
     </el-tabs>
     <el-button @click="() => openEditBoard(null)">新增角色</el-button>
-    <EditCharacterInfo
+    <CharacterInfoEditor
       v-if="isEditing"
       :character="editedCharacter"
       @close-dialog="closeEditBoard"
@@ -31,7 +31,7 @@
 
 <script lang="ts" setup>
 import { useCharactersStore } from "@/stores/useCharactersStore";
-import EditCharacterInfo from "./components/EditCharacterInfo.vue";
+import CharacterInfoEditor from "./components/CharacterInfoEditor.vue";
 import CharacterCollapse from "./components/CharacterCollapse.vue";
 import { ref } from "vue";
 import { CharacterInfo } from "@trpg/shared";

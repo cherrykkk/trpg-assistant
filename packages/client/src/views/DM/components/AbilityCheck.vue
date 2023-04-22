@@ -7,7 +7,7 @@
         }})
         <div v-for="skill in AbilityType[abilityProperty]" class="skill-tag">
           {{ skill }}
-          <span v-if="character.技能熟练项 && character.技能熟练项.includes(skill)">
+          <span v-if="character.proficiencies && character.proficiencies.includes(skill)">
             ({{ proficiencyBonus }})
           </span>
         </div>

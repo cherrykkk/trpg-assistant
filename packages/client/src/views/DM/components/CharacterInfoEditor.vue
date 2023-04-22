@@ -1,5 +1,5 @@
 <template>
-  <div class="edit-character-info" v-if="characterInfo">
+  <div class="edit-character-info">
     <div class="page-header">
       <h3 style="display: inline">{{ character?.name || "新增角色" }}</h3>
       <el-button @click="() => emit('closeDialog')" v-if="!character">取消</el-button>
@@ -8,70 +8,70 @@
       <el-button @click="handleDeleteCharacter" v-if="character" type="danger"
         >删除角色（需快速双击）</el-button
       >
-      <el-button @click="handleUpdateCharacter" v-if="character" type="primary">完成</el-button>
+      <el-button @click="handleUpdateCharacter" v-if="editedData" type="primary">完成</el-button>
     </div>
     <span @click="copyPlayerURL" v-if="character && !canCopy">角色卡链接：{{ playerInfoURL }}</span>
     <div class="character-info-edit-form">
-      <el-radio-group v-model="characterInfo.scope" size="large" style="margin-bottom: 10px">
+      <el-radio-group v-model="editedData.scope" size="large" style="margin-bottom: 10px">
         <el-radio-button label="PC" />
         <el-radio-button label="NPC" />
         <el-radio-button label="monster" />
       </el-radio-group>
       <br />
-      <EditCell v-model="characterInfo.name" prefix="姓名" />
-      <EditCell v-model="characterInfo.titles" prefix="头衔" />
-      <EditCell v-model="characterInfo.sex" prefix="性别" />
-      <EditCell v-model="characterInfo.age" prefix="年龄" />
-      <EditCell v-model="characterInfo.class" prefix="职业" />
-      <EditCell v-model="characterInfo.race" prefix="种族" />
-      <EditCell v-model="characterInfo.subRace" prefix="亚种" />
-      <EditCell v-model="characterInfo.alignment" prefix="阵营" />
-      <EditCell v-model="characterInfo.experience" prefix="经验" />
-      <EditCell v-model="characterInfo.maxHP" prefix="最大血量" />
-      <EditCell v-model="characterInfo.currentHP" prefix="当前血量" />
-      <EditCell v-model="characterInfo.speed" prefix="速度" />
+      <EditCell v-model="editedData.name" prefix="姓名" />
+      <EditCell v-model="editedData.titles" prefix="头衔" />
+      <EditCell v-model="editedData.sex" prefix="性别" />
+      <EditCell v-model="editedData.age" prefix="年龄" />
+      <EditCell v-model="editedData.class" prefix="职业" />
+      <EditCell v-model="editedData.race" prefix="种族" />
+      <EditCell v-model="editedData.subRace" prefix="亚种" />
+      <EditCell v-model="editedData.alignment" prefix="阵营" />
+      <EditCell v-model="editedData.experience" prefix="经验" />
+      <EditCell v-model="editedData.maxHP" prefix="最大血量" />
+      <EditCell v-model="editedData.currentHP" prefix="当前血量" />
+      <EditCell v-model="editedData.speed" prefix="速度" />
       <div class="ability-and-skills-area">
         <div>
-          <EditCell v-model="characterInfo.strength" prefix="力量" />
-          <el-checkbox-group v-model="characterInfo.技能熟练项">
+          <EditCell v-model="editedData.strength" prefix="力量" />
+          <el-checkbox-group v-model="editedData.proficiencies">
             <el-checkbox v-for="skill in abilityType.力量" :label="skill">
               {{ skill }}
             </el-checkbox>
           </el-checkbox-group>
         </div>
         <div>
-          <EditCell v-model="characterInfo.dexterity" prefix="敏捷" />
-          <el-checkbox-group v-model="characterInfo.技能熟练项">
+          <EditCell v-model="editedData.dexterity" prefix="敏捷" />
+          <el-checkbox-group v-model="editedData.proficiencies">
             <el-checkbox v-for="skill in abilityType.敏捷" :label="skill">
               {{ skill }}
             </el-checkbox>
           </el-checkbox-group>
         </div>
         <div>
-          <EditCell v-model="characterInfo.constitution" prefix="体质" />
-          <el-checkbox-group v-model="characterInfo.技能熟练项">
+          <EditCell v-model="editedData.constitution" prefix="体质" />
+          <el-checkbox-group v-model="editedData.proficiencies">
             <el-checkbox v-for="skill in abilityType.体质" :label="skill">
               {{ skill }}
             </el-checkbox>
           </el-checkbox-group>
         </div>
         <div>
-          <EditCell v-model="characterInfo.intelligence" prefix="智力" />
-          <el-checkbox-group v-model="characterInfo.技能熟练项">
+          <EditCell v-model="editedData.intelligence" prefix="智力" />
+          <el-checkbox-group v-model="editedData.proficiencies">
             <el-checkbox v-for="skill in abilityType.智力" :label="skill">{{ skill }}</el-checkbox>
           </el-checkbox-group>
         </div>
         <div>
-          <EditCell v-model="characterInfo.wisdom" prefix="感知" />
-          <el-checkbox-group v-model="characterInfo.技能熟练项">
+          <EditCell v-model="editedData.wisdom" prefix="感知" />
+          <el-checkbox-group v-model="editedData.proficiencies">
             <el-checkbox v-for="skill in abilityType.感知" :label="skill">
               {{ skill }}
             </el-checkbox>
           </el-checkbox-group>
         </div>
         <div>
-          <EditCell v-model="characterInfo.charisma" prefix="魅力" />
-          <el-checkbox-group v-model="characterInfo.技能熟练项">
+          <EditCell v-model="editedData.charisma" prefix="魅力" />
+          <el-checkbox-group v-model="editedData.proficiencies">
             <el-checkbox v-for="skill in abilityType.魅力" :label="skill">
               {{ skill }}
             </el-checkbox>
@@ -80,22 +80,22 @@
       </div>
 
       <el-input
-        v-model="characterInfo.appearance"
+        v-model="editedData.appearance"
         placeholder="角色外貌描述"
         type="textarea"
         :autosize="{ minRows: 2, maxRows: 4 }"
       />
       <el-input
-        v-model="characterInfo.backgroundStory"
+        v-model="editedData.backgroundStory"
         placeholder="角色背景故事"
         type="textarea"
         :autosize="{ minRows: 2, maxRows: 8 }"
       />
-      <el-input v-model="characterInfo.location.sceneName">
+      <el-input v-model="editedData.location.sceneName">
         <template #prepend>所处地点</template>
         <template #append>
           <el-select
-            v-model="characterInfo.location.sceneName"
+            v-model="editedData.location.sceneName"
             placeholder="Select"
             style="width: 115px"
           >
@@ -109,21 +109,21 @@
       </el-input>
     </div>
     <div class="backpack-container">
-      <BackpackContent :character-info="characterInfo" />
+      <BackpackContent v-if="character" :character-info="character" />
     </div>
-    <SpellsOfCharacter v-if="character" :character="character" />
+    <CharacterSpellEditor v-if="character" :character="character" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, PropType, reactive, ref } from "vue";
+import { PropType, reactive, ref } from "vue";
 import { createNewCharacterInfoTemplate } from "@/stores/useCharactersStore";
 import { useSceneStore } from "@/stores/useSceneStore";
 import { updateCharacterInfo, createCharacterInfo, deleteCharacterInfo } from "@/api/socket-tasks";
 import EditCell from "./EditCell.vue";
 import type { CharacterInfo } from "@trpg/shared";
 import { abilityType } from "@/stores/types";
-import SpellsOfCharacter from "./SpellsOfCharacter.vue";
+import CharacterSpellEditor from "./CharacterSpellEditor.vue";
 import BackpackContent from "@/views/components/BackpackContent.vue";
 import { ElMessage } from "element-plus";
 
@@ -134,21 +134,10 @@ const props = defineProps({
 });
 const emit = defineEmits(["closeDialog"]);
 
-const characterInfo = reactive(props.character ?? createNewCharacterInfoTemplate());
-
-const otherProperty = reactive({
-  技能熟练项: [] as string[],
-});
-function changeSkill(skills: string[]) {
-  otherProperty.技能熟练项 = skills;
-}
-
-const uploadData = computed(() => {
-  return Object.assign(characterInfo, otherProperty);
-});
+const editedData = reactive(props.character ?? createNewCharacterInfoTemplate());
 
 function handleCreateCharacter() {
-  createCharacterInfo(characterInfo);
+  createCharacterInfo(editedData);
   emit("closeDialog");
 }
 
@@ -168,7 +157,7 @@ function handleDeleteCharacter() {
 
 function handleUpdateCharacter() {
   if (!props.character) return;
-  updateCharacterInfo(props.character.id, uploadData.value);
+  updateCharacterInfo(props.character.id, editedData);
   emit("closeDialog");
 }
 

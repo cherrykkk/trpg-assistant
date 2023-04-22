@@ -43,7 +43,7 @@ export function createNewCharacterInfoTemplate(): CharacterInfo {
     currentHP: 0,
     maxHP: 0,
     backgroundStory: "",
-    技能熟练项: [],
+    proficiencies: [],
     experience: 0,
     strength: 0,
     dexterity: 0,

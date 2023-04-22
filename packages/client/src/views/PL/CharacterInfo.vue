@@ -18,8 +18,8 @@
       <el-descriptions-item label="智力">{{ characterInfo.intelligence }}</el-descriptions-item>
       <el-descriptions-item label="感知">{{ characterInfo.wisdom }}</el-descriptions-item>
       <el-descriptions-item label="魅力">{{ characterInfo.charisma }}</el-descriptions-item>
-      <el-descriptions-item label="技能熟练项">{{ characterInfo.技能熟练项 }}</el-descriptions-item>
     </el-descriptions>
+    <InfoCell prefix="熟练项" :text="characterInfo.proficiencies.join('，')" />
     <InfoCell prefix="物品" :text="itemsInBackpackText" />
     <InfoCell prefix="已准备法术">
       <SpellItem
