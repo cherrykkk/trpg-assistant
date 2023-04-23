@@ -73,7 +73,7 @@ async function sendInitDataToSinglePlayerSocket(
 }
 
 function broadcastUpdate() {
-  socketToPlayer.forEach((e) => {});
+  socketToPlayer.forEach((e, socket) => {});
 }
 
 async function sendInitDataToSingleSocket(socket: Socket<ClientEvents, ServerEvents>) {

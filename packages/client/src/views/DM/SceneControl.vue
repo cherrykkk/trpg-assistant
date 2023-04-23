@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-page">
+  <div class="scene-control-container">
     <resizable-panel>
       <el-tree
         :data="useSceneStore().sceneTree"
@@ -39,16 +39,18 @@
           >
         </div>
       </div>
-      <template v-if="!isEditing && currentScene">
-        <SceneStoryRenderer v-if="!isCombating" :scene="currentScene" />
-        <SceneMapRenderer v-else />
-      </template>
-      <template v-if="isEditing && currentScene">
-        <SceneStoryEditor v-if="!isCombating" :scene="currentScene" />
-        <SceneMapEditor v-if="isCombating" />
-      </template>
+      <div class="scene-info-container">
+        <template v-if="!isEditing && currentScene">
+          <SceneStoryRenderer v-if="!isCombating" :scene="currentScene" />
+          <SceneMapRenderer v-else />
+        </template>
+        <template v-if="isEditing && currentScene">
+          <SceneStoryEditor v-if="!isCombating" :scene="currentScene" />
+          <SceneMapEditor v-if="isCombating" />
+        </template>
+      </div>
     </div>
-    <ResizablePanel resize-direction="left" v-if="!(isCombating && isEditing)">
+    <ResizablePanel v-if="!(isCombating && isEditing)" resize-direction="left" :default-width="200">
       <CharactersPanel />
     </ResizablePanel>
   </div>
@@ -78,13 +80,20 @@ function handleClickAddButton() {
 </script>
 
 <style lang="less" scoped>
-.tab-page {
+.scene-control-container {
   display: flex;
+  overflow: hidden;
+  height: 100%;
 }
 
 :deep(.scene-control) {
   margin-top: 10px;
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  .scene-info-container {
+    overflow: auto;
+  }
 
   p {
     text-align: left;

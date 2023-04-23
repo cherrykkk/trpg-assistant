@@ -178,6 +178,7 @@ function handleDeleteItem() {
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
+  flex-wrap: wrap;
 }
 .item-in-backpack,
 .add-item-button {

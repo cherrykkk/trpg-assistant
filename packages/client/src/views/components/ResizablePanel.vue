@@ -8,11 +8,8 @@
     </div>
     <div
       class="resize-handler"
+      :class="[resizeDirection === 'left' ? 'resize-handler-left' : 'resize-handler-right']"
       @mousedown="handleOnMouseDown"
-      :style="{
-        right: resizeDirection === 'left' ? 'auto' : '0',
-        left: resizeDirection === 'left' ? '0' : 'auto',
-      }"
     ></div>
   </div>
 </template>
@@ -88,10 +85,17 @@ const currentWidth = ref(props.defaultWidth);
     flex-shrink: 0;
     width: 2px;
     height: 100%;
-    border-right: 2px solid #ccc;
     cursor: ew-resize;
     position: absolute;
     right: 0;
+  }
+  .resize-handler-right {
+    border-right: 2px solid #ccc;
+    right: 0;
+  }
+  .resize-handler-left {
+    border-left: 2px solid #ccc;
+    left: 0;
   }
 }
 </style>

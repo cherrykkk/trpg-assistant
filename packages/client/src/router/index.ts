@@ -24,11 +24,6 @@ const routes: Array<RouteRecordRaw> = [
         name: "sceneControl",
         component: () => import("@/views/DM/SceneControl.vue"),
       },
-      {
-        path: "combatControl",
-        name: "combatControl",
-        component: () => import("@/views/DM/CombatControl.vue"),
-      },
     ],
   },
 ];

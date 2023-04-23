@@ -11,6 +11,14 @@
     </div>
     <SceneCharacter v-if="chosenCharacter" :character="chosenCharacter" />
   </div>
+  <el-button class="create-character-button" @click="handleCreateCharacter">新增角色</el-button>
+  <el-drawer v-model="isEditingCharacterInfo" :size="800" direction="ltr">
+    <CharacterInfoEditor
+      v-if="isEditingCharacterInfo"
+      :character="chosenCharacter"
+      @close-dialog="() => (isEditingCharacterInfo = false)"
+    />
+  </el-drawer>
 </template>
 
 <script lang="ts" setup>
@@ -18,6 +26,8 @@ import { computed, ref, watch } from "vue";
 import SceneCharacter from "./Character.vue";
 import { useCharactersStore } from "@/stores/useCharactersStore";
 import { CharacterInfo } from "@trpg/shared";
+import CharacterInfoEditor from "./CharacterInfoEditor.vue";
+import { useDoubleClick } from "@/utils";
 
 const sortedCharacters = computed(() => {
   return useCharactersStore().charactersInCurrentScene.sort(
@@ -26,13 +36,22 @@ const sortedCharacters = computed(() => {
 });
 
 const chosenCharacter = ref<CharacterInfo | null>(null);
+
+const handleDoubleClickCharacter = useDoubleClick(() => {
+  isEditingCharacterInfo.value = true;
+});
+
 function handleClickCharacter(c: CharacterInfo) {
-  if (chosenCharacter.value === c) {
-    chosenCharacter.value = null;
-  } else {
-    chosenCharacter.value = c;
-  }
+  handleDoubleClickCharacter();
+  chosenCharacter.value = c;
 }
+
+function handleCreateCharacter() {
+  chosenCharacter.value = null;
+  isEditingCharacterInfo.value = true;
+}
+
+const isEditingCharacterInfo = ref(false);
 </script>
 <style lang="less" scoped>
 .characters-panel {
@@ -54,7 +73,10 @@ function handleClickCharacter(c: CharacterInfo) {
     border: 2px solid red;
   }
 }
-
+.create-character-button {
+  position: absolute;
+  bottom: 10px;
+}
 .el-input-number {
   margin: 0 10px;
   width: 80px;

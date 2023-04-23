@@ -1,26 +1,35 @@
 <template>
   <div class="DM-layout">
-    <div class="control-content">
-      <el-menu mode="horizontal" default-active="characterControl" @select="handleSelect">
+    <div class="tab-pages-container">
+      <el-menu mode="horizontal" :default-active="routeName" @select="handleSelect">
         <AccountIcon />
         <el-menu-item index="characterControl">角色编辑</el-menu-item>
         <el-menu-item index="sceneControl">场景演绎</el-menu-item>
       </el-menu>
       <div class="router-page"><router-view /></div>
     </div>
-    <!-- <message-room class="message-room-content" /> -->
+    <ResizablePanel resize-direction="left" :default-width="200">
+      <MessageRoom />
+    </ResizablePanel>
   </div>
 </template>
 <script lang="ts" setup>
 import { createSocketAndInitAbility } from "@/api/socket-client";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import MessageRoom from "../components/MessageRoom.vue";
 import AccountIcon from "../components/AccountIcon.vue";
+import { ref } from "vue";
+import ResizablePanel from "../components/ResizablePanel.vue";
 
 const socket = createSocketAndInitAbility("DM");
 const router = useRouter();
+const route = useRoute();
+const routeName = ref((route.name as string) ?? "");
+if (!["characterControl", "sceneControl"].includes(routeName.value)) {
+  routeName.value = "characterControl";
+  router.push({ name: "characterControl" });
+}
 
-router.push({ name: "characterControl" });
 function handleSelect(name: string) {
   router.push({ name });
 }
@@ -28,15 +37,19 @@ function handleSelect(name: string) {
 <style lang="less" scoped>
 .DM-layout {
   display: flex;
-  .control-content {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  .tab-pages-container {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
   }
   .router-page {
+    height: 100%;
+    overflow: hidden;
   }
-  .message-room-content {
-    width: 200px;
-    flex-shrink: 0;
-  }
+
   .el-menu {
     align-items: center;
   }

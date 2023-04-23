@@ -1,5 +1,5 @@
 <template>
-  <div v-if="currentScene">
+  <div v-if="currentScene" class="scene-map-renderer">
     <div class="combat-control">
       <div class="map-container">
         <div
@@ -13,17 +13,18 @@
         >
           {{ c.name }}
         </div>
-        <div
-          v-for="item in currentScene.items"
-          :key="item.id"
-          :style="{
-            'grid-column': item.points[0].x,
-            'grid-row': item.points[0].y,
-            fontSize: `${30 / item.name.length}px`,
-            backgroundColor: item.backgroundColor,
-          }"
-        >
-          {{ item.name }}
+        <div v-for="item in currentScene.items" :key="item.id">
+          <div
+            v-for="point in item.points"
+            :style="{
+              'grid-column': point.x,
+              'grid-row': point.y,
+              fontSize: `${30 / item.name.length}px`,
+              backgroundColor: item.backgroundColor,
+            }"
+          >
+            {{ item.name }}
+          </div>
         </div>
         <!-- <img
           v-if="useSceneStore().currentScene?.picture"
@@ -50,19 +51,9 @@ const areaY = computed(() => {
 });
 </script>
 <style lang="less" scoped>
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  h1 {
-    margin-left: 20px;
-  }
-  .el-input-number {
-    margin: 0 10px;
-    width: 80px;
-  }
+.scene-map-renderer {
+  flex-grow: 1;
 }
-
 .combat-control {
   --area-x: v-bind(areaX);
   --area-y: v-bind(areaY);

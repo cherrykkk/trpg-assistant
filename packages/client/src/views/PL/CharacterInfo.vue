@@ -55,6 +55,7 @@ import InfoCell from "./components/InfoCell.vue";
 import { CharacterInfo, SpellInfo } from "@trpg/shared";
 import SpellItem from "../components/SpellItem.vue";
 import { useSocketStore } from "@/stores/useSocketStore";
+import { turnToSpellsInfo } from "@/utils/index";
 
 const props = defineProps({
   characterInfo: { type: Object as PropType<CharacterInfo>, required: true },
@@ -77,14 +78,7 @@ const spellsPreparedInfo = computed(() => {
 });
 
 const spellsKnownInfo = computed(() => {
-  const result: SpellInfo[] = [];
-  props.characterInfo.spellsKnown.forEach((e) => {
-    const spellItem = useSocketStore().allSpellInfo.find((info) => info.id === e.spellId);
-    if (spellItem) {
-      result.push(spellItem);
-    }
-  });
-  return result;
+  return turnToSpellsInfo(props.characterInfo.spellsKnown);
 });
 
 const spellToShowDescription = ref<string | null>(null);

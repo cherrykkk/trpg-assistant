@@ -4,23 +4,15 @@
     <div>
       <p v-for="text in scene.description?.split('\n')">{{ text }}</p>
     </div>
-    <el-button v-for="npc in useCharactersStore().charactersInCurrentScene" @click="
-      npcInDrawer = npc;
-    drawer = true;
-                        ">
-      {{ npc.name }}
-    </el-button>
     <el-divider />
-    <el-button v-for="scene in useSceneStore().availableScenes" :key="scene.id"
-      @click="useSceneStore().currentScene = scene">
+    <el-button
+      v-for="scene in useSceneStore().availableScenes"
+      :key="scene.id"
+      @click="useSceneStore().currentScene = scene"
+    >
       {{ scene.name }}
     </el-button>
   </div>
-  <el-drawer v-model="drawer" v-if="npcInDrawer" :title="npcInDrawer.name" direction="btt" size="50%"
-    custom-class="character-drawer">
-    <AbilityCheckButton :character-info="npcInDrawer" />
-    <p v-for="text in npcInDrawer.backgroundStory?.split('\n')">{{ text }}</p>
-  </el-drawer>
 </template>
 
 <script lang="ts" setup>
@@ -36,8 +28,6 @@ const props = defineProps({
     required: true,
   },
 });
-const drawer = ref(false);
-const npcInDrawer = ref<CharacterInfo>();
 </script>
 
 <style lang="less" scoped>

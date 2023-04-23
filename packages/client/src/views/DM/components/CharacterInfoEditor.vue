@@ -3,12 +3,10 @@
     <div class="page-header">
       <h3 style="display: inline">{{ character?.name || "新增角色" }}</h3>
       <el-button @click="() => emit('closeDialog')" v-if="!character">取消</el-button>
-      <el-button @click="handleCreateCharacter" v-if="!character">确认创建新角色</el-button>
+      <el-button @click="handleCreateCharacter" v-if="!character">新建角色</el-button>
       <el-button @click="copyPlayerURL" v-if="character && canCopy">复制角色卡片链接</el-button>
-      <el-button @click="handleDeleteCharacter" v-if="character" type="danger"
-        >删除角色（需快速双击）</el-button
-      >
-      <el-button @click="handleUpdateCharacter" v-if="editedData" type="primary">完成</el-button>
+      <el-button @click="handleDeleteCharacter" v-if="character" type="danger">删除角色</el-button>
+      <el-button @click="handleClose" v-if="editedData" type="primary">关闭</el-button>
     </div>
     <span @click="copyPlayerURL" v-if="character && !canCopy">角色卡链接：{{ playerInfoURL }}</span>
     <div class="character-info-edit-form">
@@ -116,8 +114,8 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType, reactive, ref } from "vue";
-import { createNewCharacterInfoTemplate } from "@/stores/useCharactersStore";
+import { PropType, onUnmounted, reactive, ref } from "vue";
+import { createNewCharacterInfoTemplate } from "@/utils/index";
 import { useSceneStore } from "@/stores/useSceneStore";
 import { updateCharacterInfo, createCharacterInfo, deleteCharacterInfo } from "@/api/socket-tasks";
 import EditCell from "./EditCell.vue";
@@ -136,9 +134,9 @@ const emit = defineEmits(["closeDialog"]);
 
 const editedData = reactive(props.character ?? createNewCharacterInfoTemplate());
 
-function handleCreateCharacter() {
-  createCharacterInfo(editedData);
-  emit("closeDialog");
+const scene = useSceneStore().currentScene;
+if (!props.character && scene) {
+  editedData.location.sceneName = scene.name;
 }
 
 let deleteLock = true;
@@ -148,6 +146,7 @@ function handleDeleteCharacter() {
     deleteLock = false;
     setTimeout(() => {
       deleteLock = true;
+      ElMessage("请快速双击");
     }, 1000);
     return;
   }
@@ -155,9 +154,8 @@ function handleDeleteCharacter() {
   emit("closeDialog");
 }
 
-function handleUpdateCharacter() {
-  if (!props.character) return;
-  updateCharacterInfo(props.character.id, editedData);
+function handleClose() {
+  saveChanges();
   emit("closeDialog");
 }
 
@@ -172,12 +170,38 @@ function initClipboard() {
   }
   return { canCopy, playerInfoURL, copyPlayerURL };
 }
+
+document.addEventListener("keydown", function (event) {
+  if (event.ctrlKey && event.key === "s") {
+    event.preventDefault(); // 阻止默认行为，即保存网页
+    saveChanges();
+  }
+});
+
+function handleCreateCharacter() {
+  saveChanges();
+  emit("closeDialog");
+}
+
+function saveChanges() {
+  if (!props.character) {
+    createCharacterInfo(editedData);
+  } else {
+    updateCharacterInfo(props.character.id, editedData);
+    ElMessage.success("已保存");
+  }
+}
+
+onUnmounted(() => {
+  console.log("unMounted");
+  saveChanges();
+});
 </script>
 
 <style lang="less" scoped>
 .edit-character-info {
   --background-color: white;
-  position: fixed;
+  position: absolute;
   width: 100%;
   height: 100%;
   top: 0;

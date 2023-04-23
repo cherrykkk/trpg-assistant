@@ -2,7 +2,7 @@
   <div v-if="currentScene" class="scene-map-editor">
     <SceneMapRenderer />
     <ResizablePanel resize-direction="left">
-      <div>
+      <div style="padding: 10px">
         <el-button @click="handleChangeAreaSize">提交修改</el-button>
         <div>x:<el-input-number size="small" v-model="currentScene.areaX" /></div>
         <div>y:<el-input-number size="small" v-model="currentScene.areaY" /></div>

@@ -22,22 +22,28 @@
           }}</el-descriptions-item>
         </el-descriptions>
       </div>
-      <div v-if="isEditing && itemInfoInEdit">
+      <div v-if="isEditing && chosenItem">
         <el-form>
           <el-form-item label="名称：">
-            <el-input v-model="itemInfoInEdit.name" />
+            <el-input v-model="chosenItem.name" />
           </el-form-item>
           <el-form-item label="描述：">
-            <el-input type="textarea" v-model="itemInfoInEdit.description" />
+            <el-input type="textarea" v-model="chosenItem.description" />
           </el-form-item>
           <el-form-item label="点位：">
-            <el-input v-model="itemInfoInEdit.points" />
+            <div v-for="point in chosenItem.points">
+              {{ point.x }},{{ point.y }}
+              <el-button @click="() => deletePoint(point)">删除</el-button>
+            </div>
+            <el-input v-model="lastPoint.x" />
+            <el-input v-model="lastPoint.y" />
+            <el-button @click="handleAddPoint">添加点</el-button>
           </el-form-item>
           <el-form-item label="PL可见：">
-            <el-switch v-model="itemInfoInEdit.showForPlayer" />
+            <el-switch v-model="chosenItem.showForPlayer" />
           </el-form-item>
           <el-form-item label="颜色：">
-            <el-color-picker v-model="itemInfoInEdit.backgroundColor" />
+            <el-color-picker v-model="chosenItem.backgroundColor" />
           </el-form-item>
           <el-form-item>
             <el-button v-if="isEditing" @click="handleDeleteItem" size="small">删除</el-button>
@@ -58,7 +64,7 @@
 </template>
 
 <script lang="ts" setup>
-import { updateCharacterInfo, updateSceneInfo } from "@/api/socket-tasks";
+import { updateSceneInfo } from "@/api/socket-tasks";
 import { SceneItem } from "@trpg/shared";
 import { Scene } from "@trpg/shared";
 import { ElMessage } from "element-plus";
@@ -76,24 +82,24 @@ if (!props.sceneInfo.items) {
 }
 
 const chosenItem = ref<SceneItem | null>(null);
-const itemInfoInEdit = ref<SceneItem | null>(null);
+const lastPoint = ref({ x: 0, y: 0 });
 const isEditing = ref(false);
 
 function handleClickItem(item: SceneItem) {
-  if (isEditing.value && itemInfoInEdit.value?.name) {
-    ElMessage.error("请先保存或取消修改");
-  } else if (chosenItem.value?.id === item.id) {
+  if (isEditing.value) {
+    handleOk();
+  }
+  if (chosenItem.value?.id === item.id) {
     chosenItem.value = null;
+    isEditing.value = false;
   } else {
     chosenItem.value = item;
-    itemInfoInEdit.value = null;
     isEditing.value = false;
   }
 }
 
 function handleAddItem() {
   isEditing.value = true;
-  chosenItem.value = null;
 
   let maxId = 0;
   props.sceneInfo.items.forEach((e) => {
@@ -102,7 +108,7 @@ function handleAddItem() {
     }
   });
 
-  itemInfoInEdit.value = {
+  chosenItem.value = {
     id: maxId + 1,
     name: "",
     points: [],
@@ -110,41 +116,53 @@ function handleAddItem() {
     backgroundColor: "#ccc",
     showForPlayer: false,
   };
+  props.sceneInfo.items.push(chosenItem.value);
 }
 
 function handleEditButton() {
+  isEditing.value = true;
+}
+
+function handleAddPoint() {
   if (chosenItem.value) {
-    isEditing.value = true;
-    itemInfoInEdit.value = { ...chosenItem.value };
+    const isPointExist = chosenItem.value.points.find(
+      (e) => e.x === lastPoint.value.x && e.y === lastPoint.value.y
+    );
+    if (isPointExist) {
+      ElMessage.info("点已存在");
+      return;
+    }
+    chosenItem.value.points.push({ ...lastPoint.value });
   }
+}
+function deletePoint(point: { x: number; y: number }) {
+  if (!chosenItem.value) return;
+  console.log(chosenItem.value.points);
+  chosenItem.value.points = chosenItem.value.points.filter(
+    (e) => e.x !== point.x && e.y !== point.y
+  );
 }
 
 function handleOk() {
-  if (chosenItem.value && itemInfoInEdit.value) {
-    Object.assign(chosenItem.value, itemInfoInEdit.value);
+  if (chosenItem.value) {
     updateSceneInfo(props.sceneInfo.id, props.sceneInfo);
-  } else if (itemInfoInEdit.value) {
-    props.sceneInfo.items.push(itemInfoInEdit.value);
-    updateCharacterInfo(props.sceneInfo.id, props.sceneInfo);
   }
   isEditing.value = false;
 }
 
 function handleCancel() {
-  itemInfoInEdit.value = null;
   isEditing.value = false;
 }
 
 function handleDeleteItem() {
-  if (itemInfoInEdit.value) {
-    props.sceneInfo.items = props.sceneInfo.items.filter((e) => e.id !== itemInfoInEdit.value?.id);
+  if (chosenItem.value) {
+    props.sceneInfo.items = props.sceneInfo.items.filter((e) => e.id !== chosenItem.value?.id);
   }
 
-  itemInfoInEdit.value = null;
   chosenItem.value = null;
   isEditing.value = false;
 
-  updateCharacterInfo(props.sceneInfo.id, props.sceneInfo);
+  updateSceneInfo(props.sceneInfo.id, props.sceneInfo);
 }
 </script>
 

@@ -27,37 +27,3 @@ export const useCharactersStore = defineStore("character", {
 });
 
 export type PlayerInfo = CharacterInfo & {};
-
-export function createNewCharacterInfoTemplate(): CharacterInfo {
-  return {
-    id: "",
-    scope: "monster",
-    name: "",
-    titles: "", //头衔
-    alignment: "",
-    age: 0,
-    sex: "",
-    class: "", //职业
-    race: "",
-    subRace: "", //亚种
-    currentHP: 0,
-    maxHP: 0,
-    backgroundStory: "",
-    proficiencies: [],
-    experience: 0,
-    strength: 0,
-    dexterity: 0,
-    constitution: 0,
-    intelligence: 0,
-    wisdom: 0,
-    charisma: 0,
-    equipment: [],
-    spellsKnown: [],
-    spellsPrepared: [],
-    appearance: "",
-    speed: 30,
-    location: { sceneName: "", x: 1, y: 1 },
-    currentInitiative: 0,
-    backpack: [],
-  };
-}

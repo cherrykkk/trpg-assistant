@@ -1,15 +1,15 @@
 <template>
   <div class="spells-of-character-content">
     <div class="spells-of-character">
-      <div v-for="s in spellsOnCharacter" :key="s.spellId">
+      <div v-for="s in spellInfoToShowInLeftList" :key="s.id">
         <SpellItem
-          :spell-info="getSpellInfoById(s.spellId)"
-          :show-description="spellIdToShowDescription.includes(s.spellId)"
+          :spell-info="s"
+          :show-description="spellIdToShowDescription.includes(s.id)"
           @switch-description="handleSwitchDescription"
         />
-        <div v-if="spellIdToShowDescription.includes(s.spellId)" class="spell-on-character-info">
-          <TapToEditDescription v-model="s.reason" />
-          <div class="delete-button" @click="() => handleDeleteSpell(s.spellId)">-</div>
+        <div v-if="spellIdToShowDescription.includes(s.id)" class="spell-on-character-info">
+          <TapToEditDescription v-model="getSpellOnCharacterInfo(s.id).reason" />
+          <div class="delete-button" @click="() => handleDeleteSpell(s.id)">-</div>
         </div>
       </div>
       <el-button class="switch-button" @click="() => (showSpellList = !showSpellList)">
@@ -39,6 +39,7 @@ import { CharacterInfo } from "@trpg/shared";
 import SpellItem from "@/views/components/SpellItem.vue";
 import { useSocketStore } from "@/stores/useSocketStore";
 import TapToEditDescription from "./TapToEditDescription.vue";
+import { turnToSpellsInfo } from "@/utils";
 
 const props = defineProps({
   character: {
@@ -107,13 +108,17 @@ const spellsOnCharacter = computed(() => {
   // return result
 });
 
-function getSpellInfoById(spellId: string) {
-  const spellInfo = useSocketStore().allSpellInfo.find((spellInfo) => spellInfo.id === spellId);
-  if (!spellInfo) {
-    console.log(`无法找到 id 为 ${spellId} 的法术`);
-    throw `无法找到 id 为 ${spellId} 的法术`;
+const spellInfoToShowInLeftList = computed(() => {
+  return turnToSpellsInfo(spellsOnCharacter.value);
+});
+
+function getSpellOnCharacterInfo(id: string) {
+  const result = spellsOnCharacter.value.find((e) => e.spellId === id);
+  if (!result) {
+    throw Error("未找到法术" + id);
+  } else {
+    return result;
   }
-  return spellInfo;
 }
 
 // function removeSpell(spellName: string) {

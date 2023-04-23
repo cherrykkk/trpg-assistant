@@ -40,7 +40,7 @@ const messageContentInEdit = ref("");
 <style lang="less" scoped>
 .message-room-vue {
   position: relative;
-  padding: 40px 5px;
+  padding: 20px 5px;
   height: 100vh;
   box-sizing: border-box;
   text-align: left;
