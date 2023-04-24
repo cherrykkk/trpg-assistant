@@ -32,6 +32,7 @@ const props = defineProps({
 const editedScene = reactive<Scene>(
   props.scene || {
     id: "",
+    gameInstanceId: " ",
     picture: undefined,
     name: "",
     description: "",

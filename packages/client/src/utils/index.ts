@@ -21,6 +21,7 @@ export function turnToSpellsInfo(data: SpellOnCharacter[]) {
 export function createNewCharacterInfoTemplate(): CharacterInfo {
   return {
     id: "",
+    gameInstanceId: "",
     scope: "monster",
     name: "",
     titles: "", //头衔

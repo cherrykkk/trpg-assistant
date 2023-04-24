@@ -17,5 +17,5 @@ const showMessageRoom = ref(false);
 const route = useRoute();
 const characterId = route.params.id as string;
 const { playerCharacterInfo: characterInfo } = storeToRefs(useSocketStore());
-const socket = createSocketAndInitAbility(characterId);
+const socket = createSocketAndInitAbility("player", characterId);
 </script>

@@ -11,7 +11,8 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/PL/index.vue"),
   },
   {
-    path: "/DM",
+    path: "/DM/:id",
+    name: "DM",
     component: () => import("@/views/DM/index.vue"),
     children: [
       {
@@ -25,6 +26,10 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/DM/SceneControl.vue"),
       },
     ],
+  },
+  {
+    path: "/notFound",
+    component: () => import("@/views/NotFound.vue"),
   },
 ];
 

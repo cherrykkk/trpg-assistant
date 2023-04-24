@@ -45,7 +45,6 @@ function handleClickCharacter(c: CharacterInfo) {
   handleDoubleClickCharacter();
   chosenCharacter.value = c;
 }
-
 function handleCreateCharacter() {
   chosenCharacter.value = null;
   isEditingCharacterInfo.value = true;

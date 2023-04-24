@@ -1,15 +1,10 @@
 import { collections } from "./connect";
 import { ObjectId } from "mongodb";
-import { CharacterInfo, Message, Scene, SpellInfo } from "@trpg/shared";
-
-export async function getUserAccountInfo(password: string) {
-  const charactersInfo = await collections.characters.find({ password }).toArray();
-  return transformID(charactersInfo) as CharacterInfo[];
-}
+import { CharacterInfo, GameInstance, Message, Scene, SpellInfo } from "@trpg/shared";
 
 /** character */
-export async function getAllCharactersInfo() {
-  const players = await collections.characters.find({}).toArray();
+export async function getAllCharactersInfo(gameInstanceId: string) {
+  const players = await collections.characters.find({ gameInstanceId }).toArray();
   return transformID(players) as CharacterInfo[];
 }
 
@@ -31,13 +26,12 @@ export async function updateDocument(
   return targetCollection.updateOne({ _id: new ObjectId(id) }, { $set: document });
 }
 
-export async function createCharacterInfo(characterInfo: CharacterInfo) {
-  delete characterInfo.id;
-  return collections.characters.insertOne({ ...characterInfo, _id: new ObjectId() });
+export async function insertOneDocument(dbName: "characters" | "scenes", data) {
+  delete data.id;
+  return collections[dbName].insertOne({ ...data, _id: new ObjectId() });
 }
 
 export async function getCharacterInfoById(characterId: string) {
-  console.log(characterId);
   try {
     const characterInfo = await collections.characters
       .find({ _id: new ObjectId(characterId) })
@@ -53,6 +47,20 @@ export async function getCharacterInfoById(characterId: string) {
   return null;
 }
 
+export async function getGameInstanceById(gameInstanceId: string) {
+  return collections.games
+    .find({ _id: new ObjectId(gameInstanceId) })
+    .toArray()
+    .then((data) => {
+      const gameInfo = transformID(data) as GameInstance[];
+      if (gameInfo.length > 0) {
+        return gameInfo[0];
+      } else {
+        return null;
+      }
+    });
+}
+
 export async function deleteCharacterInfoById(characterId: string) {
   const query = { _id: new ObjectId(characterId) };
   const result = await collections.characters.deleteOne(query);
@@ -60,18 +68,18 @@ export async function deleteCharacterInfoById(characterId: string) {
 }
 
 /** message */
-export async function getAllMessage() {
-  const messages = await collections.messages.find({}).toArray();
+export async function getAllMessage(gameInstanceId: string) {
+  const messages = await collections.messages.find({ gameInstanceId }).toArray();
   return transformID(messages) as Message[];
 }
 
-export function writeMessage(messageContent: string) {
-  return collections.messages.insertOne({ content: messageContent, _id: new ObjectId() });
+export function addMessage(data: Message) {
+  return collections.messages.insertOne({ ...data, _id: new ObjectId() });
 }
 
 /** Scene */
-export async function getAllScenes() {
-  const scenes = await collections.scenes.find({}).toArray();
+export async function getAllScenes(gameInstanceId: string) {
+  const scenes = await collections.scenes.find({ gameInstanceId }).toArray();
   return transformID(scenes) as Scene[];
 }
 
@@ -86,7 +94,9 @@ export function rollDice(diceType: number) {
   return Math.ceil(Math.random() * diceType);
 }
 
-function transformID<T extends { _id: ObjectId }>(serverData: T[]): (T & { id: string })[] {
+function transformID<T extends { _id: ObjectId }>(
+  serverData: T[]
+): (Omit<T, "_id"> & { id: string })[] {
   const clientData = serverData.map((e) => {
     const newE = { ...e, id: e._id.toString() };
     delete newE._id;

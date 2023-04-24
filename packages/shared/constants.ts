@@ -1,6 +1,6 @@
 export interface ClientEvents {
   "signIn: signInAsPlayer": (characterId: string) => void;
-  "login: password": (password: string) => void;
+  "signIn: signInAsDM": (gameId: string) => void;
   "operator: rollDice": (characterId: string | "DM", value: number) => void;
   // create
   "operator: createCharacterInfo": (value: CharacterInfo) => void;
@@ -16,6 +16,7 @@ export interface ClientEvents {
   "message: sendMessage": (message: string) => void;
   "operator: abilityCheck": (characterId: string, ability: string, skill: string) => void;
 }
+
 export interface ServerEvents {
   "data: playerCharacter": (data: CharacterInfo) => void;
   "data: allCharactersInfo": (data: CharacterInfo[]) => void;
@@ -29,6 +30,7 @@ export interface ServerEvents {
 
 export interface CharacterInfo {
   id: string;
+  gameInstanceId: string;
   scope: "monster" | "NPC" | "PC";
   name: string;
   titles: string; //头衔
@@ -99,11 +101,13 @@ export interface SpellInfo {
 
 export interface Message {
   id: string;
+  gameInstanceId: string;
   content: string;
 }
 
 export interface Scene {
   id: string;
+  gameInstanceId: string;
   name: string;
   father?: string;
   description?: string;
@@ -121,6 +125,12 @@ export interface SceneItem {
   points: { x: number; y: number }[];
   showForPlayer: boolean;
   backgroundColor: string;
+}
+
+export interface GameInstance {
+  id: string;
+  name: string;
+  description: string;
 }
 
 // export const AbilityType = {

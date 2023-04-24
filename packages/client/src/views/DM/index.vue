@@ -20,10 +20,25 @@ import MessageRoom from "../components/MessageRoom.vue";
 import AccountIcon from "../components/AccountIcon.vue";
 import { ref } from "vue";
 import ResizablePanel from "../components/ResizablePanel.vue";
-
-const socket = createSocketAndInitAbility("DM");
 const router = useRouter();
 const route = useRoute();
+
+function getGameInstanceId() {
+  const idFromRoute = route.params.id as string;
+  if (idFromRoute) {
+    return idFromRoute;
+  } else {
+    const gameInstanceId = localStorage.getItem("gameInstanceId") || "";
+    return gameInstanceId;
+  }
+}
+const gameInstanceId = getGameInstanceId();
+console.log("gameInstanceId", gameInstanceId);
+if (!gameInstanceId) {
+  router.push({ name: "notFound" });
+}
+
+const socket = createSocketAndInitAbility("DM", gameInstanceId);
 const routeName = ref((route.name as string) ?? "");
 if (!["characterControl", "sceneControl"].includes(routeName.value)) {
   routeName.value = "characterControl";

@@ -1,18 +1,18 @@
 import { Server, Socket } from "socket.io";
 import {
-  createCharacterInfo,
   deleteCharacterInfoById,
   getAllCharactersInfo,
   getAllMessage,
   getAllScenes,
   getAllSpellInfo,
   getCharacterInfoById,
-  getUserAccountInfo,
+  getGameInstanceById,
   rollDice,
   updateDocument,
-  writeMessage,
+  addMessage,
+  insertOneDocument,
 } from "./taskByMongoDB";
-import { CharacterInfo, ClientEvents, ServerEvents } from "@trpg/shared";
+import { CharacterInfo, ClientEvents, Scene, ServerEvents } from "@trpg/shared";
 
 const port = 3333;
 
@@ -22,7 +22,11 @@ const io = new Server<ClientEvents, ServerEvents>({
   },
 });
 
-const socketToPlayer = new Map<Socket, { characterId: string; characterName: string }>();
+const socketToPlayer = new Map<
+  Socket<ClientEvents, ServerEvents>,
+  { characterId: string; characterName: string }
+>();
+const socketToDM = new Map<Socket<ClientEvents, ServerEvents>, string>();
 
 export function initSocket() {
   io.listen(port);
@@ -30,39 +34,32 @@ export function initSocket() {
 }
 
 io.on("connection", async (socket) => {
-  sendInitDataToSingleSocket(socket);
-  attachEventToSocket(socket);
-
   socketToPlayer.forEach((e) => {
     console.log(e);
   });
 
-  socket.on("login: password", (password) => {
-    const userAccountInfo = getUserAccountInfo(password);
-    return userAccountInfo;
+  socket.on("signIn: signInAsDM", (gameId) => {
+    const gameInstance = getGameInstanceById(gameId);
+    if (!gameInstance) {
+      console.log(`客户端上传了不存在的 gameId: ${gameId} `);
+      return;
+    }
+
+    socketToDM.set(socket, gameId);
+    sendInitDataToSingleSocket(socket, gameId);
+    attachEventToSocket(socket, gameId);
   });
 
   socket.on("signIn: signInAsPlayer", async (characterId) => {
-    const data = await getCharacterInfoById(characterId);
-    if (data) {
-      sendInitDataToSinglePlayerSocket(socket, data);
-      socketToPlayer.set(socket, { characterId, characterName: data.name });
+    const character = await getCharacterInfoById(characterId);
+    if (!character) {
+      console.log(`客户端上传了不存在的 characterId: ${characterId} `);
+      return;
     }
+
+    sendInitDataToSinglePlayerSocket(socket, character);
+    socketToPlayer.set(socket, { characterId, characterName: character.name });
   });
-
-  // socket.on("operator: abilityCheck", async (characterId, ability, skill) => {
-  //   const characterInfo = await getCharacterInfoById(characterId);
-  //   const abilityValue = characterInfo[ability];
-  //   const abilityModifier = Math.floor((abilityValue - 10) / 2);
-  //   const rollResult = roll20();
-
-  //   socket.emit(
-  //     "message: system",
-  //     `${characterInfo.name}的${ability}检定结果为${rollResult + abilityModifier}(${rollResult}${
-  //       abilityModifier > 0 ? "+" : "-"
-  //     }${abilityModifier})`
-  //   );
-  // });
 });
 
 async function sendInitDataToSinglePlayerSocket(
@@ -72,44 +69,57 @@ async function sendInitDataToSinglePlayerSocket(
   socket.emit("data: playerCharacter", characterInfo);
 }
 
-function broadcastUpdate() {
-  socketToPlayer.forEach((e, socket) => {});
+function broadcastUpdateToPlayers() {
+  socketToPlayer.forEach((e, socket) => {
+    getCharacterInfoById(e.characterId).then((playerCharacterInfo) => {
+      socket.emit("data: playerCharacter", playerCharacterInfo);
+    });
+  });
 }
 
-async function sendInitDataToSingleSocket(socket: Socket<ClientEvents, ServerEvents>) {
-  const characterList = await getAllCharactersInfo();
+async function sendInitDataToSingleSocket(
+  socket: Socket<ClientEvents, ServerEvents>,
+  gameInstanceId: string
+) {
+  const characterList = await getAllCharactersInfo(gameInstanceId);
+
+  getAllScenes(gameInstanceId).then((scenes) => {
+    socket.emit("data: allScenes", scenes);
+  });
 
   socket.emit("data: allCharactersInfo", characterList);
 
-  getAllMessage().then((messages) => {
+  getAllMessage(gameInstanceId).then((messages) => {
     socket.emit("data: allMessage", messages);
-  });
-  getAllScenes().then((scenes) => {
-    socket.emit("data: allScenes", scenes);
   });
   getAllSpellInfo().then((spells) => {
     socket.emit("data: allSpellInfo", spells);
   });
 }
 
-function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>) {
+function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>, gameInstanceId: string) {
   socket.on("operator: createCharacterInfo", async (data) => {
-    await createCharacterInfo(data);
-    const allCharactersInfo = await getAllCharactersInfo();
+    data.gameInstanceId = gameInstanceId;
+    await insertOneDocument("characters", data);
+    const allCharactersInfo = await getAllCharactersInfo(gameInstanceId);
     socket.emit("data: allCharactersInfo", allCharactersInfo);
   });
   socket.on("operator: updateCharacterInfo", async (characterId, characterInfo) => {
     const result = await updateDocument("characterInfo", characterId, characterInfo);
 
-    const allCharactersInfo = await getAllCharactersInfo();
+    const allCharactersInfo = await getAllCharactersInfo(gameInstanceId);
+    broadcastUpdateToPlayers();
     socket.emit("data: allCharactersInfo", allCharactersInfo);
+  });
+
+  socket.on("operator: createSceneInfo", async (sceneInfo: Scene) => {
+    await insertOneDocument("scenes", sceneInfo);
+    sendAllSenesInfo();
   });
 
   socket.on("operator: updateSceneInfo", async (id, data) => {
     await updateDocument("sceneInfo", id, data);
-
-    const allScenes = await getAllScenes();
-    socket.emit("data: allScenes", allScenes);
+    sendAllSenesInfo();
   });
 
   socket.on("operator: updateSpellInfo", async (id, data) => {
@@ -121,7 +131,7 @@ function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>) {
 
   socket.on("operator: deleteCharacterInfo", async (characterId) => {
     await deleteCharacterInfoById(characterId);
-    const allCharactersInfo = await getAllCharactersInfo();
+    const allCharactersInfo = await getAllCharactersInfo(gameInstanceId);
     socket.emit("data: allCharactersInfo", allCharactersInfo);
   });
 
@@ -134,15 +144,25 @@ function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>) {
 
     const result = rollDice(diceType);
     await writeMessage(`${characterName} 投出了(d${diceType}) ${result} `);
-    getAllMessage().then((messages) => {
-      io.emit("data: allMessage", messages);
-    });
+    broadcastMessages();
   });
 
   socket.on("message: sendMessage", (message) => {
     writeMessage(message);
-    getAllMessage().then((messages) => {
+    broadcastMessages();
+  });
+
+  function broadcastMessages() {
+    getAllMessage(gameInstanceId).then((messages) => {
       io.emit("data: allMessage", messages);
     });
-  });
+  }
+  function writeMessage(messageContent: string) {
+    addMessage({ content: messageContent, gameInstanceId, id: "" });
+  }
+  function sendAllSenesInfo() {
+    getAllScenes(gameInstanceId).then((scenes) => {
+      socket.emit("data: allScenes", scenes);
+    });
+  }
 }
