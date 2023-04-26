@@ -1,9 +1,6 @@
 <template>
-  <div class="scene-info-container">
-    <img v-if="scene.picture" :src="scene.picture" />
-    <div>
-      <p v-for="text in scene.description?.split('\n')">{{ text }}</p>
-    </div>
+  <div class="scene-story-renderer">
+    <div ref="richTextRendererRef"></div>
     <el-divider />
     <el-button
       v-for="scene in useSceneStore().availableScenes"
@@ -16,11 +13,10 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType, ref } from "vue";
+import { PropType, onMounted, ref } from "vue";
 import { useSceneStore } from "@/stores/useSceneStore";
-import { useCharactersStore } from "@/stores/useCharactersStore";
-import AbilityCheckButton from "@/views/components/AbilityCheckButton.vue";
-import type { CharacterInfo, Scene } from "@trpg/shared";
+import type { Scene } from "@trpg/shared";
+import { createRichTextRenderer } from "@trpg/rich-text";
 
 const props = defineProps({
   scene: {
@@ -28,15 +24,27 @@ const props = defineProps({
     required: true,
   },
 });
+
+const richTextRendererRef = ref();
+onMounted(() => {
+  if (!richTextRendererRef.value) throw "unexpect no richTextRendererRef";
+
+  const initialValue = props.scene?.richTextDescription
+    ? props.scene?.richTextDescription
+    : [
+        {
+          type: "paragraph",
+          children: [{ text: props.scene?.description || "" }],
+        },
+      ];
+  createRichTextRenderer(richTextRendererRef.value, initialValue);
+});
 </script>
 
 <style lang="less" scoped>
-.scene-info-container {
-  text-align: left;
-  padding: 10px;
-}
-
-img {
-  width: 200px;
+.scene-story-renderer {
+  position: inherit;
+  overflow: auto;
+  height: 100%;
 }
 </style>

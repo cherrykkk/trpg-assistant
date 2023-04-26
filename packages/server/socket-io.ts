@@ -112,8 +112,9 @@ function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>, gameIns
     socket.emit("data: allCharactersInfo", allCharactersInfo);
   });
 
-  socket.on("operator: createSceneInfo", async (sceneInfo: Scene) => {
-    await insertOneDocument("scenes", sceneInfo);
+  socket.on("operator: createSceneInfo", async (data: Scene) => {
+    data.gameInstanceId = gameInstanceId;
+    await insertOneDocument("scenes", data);
     sendAllSenesInfo();
   });
 

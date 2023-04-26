@@ -65,17 +65,6 @@ export const useSceneStore = defineStore("scene", {
         this.refresh();
       });
     },
-    createNewScene(sceneData: { [key: string]: any }) {
-      fetch("/api/createScene", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(sceneData),
-      }).then((res) => {
-        this.refresh();
-      });
-    },
     sortTree() {
       this.sceneTree = [];
       const nameToScene: Map<string, Scene> = new Map();

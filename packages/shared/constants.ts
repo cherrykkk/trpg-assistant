@@ -110,6 +110,7 @@ export interface Scene {
   gameInstanceId: string;
   name: string;
   father?: string;
+  richTextDescription: any;
   description?: string;
   areaX?: number;
   areaY?: number;

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@trpg/shared": "workspace:*",
+    "@trpg/rich-text": "workspace:*",
     "element-plus": "^2.2.36",
     "less": "^4.1.3",
     "pinia": "^2.0.22",

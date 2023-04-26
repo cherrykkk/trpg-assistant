@@ -33,7 +33,6 @@ function getGameInstanceId() {
   }
 }
 const gameInstanceId = getGameInstanceId();
-console.log("gameInstanceId", gameInstanceId);
 if (!gameInstanceId) {
   router.push({ name: "notFound" });
 }

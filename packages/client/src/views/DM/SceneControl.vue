@@ -28,7 +28,7 @@
             <a>{{ scene.name }}</a>
           </el-breadcrumb-item>
         </el-breadcrumb>
-        <div v-if="!useSceneStore().isEditing">
+        <div v-if="!useSceneStore().isEditing" style="white-space: pre">
           <el-button
             type="primary"
             @click="() => (useSceneStore().isCombating = !useSceneStore().isCombating)"
@@ -39,18 +39,18 @@
           >
         </div>
       </div>
-      <div class="scene-info-container">
+      <div class="scene-info-container" :key="currentScene?.id">
         <template v-if="!isEditing && currentScene">
           <SceneStoryRenderer v-if="!isCombating" :scene="currentScene" />
           <SceneMapRenderer v-else />
         </template>
-        <template v-if="isEditing && currentScene">
+        <template v-if="isEditing">
           <SceneStoryEditor v-if="!isCombating" :scene="currentScene" />
           <SceneMapEditor v-if="isCombating" />
         </template>
       </div>
     </div>
-    <ResizablePanel v-if="!(isCombating && isEditing)" resize-direction="left" :default-width="200">
+    <ResizablePanel v-if="!isEditing" resize-direction="left" :default-width="200">
       <CharactersPanel />
     </ResizablePanel>
   </div>
@@ -91,9 +91,6 @@ function handleClickAddButton() {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  .scene-info-container {
-    overflow: auto;
-  }
 
   p {
     text-align: left;
@@ -117,6 +114,8 @@ function handleClickAddButton() {
 }
 
 .scene-info-container {
+  padding: 10px;
   float: left;
+  overflow: hidden;
 }
 </style>

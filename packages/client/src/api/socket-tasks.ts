@@ -8,6 +8,9 @@ export function updateCharacterInfo(characterId: string, property: Partial<Chara
 export function updateSceneInfo(id: string, data: Scene) {
   useSocketStore().socket.emit("operator: updateSceneInfo", id, data);
 }
+export function createSceneInfo(data: Scene) {
+  useSocketStore().socket.emit("operator: createSceneInfo", data);
+}
 
 export function updateSpellInfo(id: string, data: SpellInfo) {
   useSocketStore().socket.emit("operator: updateSpellInfo", id, data);
