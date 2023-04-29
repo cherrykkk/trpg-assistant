@@ -13,7 +13,18 @@
       <el-radio-group v-model="editedData.scope" size="large" style="margin-bottom: 10px">
         <el-radio-button label="PC" />
         <el-radio-button label="NPC" />
+        <el-radio-button label="template" />
         <el-radio-button label="monster" />
+        <el-dropdown>
+          <span class="el-dropdown-link">
+            选择模板<el-icon class="el-icon--right"><arrow-down /></el-icon>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item>Action 1</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </el-radio-group>
       <br />
       <EditCell v-model="editedData.name" prefix="姓名" />
@@ -28,52 +39,17 @@
       <EditCell v-model="editedData.maxHP" prefix="最大血量" />
       <EditCell v-model="editedData.currentHP" prefix="当前血量" />
       <EditCell v-model="editedData.speed" prefix="速度" />
-      <div class="ability-and-skills-area">
+      <div class="ability-and-proficiencies-area">
         <div>
           <EditCell v-model="editedData.strength" prefix="力量" />
-          <el-checkbox-group v-model="editedData.proficiencies">
-            <el-checkbox v-for="skill in abilityType.力量" :label="skill">
-              {{ skill }}
-            </el-checkbox>
-          </el-checkbox-group>
-        </div>
-        <div>
           <EditCell v-model="editedData.dexterity" prefix="敏捷" />
-          <el-checkbox-group v-model="editedData.proficiencies">
-            <el-checkbox v-for="skill in abilityType.敏捷" :label="skill">
-              {{ skill }}
-            </el-checkbox>
-          </el-checkbox-group>
-        </div>
-        <div>
           <EditCell v-model="editedData.constitution" prefix="体质" />
-          <el-checkbox-group v-model="editedData.proficiencies">
-            <el-checkbox v-for="skill in abilityType.体质" :label="skill">
-              {{ skill }}
-            </el-checkbox>
-          </el-checkbox-group>
-        </div>
-        <div>
           <EditCell v-model="editedData.intelligence" prefix="智力" />
-          <el-checkbox-group v-model="editedData.proficiencies">
-            <el-checkbox v-for="skill in abilityType.智力" :label="skill">{{ skill }}</el-checkbox>
-          </el-checkbox-group>
-        </div>
-        <div>
           <EditCell v-model="editedData.wisdom" prefix="感知" />
-          <el-checkbox-group v-model="editedData.proficiencies">
-            <el-checkbox v-for="skill in abilityType.感知" :label="skill">
-              {{ skill }}
-            </el-checkbox>
-          </el-checkbox-group>
-        </div>
-        <div>
           <EditCell v-model="editedData.charisma" prefix="魅力" />
-          <el-checkbox-group v-model="editedData.proficiencies">
-            <el-checkbox v-for="skill in abilityType.魅力" :label="skill">
-              {{ skill }}
-            </el-checkbox>
-          </el-checkbox-group>
+        </div>
+        <div style="padding: 5px">
+          <ProficienciesEditor :character-info="editedData" />
         </div>
       </div>
 
@@ -124,6 +100,7 @@ import { abilityType } from "@/stores/types";
 import CharacterSpellEditor from "./CharacterSpellEditor.vue";
 import BackpackContent from "@/views/components/BackpackContent.vue";
 import { ElMessage } from "element-plus";
+import ProficienciesEditor from "./ProficienciesEditor.vue";
 
 const props = defineProps({
   character: {
@@ -225,9 +202,11 @@ onUnmounted(() => {
   margin-bottom: 4px;
 }
 
-.ability-and-skills-area > div {
+.ability-and-proficiencies-area {
   display: flex;
-  align-items: center;
+  .input-number-cell {
+    display: block;
+  }
 }
 
 .backpack-container {

@@ -22,7 +22,7 @@ export function createNewCharacterInfoTemplate(): CharacterInfo {
   return {
     id: "",
     gameInstanceId: "",
-    scope: "monster",
+    scope: "template",
     name: "",
     titles: "", //头衔
     alignment: "",

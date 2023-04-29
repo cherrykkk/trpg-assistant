@@ -16,9 +16,12 @@
 </template>
 
 <script lang="ts" setup>
+import { PropType } from "vue";
+
 defineProps({
   prefix: String,
   modelValue: [String, Number],
+  styleType: { type: String as PropType<"textLine" | "rectBlock">, default: "rectBlock" },
 });
 
 defineEmits(["update:modelValue"]);
@@ -33,6 +36,7 @@ defineEmits(["update:modelValue"]);
 .input-number-cell {
   display: inline-block;
   margin: 4px 10px;
+  white-space: nowrap;
   span {
     margin-right: 6px;
   }

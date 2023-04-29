@@ -3,7 +3,8 @@ import { connectToMongoDB, collections } from "../connect";
 import { renameKey } from "./renameKey";
 
 connectToMongoDB().then((client) => {
-  addProperty();
+  turnFormat();
+  // addProperty();
   // addGameInstance();
 });
 
@@ -23,5 +24,18 @@ function addGameInstance(gameInstanceName: string = "新建游戏实例") {
     _id: new ObjectId(),
     name: gameInstanceName,
     description: "",
+  });
+}
+
+async function turnFormat() {
+  const characters = await collections.characters.find({}).toArray();
+  characters.forEach((c) => {
+    c.proficiencies = c.proficiencies.map((p) => ({
+      ...p,
+      name: p.name ? p.name : "未知",
+      description: "",
+    }));
+
+    collections.characters.updateOne({ _id: c._id }, { $set: c });
   });
 }

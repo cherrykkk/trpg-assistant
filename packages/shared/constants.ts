@@ -31,7 +31,7 @@ export interface ServerEvents {
 export interface CharacterInfo {
   id: string;
   gameInstanceId: string;
-  scope: "monster" | "NPC" | "PC";
+  scope: "monster" | "NPC" | "PC" | "template";
   name: string;
   titles: string; //头衔
   alignment: string;
@@ -43,7 +43,7 @@ export interface CharacterInfo {
   currentHP: number;
   maxHP: number;
   backgroundStory: string;
-  proficiencies: string[];
+  proficiencies: ProficiencyObject[];
   experience: number;
   strength: number;
   dexterity: number;
@@ -58,13 +58,29 @@ export interface CharacterInfo {
   speed: number;
   location: { sceneName: string; x: number; y: number };
   currentInitiative: number;
-  backpack: ItemInBackpack[];
+  backpack: ItemObject[];
 }
 
-export interface ItemInBackpack {
+export interface ProficiencyObject {
+  type: "skill" | "armor" | "weapon" | "tool" | "save";
+  name: string;
+  bonus: number;
+  description: string;
+}
+
+export const ProficiencyType = {
+  skill: "技能",
+  weapon: "武器",
+  tool: "工具",
+  armor: "护甲",
+  save: "豁免",
+};
+
+export interface ItemObject {
   id: number;
   name: string;
   description: string;
+  count: number;
   ounce: number;
   pound: number;
 }

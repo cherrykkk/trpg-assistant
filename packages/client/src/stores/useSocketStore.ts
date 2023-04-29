@@ -17,6 +17,9 @@ export const useSocketStore = defineStore("socket", {
     messageList: [] as Message[],
     allSpellInfo: [] as SpellInfo[],
     gameInstanceId: "",
+    handbook: {
+      itemObjects: [{}],
+    },
   }),
   getters: {
     socket(state) {

@@ -10,21 +10,28 @@
         class="item-in-backpack"
         :class="{ 'item-chosen': chosenItem === item }"
       >
-        {{ item.name }}
+        {{ item.name }}{{ (item.count ?? 1) === 1 ? "" : `*${item.count}` }}
       </div>
       <div class="add-item-button" @click="handleAddItem">+</div>
     </div>
     <div class="item-information">
       <div v-if="!isEditing && chosenItem">
-        <el-descriptions :title="chosenItem.name">
-          <el-descriptions-item label="描述">{{ chosenItem.description }}</el-descriptions-item>
-          <el-descriptions-item label="重量" label-align="right" :width="50"
-            >{{ chosenItem.pound ? chosenItem.pound + "磅" : ""
-            }}{{ chosenItem.ounce ? chosenItem.ounce + "盎司" : "" }}</el-descriptions-item
-          >
+        <el-descriptions>
+          <template #title>
+            {{ chosenItem.name }}{{ (chosenItem.count ?? 1) === 1 ? "" : `*${chosenItem.count}` }}
+            <span style="font-weight: 500; font-size: 14px; margin: 40px">{{
+              calaculateWeight(chosenItem)
+            }}</span>
+          </template>
+          <template #extra>
+            <el-button v-if="!isEditing && chosenItem" @click="handleEditButton" size="small"
+              >修改</el-button
+            >
+          </template>
+          <el-descriptions-item>{{ chosenItem.description }}</el-descriptions-item>
         </el-descriptions>
       </div>
-      <div v-if="isEditing && itemInfoInEdit">
+      <div v-if="isEditing && itemInfoInEdit" class="item-object-editor">
         <el-form>
           <el-form-item label="名称：">
             <el-input v-model="itemInfoInEdit.name" />
@@ -32,9 +39,12 @@
           <el-form-item label="描述：">
             <el-input type="textarea" v-model="itemInfoInEdit.description" />
           </el-form-item>
-          <el-form-item>
-            <el-input-number v-model="itemInfoInEdit.ounce" />盎司
+          <el-form-item label="数量">
+            <el-input-number label="数量" v-model="itemInfoInEdit.count" />
+          </el-form-item>
+          <el-form-item label="单重">
             <el-input-number v-model="itemInfoInEdit.pound" />磅
+            <el-input-number v-model="itemInfoInEdit.ounce" />盎司
           </el-form-item>
           <el-form-item>
             <el-button v-if="isEditing" @click="handleDeleteItem" size="small">删除</el-button>
@@ -45,18 +55,13 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="button-area">
-        <el-button v-if="!isEditing && chosenItem" @click="handleEditButton" size="small"
-          >修改</el-button
-        >
-      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { updateCharacterInfo } from "@/api/socket-tasks";
-import { CharacterInfo, ItemInBackpack } from "@trpg/shared";
+import { CharacterInfo, ItemObject } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 import { PropType, computed, ref } from "vue";
 
@@ -72,22 +77,14 @@ if (!props.characterInfo.backpack) {
 }
 
 const totalWeight = computed(() => {
-  let ounce = 0,
-    pound = 0;
-  props.characterInfo.backpack.forEach((e) => {
-    ounce += e.ounce;
-    pound += e.pound;
-  });
-  pound += Math.floor(ounce / 16);
-  ounce = ounce % 16;
-  return ` ${pound} 磅 ${ounce} 盎司`;
+  return calaculateWeight(props.characterInfo.backpack);
 });
 
-const chosenItem = ref<ItemInBackpack | null>(null);
-const itemInfoInEdit = ref<ItemInBackpack | null>(null);
+const chosenItem = ref<ItemObject | null>(null);
+const itemInfoInEdit = ref<ItemObject | null>(null);
 const isEditing = ref(false);
 
-function handleClickItem(item: ItemInBackpack) {
+function handleClickItem(item: ItemObject) {
   if (isEditing.value && itemInfoInEdit.value?.name) {
     ElMessage.error("请先保存或取消修改");
   } else if (chosenItem.value?.id === item.id) {
@@ -113,6 +110,7 @@ function handleAddItem() {
   itemInfoInEdit.value = {
     id: maxId + 1,
     name: "",
+    count: 1,
     description: "",
     ounce: 0,
     pound: 0,
@@ -154,6 +152,29 @@ function handleDeleteItem() {
   isEditing.value = false;
 
   updateCharacterInfo(props.characterInfo.id, props.characterInfo);
+}
+
+function calaculateWeight(items: ItemObject | ItemObject[]) {
+  if (!Array.isArray(items)) {
+    items = [items];
+  }
+
+  let ounce = 0,
+    pound = 0;
+  items.forEach((e) => {
+    const count = e.count ?? 1;
+    ounce += e.ounce * count;
+    pound += e.pound * count;
+  });
+  pound += Math.floor(ounce / 16);
+  ounce = Math.round(ounce % 16);
+  if (pound === 0) {
+    return `${ounce} 盎司`;
+  } else if (ounce === 0) {
+    return `${pound} 磅`;
+  } else {
+    return ` ${pound} 磅 ${ounce} 盎司`;
+  }
 }
 </script>
 
@@ -204,8 +225,9 @@ function handleDeleteItem() {
 .item-description {
   font-size: 12px;
 }
-.button-area {
-  display: flex;
-  justify-content: space-around;
+.item-object-editor {
+  .el-input-number {
+    margin: 0 10px 0 30px;
+  }
 }
 </style>
