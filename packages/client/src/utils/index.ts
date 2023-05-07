@@ -1,6 +1,7 @@
 import { useSocketStore } from "@/stores/useSocketStore";
 import { CharacterInfo, SpellInfo, SpellOnCharacter } from "@trpg/shared";
 import { ElMessage } from "element-plus";
+import { createProficienciesTemplate } from "./createProficienciesTemplate";
 
 export function copyCharacter(c: CharacterInfo) {
   console.log("暂未实现");
@@ -34,7 +35,8 @@ export function createNewCharacterInfoTemplate(): CharacterInfo {
     currentHP: 0,
     maxHP: 0,
     backgroundStory: "",
-    proficiencies: [],
+    proficiencies: createProficienciesTemplate(),
+    proficiencyBonus: 2,
     experience: 0,
     strength: 0,
     dexterity: 0,

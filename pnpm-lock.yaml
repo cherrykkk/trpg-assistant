@@ -59,12 +59,18 @@ importers:
       '@emotion/css':
         specifier: ^11.10.6
         version: 11.10.6
+      image-extensions:
+        specifier: ^1.1.0
+        version: 1.1.0
       immutability-helper:
         specifier: ^3.1.1
         version: 3.1.1
       is-hotkey:
         specifier: ^0.2.0
         version: 0.2.0
+      is-url:
+        specifier: ^1.2.4
+        version: 1.2.4
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -2740,6 +2746,11 @@ packages:
     engines: {node: '>= 4'}
     dev: true
 
+  /image-extensions@1.1.0:
+    resolution: {integrity: sha512-P0t7ByhK8Jk9TU05ct/7+f7h8dNuXq5OY4m0IO/T+1aga/qHkpC0Wf472x3FLdq/zFDG17pgapCM3JDTxwZzow==}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
   /image-size@0.5.5:
     resolution: {integrity: sha512-6TDAlDPZxUFCv+fuOkIoXT/V/f3Qbq8e37p+YOiYrUv3v9cc3/6x78VdfPgFVaB9dZYeLUfKgHRebpkm/oP2VQ==}
     engines: {node: '>=0.10.0'}
@@ -2938,6 +2949,10 @@ packages:
       gopd: 1.0.1
       has-tostringtag: 1.0.0
     dev: true
+
+  /is-url@1.2.4:
+    resolution: {integrity: sha512-ITvGim8FhRiYe4IQ5uHSkj7pVaPDrCTkNd3yq3cV7iZAcJdHTUMPMEHcqSOy9xZ9qFenQCvi+2wjH9a1nXqHww==}
+    dev: false
 
   /is-weakref@1.0.2:
     resolution: {integrity: sha512-qctsuLZmIQ0+vSSMfoVvyFe2+GSEvnmZ2ezTup1SBse9+twCCeial6EEi3Nc2KFcf6+qz2FBPnjXsk8xhKSaPQ==}

@@ -5,6 +5,8 @@ import { Editor, Transforms, createEditor, Descendant, Element as SlateElement }
 import { withHistory } from "slate-history";
 
 import { Button, Icon, Toolbar } from "./components";
+import { withImages } from "./withImages";
+import { CustomEditor } from "./custom-types";
 
 const HOTKEYS = {
   "mod+b": "bold",
@@ -16,25 +18,27 @@ const HOTKEYS = {
 const LIST_TYPES = ["numbered-list", "bulleted-list"];
 const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"];
 
-export const ReadOnlyExample = (props: {initialValue: Descendant[]}) => {
+export const ReadOnlyExample = (props: { initialValue: Descendant[] }) => {
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
-  const editor = useMemo(() => withReact(createEditor()), [])
+  const editor = useMemo(() => withReact(createEditor()), []);
   return (
     <Slate editor={editor} value={props.initialValue}>
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}
-        readOnly placeholder="Enter some plain text..." />
+        readOnly
+        placeholder="Enter some plain text..."
+      />
     </Slate>
-  )
-}
+  );
+};
 
-export const RichTextExample = (props: {initialValue:  Descendant[]}) => {
+export const RichTextExample = (props: { initialValue: Descendant[] }) => {
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
-  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
-  window.slateEditor = editor
+  const editor = useMemo(() => withImages(withHistory(withReact(createEditor()))), []);
+  window.slateEditor = editor;
   return (
     <Slate editor={editor} value={props.initialValue}>
       <Toolbar>
@@ -58,12 +62,12 @@ export const RichTextExample = (props: {initialValue:  Descendant[]}) => {
         placeholder="Enter some rich text…"
         spellCheck
         autoFocus
-        onKeyDown={event => {
+        onKeyDown={(event) => {
           for (const hotkey in HOTKEYS) {
             if (isHotkey(hotkey, event as any)) {
-              event.preventDefault()
-              const mark = HOTKEYS[hotkey]
-              toggleMark(editor, mark)
+              event.preventDefault();
+              const mark = HOTKEYS[hotkey];
+              toggleMark(editor, mark);
             }
           }
         }}
@@ -72,7 +76,7 @@ export const RichTextExample = (props: {initialValue:  Descendant[]}) => {
   );
 };
 
-const toggleBlock = (editor, format) => {
+const toggleBlock = (editor: CustomEditor, format: string) => {
   const isActive = isBlockActive(
     editor,
     format,
@@ -106,7 +110,7 @@ const toggleBlock = (editor, format) => {
   }
 };
 
-const toggleMark = (editor, format) => {
+const toggleMark = (editor: CustomEditor, format: string) => {
   const isActive = isMarkActive(editor, format);
 
   if (isActive) {
@@ -116,7 +120,7 @@ const toggleMark = (editor, format) => {
   }
 };
 
-const isBlockActive = (editor, format, blockType = "type") => {
+const isBlockActive = (editor: CustomEditor, format: string, blockType = "type") => {
   const { selection } = editor;
   if (!selection) return false;
 
@@ -130,7 +134,7 @@ const isBlockActive = (editor, format, blockType = "type") => {
   return !!match;
 };
 
-const isMarkActive = (editor, format) => {
+const isMarkActive = (editor: CustomEditor, format: string) => {
   const marks = Editor.marks(editor);
   return marks ? marks[format] === true : false;
 };

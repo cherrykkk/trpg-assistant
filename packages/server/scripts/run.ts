@@ -1,9 +1,10 @@
 import { ObjectId } from "mongodb";
 import { connectToMongoDB, collections } from "../connect";
 import { renameKey } from "./renameKey";
+import { ProficiencyObject } from "@trpg/shared";
 
 connectToMongoDB().then((client) => {
-  turnFormat();
+  // turnFormat();
   // addProperty();
   // addGameInstance();
 });

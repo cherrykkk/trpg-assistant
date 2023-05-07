@@ -1,8 +1,10 @@
 <template>
   <div class="info-cell">
     <div class="prefix">{{ prefix }}</div>
-    <div>{{ text || (text === "" ? "暂无" : "") }}</div>
-    <slot></slot>
+    <div class="content">
+      <div>{{ text || (text === "" ? "暂无" : "") }}</div>
+      <slot></slot>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -22,5 +24,8 @@ defineProps({
 }
 .prefix {
   background-color: #ccc;
+}
+.content {
+  padding: 5px 10px;
 }
 </style>

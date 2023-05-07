@@ -44,6 +44,7 @@ export interface CharacterInfo {
   maxHP: number;
   backgroundStory: string;
   proficiencies: ProficiencyObject[];
+  proficiencyBonus: number;
   experience: number;
   strength: number;
   dexterity: number;
@@ -64,8 +65,8 @@ export interface CharacterInfo {
 export interface ProficiencyObject {
   type: "skill" | "armor" | "weapon" | "tool" | "save";
   name: string;
-  bonus: number;
   description: string;
+  active: boolean;
 }
 
 export const ProficiencyType = {

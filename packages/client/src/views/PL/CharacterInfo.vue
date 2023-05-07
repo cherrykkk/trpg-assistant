@@ -19,7 +19,50 @@
       <el-descriptions-item label="感知">{{ characterInfo.wisdom }}</el-descriptions-item>
       <el-descriptions-item label="魅力">{{ characterInfo.charisma }}</el-descriptions-item>
     </el-descriptions>
-    <InfoCell prefix="熟练项" :text="characterInfo.proficiencies.join('，')" />
+    <InfoCell prefix="熟练项">
+      <div style="text-align: left">
+        <div>
+          技能熟练项：{{
+            characterInfo.proficiencies
+              .filter((p) => p.active && p.type === "skill")
+              .map((e) => e.name)
+              .join("，") || "无"
+          }}
+        </div>
+        <div>
+          武器熟练项：{{
+            characterInfo.proficiencies
+              .filter((p) => p.active && p.type === "weapon")
+              .map((e) => e.name)
+              .join("，") || "无"
+          }}
+        </div>
+        <div>
+          护甲熟练项：{{
+            characterInfo.proficiencies
+              .filter((p) => p.active && p.type === "armor")
+              .map((e) => e.name)
+              .join("，") || "无"
+          }}
+        </div>
+        <div>
+          豁免熟练项：{{
+            characterInfo.proficiencies
+              .filter((p) => p.active && p.type === "save")
+              .map((e) => e.name)
+              .join("，") || "无"
+          }}
+        </div>
+        <div>
+          工具熟练项：{{
+            characterInfo.proficiencies
+              .filter((p) => p.active && p.type === "tool")
+              .map((e) => e.name)
+              .join("，") || "无"
+          }}
+        </div>
+      </div>
+    </InfoCell>
     <InfoCell prefix="物品" :text="itemsInBackpackText" />
     <InfoCell prefix="已准备法术">
       <SpellItem
@@ -40,7 +83,7 @@
     <InfoCell prefix="外貌描述" :text="characterInfo.appearance"></InfoCell>
     <InfoCell prefix="角色背景">
       <p
-        style="text-align: left; margin: 10px"
+        style="text-align: left; margin: 0 0 10px 0"
         v-for="e in characterInfo.backgroundStory.split('\n')"
       >
         {{ e }}
@@ -94,6 +137,7 @@ console.log(props.characterInfo);
 
 <style lang="less" scoped>
 .character-info-edit-form {
+  overflow: auto;
   padding: 5%;
   :deep(.el-descriptions__label) {
     white-space: nowrap;

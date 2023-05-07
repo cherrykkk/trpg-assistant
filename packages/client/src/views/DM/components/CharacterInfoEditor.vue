@@ -48,7 +48,7 @@
           <EditCell v-model="editedData.wisdom" prefix="感知" />
           <EditCell v-model="editedData.charisma" prefix="魅力" />
         </div>
-        <div style="padding: 5px">
+        <div style="padding: 5px; min-width: 300px">
           <ProficienciesEditor :character-info="editedData" />
         </div>
       </div>
@@ -132,7 +132,6 @@ function handleDeleteCharacter() {
 }
 
 function handleClose() {
-  saveChanges();
   emit("closeDialog");
 }
 
@@ -170,7 +169,6 @@ function saveChanges() {
 }
 
 onUnmounted(() => {
-  console.log("unMounted");
   saveChanges();
 });
 </script>

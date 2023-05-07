@@ -1,18 +1,27 @@
 <template>
-  <el-input
-    class=""
-    v-if="typeof modelValue === 'string'"
-    :modelValue="modelValue"
-    @input="$emit('update:modelValue', $event)"
-  >
-    <template #prepend>
-      {{ prefix }}
-    </template>
-  </el-input>
-  <div v-else class="input-number-cell">
-    <span>{{ prefix }}</span>
-    <el-input-number :modelValue="modelValue" @input="$emit('update:modelValue', $event)" />
-  </div>
+  <template v-if="styleType === 'textLine'">
+    <el-input
+      class="text-line-input"
+      :modelValue="modelValue"
+      @input="$emit('update:modelValue', $event)"
+    />
+  </template>
+  <template v-else>
+    <el-input
+      class=""
+      v-if="typeof modelValue === 'string'"
+      :modelValue="modelValue"
+      @input="$emit('update:modelValue', $event)"
+    >
+      <template #prepend>
+        {{ prefix }}
+      </template>
+    </el-input>
+    <div v-else class="input-number-cell">
+      <span>{{ prefix }}</span>
+      <el-input-number :modelValue="modelValue" @input="$emit('update:modelValue', $event)" />
+    </div>
+  </template>
 </template>
 
 <script lang="ts" setup>
@@ -40,5 +49,10 @@ defineEmits(["update:modelValue"]);
   span {
     margin-right: 6px;
   }
+}
+
+.text-line-input {
+  display: block;
+  border: none;
 }
 </style>

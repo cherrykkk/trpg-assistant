@@ -13,7 +13,7 @@
           @edit-story="openEditBoard"
         />
       </el-tab-pane>
-      <el-tab-pane label="monster" name="template">
+      <el-tab-pane label="template" name="template">
         <CharacterCollapse
           :characters="useCharactersStore().characters.filter((e) => e.scope === 'template')"
           @edit-story="openEditBoard"

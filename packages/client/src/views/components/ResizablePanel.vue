@@ -12,6 +12,7 @@
       @mousedown="handleOnMouseDown"
     ></div>
   </div>
+  <div v-if="currentWidth === 0" @click="handleUnfold" class="unfold-button">《</div>
 </template>
 
 <script lang="ts" setup>
@@ -34,6 +35,10 @@ const props = defineProps({
     type: String as PropType<"left" | "right">,
     default: "right",
   },
+  foldable: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 let startPoint: { x: number; y: number } | null = null;
@@ -49,9 +54,13 @@ function handleOnMouseMove(e: MouseEvent) {
     } else {
       currentWidth.value -= offset;
     }
-    if (currentWidth.value < props.minWidth) {
-      currentWidth.value = props.minWidth;
+
+    console.log(currentWidth.value, props.minWidth, props.foldable);
+    if (props.foldable && currentWidth.value < props.minWidth) {
+      currentWidth.value = 0;
+      return;
     }
+
     currentWidth.value = Math.max(props.minWidth, currentWidth.value);
     currentWidth.value = Math.min(props.maxWidth, currentWidth.value);
 
@@ -62,6 +71,10 @@ function handleOnMouseUp(e: MouseEvent) {
   if (startPoint) {
     startPoint = null;
   }
+}
+
+function handleUnfold() {
+  currentWidth.value = props.defaultWidth;
 }
 
 addEventListener("mousemove", handleOnMouseMove);
@@ -80,6 +93,7 @@ const currentWidth = ref(props.defaultWidth);
   overflow: hidden;
   .slot-container {
     width: 100%;
+    overflow: auto;
   }
   .resize-handler {
     flex-shrink: 0;
@@ -96,6 +110,10 @@ const currentWidth = ref(props.defaultWidth);
   .resize-handler-left {
     border-left: 2px solid #ccc;
     left: 0;
+  }
+  .unfold-button {
+    position: absolute;
+    cursor: pointer;
   }
 }
 </style>
