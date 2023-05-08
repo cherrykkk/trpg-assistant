@@ -1,21 +1,34 @@
 <template>
   <div class="backpack-content">
     <h1 class="background-text">背包(物品信息)</h1>
-    <div style="text-align: left">总重量 {{ totalWeight }}</div>
+    <div style="display: flex; justify-content: space-between">
+      <span style="text-align: left">总重量 {{ totalWeight }}</span>
+      <span>
+        <el-button v-if="!isEditing" @click="enterEditMode" size="small">编辑</el-button>
+        <el-button v-else @click="() => (isEditing = false)" size="small">完成</el-button>
+      </span>
+    </div>
     <div class="items-list">
       <div
         v-for="(item, i) in characterInfo.backpack"
         :key="item.id"
-        @click="() => handleClickItem(item)"
+        @click="clickItem(item)"
         class="item-in-backpack"
         :class="{ 'item-chosen': chosenItem === item }"
       >
-        {{ item.name }}{{ (item.count ?? 1) === 1 ? "" : `*${item.count}` }}
+        <div>{{ item.name }}{{ (item.count ?? 1) === 1 ? "" : `*${item.count}` }}</div>
+        <span
+          v-if="chosenItem === item"
+          class="delete-button"
+          @click.stop="() => deleteItem(item)"
+          :class="{ 'delete-button-unlock': !deleteLock }"
+          >删除</span
+        >
       </div>
       <div class="add-item-button" @click="handleAddItem">+</div>
     </div>
-    <div class="item-information">
-      <div v-if="!isEditing && chosenItem">
+    <div class="item-information" v-if="chosenItem">
+      <div v-if="!isEditing">
         <el-descriptions>
           <template #title>
             {{ chosenItem.name }}{{ (chosenItem.count ?? 1) === 1 ? "" : `*${chosenItem.count}` }}
@@ -23,35 +36,23 @@
               calaculateWeight(chosenItem)
             }}</span>
           </template>
-          <template #extra>
-            <el-button v-if="!isEditing && chosenItem" @click="handleEditButton" size="small"
-              >修改</el-button
-            >
-          </template>
           <el-descriptions-item>{{ chosenItem.description }}</el-descriptions-item>
         </el-descriptions>
       </div>
-      <div v-if="isEditing && itemInfoInEdit" class="item-object-editor">
+      <div v-if="isEditing" class="item-object-editor">
         <el-form>
           <el-form-item label="名称：">
-            <el-input v-model="itemInfoInEdit.name" />
+            <el-input v-model="chosenItem.name" />
           </el-form-item>
           <el-form-item label="描述：">
-            <el-input type="textarea" v-model="itemInfoInEdit.description" />
+            <el-input type="textarea" v-model="chosenItem.description" />
           </el-form-item>
           <el-form-item label="数量">
-            <el-input-number label="数量" v-model="itemInfoInEdit.count" />
+            <el-input-number label="数量" v-model="chosenItem.count" />
           </el-form-item>
           <el-form-item label="单重">
-            <el-input-number v-model="itemInfoInEdit.pound" />磅
-            <el-input-number v-model="itemInfoInEdit.ounce" />盎司
-          </el-form-item>
-          <el-form-item>
-            <el-button v-if="isEditing" @click="handleDeleteItem" size="small">删除</el-button>
-            <el-button v-if="isEditing" @click="handleCancel" size="small">取消</el-button>
-            <el-button v-if="isEditing" @click="handleOk" size="small" type="primary"
-              >保存</el-button
-            >
+            <el-input-number v-model="chosenItem.pound" />磅
+            <el-input-number v-model="chosenItem.ounce" />盎司
           </el-form-item>
         </el-form>
       </div>
@@ -81,24 +82,24 @@ const totalWeight = computed(() => {
 });
 
 const chosenItem = ref<ItemObject | null>(null);
-const itemInfoInEdit = ref<ItemObject | null>(null);
-const isEditing = ref(false);
+function clickItem(item: ItemObject) {
+  chosenItem.value = item;
+  deleteLock.value = true;
+}
 
-function handleClickItem(item: ItemObject) {
-  if (isEditing.value && itemInfoInEdit.value?.name) {
-    ElMessage.error("请先保存或取消修改");
-  } else if (chosenItem.value?.id === item.id) {
-    chosenItem.value = null;
-  } else {
-    chosenItem.value = item;
-    itemInfoInEdit.value = null;
-    isEditing.value = false;
+const isEditing = ref(false);
+function enterEditMode() {
+  isEditing.value = true;
+  if (!chosenItem.value) {
+    chosenItem.value = props.characterInfo.backpack[0];
+  }
+  if (!chosenItem.value) {
+    handleAddItem();
   }
 }
 
 function handleAddItem() {
   isEditing.value = true;
-  chosenItem.value = null;
 
   let maxId = 0;
   props.characterInfo.backpack.forEach((e) => {
@@ -107,7 +108,7 @@ function handleAddItem() {
     }
   });
 
-  itemInfoInEdit.value = {
+  const newItem = {
     id: maxId + 1,
     name: "",
     count: 1,
@@ -115,43 +116,19 @@ function handleAddItem() {
     ounce: 0,
     pound: 0,
   };
+
+  chosenItem.value = newItem;
+  props.characterInfo.backpack.push(newItem);
 }
 
-function handleEditButton() {
-  if (chosenItem.value) {
-    isEditing.value = true;
-    itemInfoInEdit.value = { ...chosenItem.value };
-  }
-}
-
-function handleOk() {
-  if (chosenItem.value && itemInfoInEdit.value) {
-    Object.assign(chosenItem.value, itemInfoInEdit.value);
-    updateCharacterInfo(props.characterInfo.id, props.characterInfo);
-  } else if (itemInfoInEdit.value) {
-    props.characterInfo.backpack.push(itemInfoInEdit.value);
-    updateCharacterInfo(props.characterInfo.id, props.characterInfo);
-  }
-  isEditing.value = false;
-}
-
-function handleCancel() {
-  itemInfoInEdit.value = null;
-  isEditing.value = false;
-}
-
-function handleDeleteItem() {
-  if (itemInfoInEdit.value) {
-    props.characterInfo.backpack = props.characterInfo.backpack.filter(
-      (e) => e.id !== itemInfoInEdit.value?.id
-    );
+const deleteLock = ref(true);
+function deleteItem(item: ItemObject) {
+  if (deleteLock.value) {
+    deleteLock.value = false;
+    return;
   }
 
-  itemInfoInEdit.value = null;
-  chosenItem.value = null;
-  isEditing.value = false;
-
-  updateCharacterInfo(props.characterInfo.id, props.characterInfo);
+  props.characterInfo.backpack = props.characterInfo.backpack.filter((e) => e !== item);
 }
 
 function calaculateWeight(items: ItemObject | ItemObject[]) {
@@ -203,6 +180,7 @@ function calaculateWeight(items: ItemObject | ItemObject[]) {
 }
 .item-in-backpack,
 .add-item-button {
+  position: relative;
   font-size: 12px;
   font-weight: 600;
   border: 1px solid #666;
@@ -214,8 +192,19 @@ function calaculateWeight(items: ItemObject | ItemObject[]) {
   cursor: pointer;
 }
 .item-chosen {
-  background-color: #111;
-  color: white;
+  border: 2px solid red;
+  margin: 1px;
+  .delete-button {
+    bottom: 0;
+    color: #ddd;
+    position: absolute;
+    &:hover {
+      color: red;
+    }
+  }
+  .delete-button-unlock {
+    color: red;
+  }
 }
 .add-item-button {
   background-color: rgb(73, 169, 73);
