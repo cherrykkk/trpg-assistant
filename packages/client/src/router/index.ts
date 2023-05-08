@@ -23,7 +23,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "sceneControl",
         name: "sceneControl",
-        component: () => import("@/views/DM/SceneControl.vue"),
+        component: () => import("@/views/DM/scene-controller/SceneControl.vue"),
       },
     ],
   },

@@ -55,7 +55,6 @@ function handleOnMouseMove(e: MouseEvent) {
       currentWidth.value -= offset;
     }
 
-    console.log(currentWidth.value, props.minWidth, props.foldable);
     if (props.foldable && currentWidth.value < props.minWidth) {
       currentWidth.value = 0;
       return;

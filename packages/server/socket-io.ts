@@ -67,6 +67,10 @@ async function sendInitDataToSinglePlayerSocket(
   characterInfo: CharacterInfo
 ) {
   socket.emit("data: playerCharacter", characterInfo);
+
+  getAllSpellInfo().then((spells) => {
+    socket.emit("data: allSpellInfo", spells);
+  });
 }
 
 function broadcastUpdateToPlayers() {

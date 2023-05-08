@@ -11,7 +11,25 @@
     </div>
     <SceneCharacter v-if="chosenCharacter" :character="chosenCharacter" />
   </div>
-  <el-button class="create-character-button" @click="handleCreateCharacter">新增角色</el-button>
+
+  <div class="util-buttons">
+    <el-select placeholder="迁入角色" filterable style="margin: 2px 10px">
+      <el-option
+        v-for="character in charactersToSelect"
+        :key="character.id"
+        :label="character.name"
+        :value="character.id"
+        @click="() => moveCharacterToCurrentLocation(character)"
+      >
+        <div style="display: flex; justify-content: space-between">
+          <span>{{ character.name }}</span>
+          <span style="text-align: right; color: #999">{{ character.location.sceneName }}</span>
+        </div>
+      </el-option>
+    </el-select>
+    <el-button @click="handleCreateCharacter">新增角色</el-button>
+  </div>
+
   <el-drawer v-model="isEditingCharacterInfo" :size="800" direction="ltr">
     <CharacterInfoEditor
       v-if="isEditingCharacterInfo"
@@ -28,6 +46,8 @@ import { useCharactersStore } from "@/stores/useCharactersStore";
 import { CharacterInfo } from "@trpg/shared";
 import CharacterInfoEditor from "./CharacterInfoEditor.vue";
 import { useDoubleClick } from "@/utils";
+import { useSceneStore } from "@/stores/useSceneStore";
+import { updateCharacterInfo } from "@/api/socket-tasks";
 
 const sortedCharacters = computed(() => {
   return useCharactersStore().charactersInCurrentScene.sort(
@@ -48,6 +68,20 @@ function handleClickCharacter(c: CharacterInfo) {
 function handleCreateCharacter() {
   chosenCharacter.value = null;
   isEditingCharacterInfo.value = true;
+}
+
+const charactersToSelect = computed(() => {
+  return useCharactersStore()
+    .characters.filter((c) => c.location.sceneName !== useSceneStore().currentScene?.name)
+    .sort((a, b) => {
+      if (b.scope === "PC") return 1;
+      else return -1;
+    });
+});
+
+function moveCharacterToCurrentLocation(character: CharacterInfo) {
+  character.location.sceneName = useSceneStore().currentScene?.name || "未知";
+  updateCharacterInfo(character.id, character);
 }
 
 const isEditingCharacterInfo = ref(false);
@@ -72,10 +106,11 @@ const isEditingCharacterInfo = ref(false);
     border: 2px solid red;
   }
 }
-.create-character-button {
+.util-buttons {
   position: absolute;
   bottom: 10px;
 }
+
 .el-input-number {
   margin: 0 10px;
   width: 80px;

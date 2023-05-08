@@ -58,12 +58,12 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import SceneStoryRenderer from "./components/SceneStoryRenderer.vue";
-import SceneStoryEditor from "./components/SceneStoryEditor.vue";
-import ResizablePanel from "../components/ResizablePanel.vue";
-import SceneMapEditor from "./components/SceneMapEditor.vue";
-import SceneMapRenderer from "./components/SceneMapRenderer.vue";
-import CharactersPanel from "./components/CharactersPanel.vue";
+import SceneStoryRenderer from "../components/SceneStoryRenderer.vue";
+import SceneStoryEditor from "../components/SceneStoryEditor.vue";
+import ResizablePanel from "../../components/ResizablePanel.vue";
+import SceneMapEditor from "../components/SceneMapEditor.vue";
+import SceneMapRenderer from "../components/SceneMapRenderer.vue";
+import CharactersPanel from "../components/CharactersPanel.vue";
 import { useSceneStore } from "@/stores/useSceneStore";
 import type { Scene } from "@trpg/shared";
 
