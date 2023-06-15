@@ -6,7 +6,8 @@ import type {
   SpellInfo,
   Message,
   CharacterInfo,
-  GameInstance,
+  Scene,
+  CanvasMap,
 } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 
@@ -16,10 +17,13 @@ export const useSocketStore = defineStore("socket", {
     playerCharacterInfo: null as CharacterInfo | null,
     messageList: [] as Message[],
     allSpellInfo: [] as SpellInfo[],
+    allCanvasMap: [] as CanvasMap[],
+    currentMap: null as CanvasMap | null,
     gameInstanceId: "",
     handbook: {
       itemObjects: [{}],
     },
+    currentScene: {} as Scene | {},
   }),
   getters: {
     socket(state) {

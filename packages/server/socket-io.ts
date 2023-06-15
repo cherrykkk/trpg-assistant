@@ -46,7 +46,8 @@ io.on("connection", async (socket) => {
     }
 
     socketToDM.set(socket, gameId);
-    sendInitDataToSingleSocket(socket, gameId);
+    sendInitDataToDMSocket(socket, gameId);
+    attachSharedEventToSocket(socket, gameId);
     attachEventToSocket(socket, gameId);
   });
 
@@ -59,6 +60,7 @@ io.on("connection", async (socket) => {
 
     sendInitDataToSinglePlayerSocket(socket, character);
     socketToPlayer.set(socket, { characterId, characterName: character.name });
+    attachSharedEventToSocket(socket, character.gameInstanceId);
   });
 });
 
@@ -71,6 +73,10 @@ async function sendInitDataToSinglePlayerSocket(
   getAllSpellInfo().then((spells) => {
     socket.emit("data: allSpellInfo", spells);
   });
+
+  getAllMessage(characterInfo.gameInstanceId).then((messages) => {
+    socket.emit("data: allMessage", messages);
+  });
 }
 
 function broadcastUpdateToPlayers() {
@@ -81,7 +87,7 @@ function broadcastUpdateToPlayers() {
   });
 }
 
-async function sendInitDataToSingleSocket(
+async function sendInitDataToDMSocket(
   socket: Socket<ClientEvents, ServerEvents>,
   gameInstanceId: string
 ) {
@@ -98,6 +104,28 @@ async function sendInitDataToSingleSocket(
   });
   getAllSpellInfo().then((spells) => {
     socket.emit("data: allSpellInfo", spells);
+  });
+}
+
+function attachSharedEventToSocket(
+  socket: Socket<ClientEvents, ServerEvents>,
+  gameInstanceId: string
+) {
+  socket.on("operator: rollDice", async (characterId, diceType) => {
+    let characterName = "DM";
+    if (characterId !== "DM") {
+      const characterInfo = await getCharacterInfoById(characterId);
+      characterName = characterInfo.name;
+    }
+
+    const result = rollDice(diceType);
+    await writeMessage(gameInstanceId, `${characterName} 投出了(d${diceType}) ${result} `);
+    broadcastMessages(gameInstanceId);
+  });
+
+  socket.on("message: sendMessage", (message) => {
+    writeMessage(gameInstanceId, message);
+    broadcastMessages(gameInstanceId);
   });
 }
 
@@ -119,12 +147,12 @@ function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>, gameIns
   socket.on("operator: createSceneInfo", async (data: Scene) => {
     data.gameInstanceId = gameInstanceId;
     await insertOneDocument("scenes", data);
-    sendAllSenesInfo();
+    sendAllScenesInfo(gameInstanceId, socket);
   });
 
   socket.on("operator: updateSceneInfo", async (id, data) => {
     await updateDocument("sceneInfo", id, data);
-    sendAllSenesInfo();
+    sendAllScenesInfo(gameInstanceId, socket);
   });
 
   socket.on("operator: updateSpellInfo", async (id, data) => {
@@ -139,35 +167,20 @@ function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>, gameIns
     const allCharactersInfo = await getAllCharactersInfo(gameInstanceId);
     socket.emit("data: allCharactersInfo", allCharactersInfo);
   });
-
-  socket.on("operator: rollDice", async (characterId, diceType) => {
-    let characterName = "DM";
-    if (characterId !== "DM") {
-      const characterInfo = await getCharacterInfoById(characterId);
-      characterName = characterInfo.name;
-    }
-
-    const result = rollDice(diceType);
-    await writeMessage(`${characterName} 投出了(d${diceType}) ${result} `);
-    broadcastMessages();
-  });
-
-  socket.on("message: sendMessage", (message) => {
-    writeMessage(message);
-    broadcastMessages();
-  });
-
-  function broadcastMessages() {
-    getAllMessage(gameInstanceId).then((messages) => {
-      io.emit("data: allMessage", messages);
-    });
-  }
-  function writeMessage(messageContent: string) {
-    addMessage({ content: messageContent, gameInstanceId, id: "" });
-  }
-  function sendAllSenesInfo() {
-    getAllScenes(gameInstanceId).then((scenes) => {
-      socket.emit("data: allScenes", scenes);
-    });
-  }
 }
+
+function broadcastMessages(gameInstanceId: string) {
+  getAllMessage(gameInstanceId).then((messages) => {
+    io.emit("data: allMessage", messages);
+  });
+}
+function writeMessage(gameInstanceId, messageContent: string) {
+  addMessage({ content: messageContent, gameInstanceId, id: "" });
+}
+function sendAllScenesInfo(gameInstanceId: string, socket: Socket<ClientEvents, ServerEvents>) {
+  getAllScenes(gameInstanceId).then((scenes) => {
+    socket.emit("data: allScenes", scenes);
+  });
+}
+
+function broadcastSceneMapUpdateToPlayers() {}

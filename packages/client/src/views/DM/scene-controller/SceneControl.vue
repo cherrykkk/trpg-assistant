@@ -34,23 +34,29 @@
             @click="() => (useSceneStore().isCombating = !useSceneStore().isCombating)"
             >切换</el-button
           >
-          <el-button type="primary" @click="() => (useSceneStore().isEditing = true)"
+          <el-button
+            type="primary"
+            v-if="!isCombating"
+            @click="() => (useSceneStore().isEditing = true)"
             >编辑</el-button
           >
         </div>
       </div>
-      <div class="scene-info-container" :key="currentScene?.id">
+      <div class="scene-info-container" :key="currentScene?.id" v-if="!isCombating">
         <template v-if="!isEditing && currentScene">
-          <SceneStoryRenderer v-if="!isCombating" :scene="currentScene" />
-          <SceneMapRenderer v-else />
+          <SceneStoryRenderer :scene="currentScene" />
         </template>
         <template v-if="isEditing">
-          <SceneStoryEditor v-if="!isCombating" :scene="currentScene" />
-          <SceneMapEditor v-if="isCombating" />
+          <SceneStoryEditor :scene="currentScene" />
         </template>
       </div>
+      <div class="scene-info-container" :key="currentScene?.id" v-if="isCombating">
+        <CanvasMapEditor v-if="isCombating" :map-info="mapInfo">
+          <template #characters> <CharactersPanel /></template
+        ></CanvasMapEditor>
+      </div>
     </div>
-    <ResizablePanel v-if="!isEditing" resize-direction="left" :default-width="200">
+    <ResizablePanel v-if="!isEditing && !isCombating" resize-direction="left" :default-width="200">
       <CharactersPanel />
     </ResizablePanel>
   </div>
@@ -58,16 +64,19 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import SceneStoryRenderer from "../components/SceneStoryRenderer.vue";
-import SceneStoryEditor from "../components/SceneStoryEditor.vue";
+import SceneStoryRenderer from "./SceneStoryRenderer.vue";
+import SceneStoryEditor from "./SceneStoryEditor.vue";
+import CanvasMapEditor from "@/views/components/CanvasMapEditor.vue";
 import ResizablePanel from "../../components/ResizablePanel.vue";
-import SceneMapEditor from "../components/SceneMapEditor.vue";
-import SceneMapRenderer from "../components/SceneMapRenderer.vue";
 import CharactersPanel from "../components/CharactersPanel.vue";
 import { useSceneStore } from "@/stores/useSceneStore";
 import type { Scene } from "@trpg/shared";
+import { ref } from "vue";
+import { createCanvasMapTemplate } from "@/utils";
 
 const { isEditing, isCombating, currentScene } = storeToRefs(useSceneStore());
+
+const mapInfo = ref(createCanvasMapTemplate());
 
 function handleNodeClick(scene: Scene) {
   useSceneStore().currentScene = scene;
@@ -91,6 +100,7 @@ function handleClickAddButton() {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 
   p {
     text-align: left;
@@ -115,7 +125,7 @@ function handleClickAddButton() {
 
 .scene-info-container {
   padding: 10px;
-  float: left;
+  flex-grow: 1;
   overflow: hidden;
 }
 </style>

@@ -24,7 +24,7 @@ import { useSceneStore } from "@/stores/useSceneStore";
 import { PropType, onMounted, onUnmounted, reactive, ref } from "vue";
 import { createSceneInfo, updateSceneInfo } from "@/api/socket-tasks";
 import type { Scene } from "@trpg/shared";
-import { createRichTextEditor } from "@trpg/rich-text";
+import { createRichTextEditor } from "rich-text-component";
 
 const props = defineProps({
   scene: Object as PropType<Scene | null>,
@@ -43,7 +43,6 @@ onMounted(() => {
         },
       ];
 
-  console.log("onMounted");
   createRichTextEditor(richTextRef.value, initialValue);
 
   addEventListener("beforeunload", tryToStopLeavePage);
@@ -71,6 +70,7 @@ const editedScene = reactive<Scene>(
     areaY: 10,
     items: [],
     children: [],
+    relatedMapIDs: [],
   }
 );
 
@@ -113,7 +113,7 @@ function updateEdit() {
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  > div:nth-child(2) {
+  .rich-text-editor > div:nth-child(2) {
     overflow: auto;
   }
 }

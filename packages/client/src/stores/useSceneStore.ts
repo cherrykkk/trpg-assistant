@@ -6,7 +6,7 @@ export const useSceneStore = defineStore("scene", {
     scenes: [] as Scene[],
     currentScene: null as null | Scene,
     isEditing: false,
-    isCombating: false,
+    isCombating: true,
     sceneTree: [] as Scene[],
   }),
   getters: {

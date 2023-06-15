@@ -1,24 +1,17 @@
 import * as mongoDB from "mongodb";
 import * as dotenv from "dotenv";
-import { CharacterInfo, Message, Scene, SpellInfo, GameInstance } from "@trpg/shared";
-
-interface Document {
-  _id: mongoDB.ObjectId;
-}
-type CharacterDocument = Omit<CharacterInfo, "id"> & Document;
-type MessageDocument = Omit<Message, "id"> & Document;
-type SpellDocument = Omit<SpellInfo, "id"> & Document;
-type SceneDocument = Omit<Scene, "id"> & Document;
-type GameDocument = Omit<GameInstance, "id"> & Document;
+import { Document } from "./types";
+import { CharacterInfo, GameInstance, Message, Scene, SpellInfo } from "@trpg/shared";
 
 // 用断言是为了在赋值前导出不会报错。逻辑上应该是能保证先赋值再调用的
 export const collections = {} as {
-  games: mongoDB.Collection<GameDocument>;
-  characters: mongoDB.Collection<CharacterDocument>;
-  spells: mongoDB.Collection<SpellDocument>;
+  games: mongoDB.Collection<Document<GameInstance>>;
+  characters: mongoDB.Collection<Document<CharacterInfo>>;
+  spells: mongoDB.Collection<Document<SpellInfo>>;
   equipments: mongoDB.Collection;
-  scenes: mongoDB.Collection<SceneDocument>;
-  messages: mongoDB.Collection<MessageDocument>;
+  scenes: mongoDB.Collection<Document<Scene>>;
+  messages: mongoDB.Collection<Document<Message>>;
+  CanvasMaps: mongoDB.Collection<Document<CanvasMap>>;
 };
 
 export async function connectToMongoDB() {
@@ -42,6 +35,7 @@ export async function connectToMongoDB() {
   collections.equipments = db.collection("equipments");
   collections.scenes = db.collection("scenes");
   collections.messages = db.collection("messages");
+  collections.CanvasMaps = db.collection("CanvasMaps");
 
   console.log(`Successfully connected to database: ${db.databaseName} `);
 

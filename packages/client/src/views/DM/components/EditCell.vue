@@ -52,7 +52,14 @@ defineEmits(["update:modelValue"]);
 }
 
 .text-line-input {
+  --el-input-height: 24px;
   display: block;
   border: none;
+  margin: 0;
+  :deep(.el-input__wrapper) {
+    padding: 0;
+    box-shadow: none;
+    background-color: transparent;
+  }
 }
 </style>

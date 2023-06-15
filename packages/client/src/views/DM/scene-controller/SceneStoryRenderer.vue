@@ -16,7 +16,7 @@
 import { PropType, onMounted, ref } from "vue";
 import { useSceneStore } from "@/stores/useSceneStore";
 import type { Scene } from "@trpg/shared";
-import { createRichTextRenderer } from "@trpg/rich-text";
+import { createRichTextRenderer } from "rich-text-component";
 
 const props = defineProps({
   scene: {

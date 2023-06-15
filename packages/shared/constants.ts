@@ -134,6 +134,7 @@ export interface Scene {
   picture?: string;
   items: SceneItem[];
   children: Scene[];
+  relatedMapIDs: String[];
 }
 
 export interface SceneItem {
@@ -181,3 +182,30 @@ export const AbilityPropertyToName = {
   wisdom: "感知",
   charisma: "魅力",
 };
+
+export interface CanvasMap {
+  _id: string;
+  mapName: string;
+  layers: LayerInfo[];
+  width: number;
+  height: number;
+  scale: number;
+  offsetX: number;
+  offsetY: number;
+}
+export interface LayerInfo {
+  layerName: string;
+  playerVisible: boolean;
+  brushActions: BrushAction[];
+}
+
+export interface BrushAction {
+  brushType: "line";
+  points: Point[];
+  color: string;
+}
+
+export interface Point {
+  x: number;
+  y: number;
+}
