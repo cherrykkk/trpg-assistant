@@ -184,7 +184,7 @@ export const AbilityPropertyToName = {
 };
 
 export interface CanvasMap {
-  _id: string;
+  id: string;
   mapName: string;
   layers: LayerInfo[];
   width: number;

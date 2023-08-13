@@ -1,7 +1,7 @@
 import * as mongoDB from "mongodb";
 import * as dotenv from "dotenv";
 import { Document } from "./types";
-import { CharacterInfo, GameInstance, Message, Scene, SpellInfo } from "@trpg/shared";
+import { CanvasMap, CharacterInfo, GameInstance, Message, Scene, SpellInfo } from "@trpg/shared";
 
 // 用断言是为了在赋值前导出不会报错。逻辑上应该是能保证先赋值再调用的
 export const collections = {} as {

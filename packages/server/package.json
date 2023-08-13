@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node index.ts",
+    "dev": "ts-node src/main.ts",
     "script": "ts-node ./scripts/run.ts"
   },
   "keywords": [],
@@ -17,6 +17,8 @@
     "socket.io": "^4.5.1"
   },
   "devDependencies": {
-    "ts-node": "^10.9.1"
+    "@vitest/ui": "^0.34.1",
+    "ts-node": "^10.9.1",
+    "vitest": "^0.34.1"
   }
 }
