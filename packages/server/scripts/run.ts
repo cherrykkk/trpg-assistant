@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { connectToMongoDB, collections } from "../connect";
+import { connectToMongoDB, collections } from "../src/connect";
 import { renameKey } from "./renameKey";
 import { ProficiencyObject } from "@trpg/shared";
 
@@ -31,11 +31,12 @@ function addGameInstance(gameInstanceName: string = "新建游戏实例") {
 async function turnFormat() {
   const characters = await collections.characters.find({}).toArray();
   characters.forEach((c) => {
-    c.proficiencies = c.proficiencies.map((p) => ({
-      ...p,
-      name: p.name ? p.name : "未知",
-      description: "",
-    }));
+    c.backpack =
+      c.backpack?.map((e: any) => ({
+        id: 0,
+        description: e.name + " " + e.description + " ounce:" + e.ounce + " pound:" + e.pound,
+        num: e.count,
+      })) || [];
 
     collections.characters.updateOne({ _id: c._id }, { $set: c });
   });

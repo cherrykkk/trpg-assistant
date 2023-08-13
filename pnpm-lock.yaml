@@ -28,6 +28,9 @@ importers:
       element-plus:
         specifier: ^2.3.5
         version: 2.3.5(vue@3.3.4)
+      general-model:
+        specifier: D:\development\general-model
+        version: link:../../../general-model
       less:
         specifier: ^4.1.3
         version: 4.1.3

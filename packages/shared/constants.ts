@@ -59,7 +59,7 @@ export interface CharacterInfo {
   speed: number;
   location: { sceneName: string; x: number; y: number };
   currentInitiative: number;
-  backpack: ItemObject[];
+  backpack: { id: number; num: number; description: string }[];
 }
 
 export interface ProficiencyObject {
@@ -76,15 +76,6 @@ export const ProficiencyType = {
   armor: "护甲",
   save: "豁免",
 };
-
-export interface ItemObject {
-  id: number;
-  name: string;
-  description: string;
-  count: number;
-  ounce: number;
-  pound: number;
-}
 
 export interface SpellOnCharacter {
   spellId: string;
@@ -209,3 +200,44 @@ export interface Point {
   x: number;
   y: number;
 }
+
+export interface ItemInfo {
+  id: number;
+  name: string;
+  description: string;
+  ounce: number;
+  pound: number;
+}
+export const ENTITY_DATABASE: ItemInfo[] = [
+  {
+    id: 0,
+    name: "未定义",
+    description: "未定义",
+    ounce: 0,
+    pound: 0,
+  },
+  {
+    id: 1,
+    name: "金币",
+    description:
+      "一枚金币可以购买一个腰包 ， 50 尺的优质绳索或一头山羊。一名纯熟（ 但并不杰出 ）的工匠每日就可以挣取一枚金币 。 尽管金币并不经常直接用于交易 ， 但却是度量财富的常用单位 。 当商人们商谈价值千百金币的货物或服务时 ， 其交易通常并不包含个别货币的交换 。 某种程度上金币只是衡量价值的一个标准 ， 而实际交易中通常是使用金条 ， 信用状或其他值钱的商品 。",
+    ounce: 0.33,
+    pound: 0,
+  },
+  {
+    id: 2,
+    name: "银币",
+    description:
+      "一枚金币值十枚银币 ， 而银币则是普通人之间最流行的货币 。一枚银币可以雇佣一名苦力工作半日 ， 可以购买一罐灯油 ， 或是让你在一家简陋的旅馆休息一夜 。",
+    ounce: 0.33,
+    pound: 0,
+  },
+  {
+    id: 3,
+    name: "铜币",
+    description:
+      "一枚银币值十枚铜币 ， 而铜币则常在乞丐与苦力中流通 。一枚铜币能买一根蜡烛 ， 一支火把或是一块粉笔 。",
+    ounce: 0.33,
+    pound: 0,
+  },
+];

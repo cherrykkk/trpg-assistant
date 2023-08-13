@@ -10,49 +10,47 @@
     </div>
     <div class="items-list">
       <div
-        v-for="(item, i) in characterInfo.backpack"
+        v-for="(item, i) in backpackInfo"
         :key="item.id"
         @click="clickItem(item)"
         class="item-in-backpack"
-        :class="{ 'item-chosen': chosenItem === item }"
+        :class="{ 'item-chosen': chosenStackInfo?.stackId === item.stackId }"
       >
-        <div>{{ item.name }}{{ (item.count ?? 1) === 1 ? "" : `*${item.count}` }}</div>
+        <div>{{ item.name }}{{ (item.num ?? 1) === 1 ? "" : `*${item.num}` }}</div>
         <span
-          v-if="chosenItem === item"
+          v-if="chosenStackInfo?.stackId === item.stackId"
           class="delete-button"
           @click.stop="() => deleteItem(item)"
           :class="{ 'delete-button-unlock': !deleteLock }"
           >删除</span
         >
       </div>
-      <div class="add-item-button" @click="handleAddItem">+</div>
+      <div class="add-item-button">
+        <ElSelect placeholder="+" @change="handleAddItem">
+          <ElOption v-for="item in ENTITY_DATABASE" :key="item.id" :label="item.name" :value="item"
+        /></ElSelect>
+      </div>
     </div>
-    <div class="item-information" v-if="chosenItem">
-      <div v-if="!isEditing">
+    <div class="item-information" v-if="chosenStackInfo">
+      <div>
         <el-descriptions>
           <template #title>
-            {{ chosenItem.name }}{{ (chosenItem.count ?? 1) === 1 ? "" : `*${chosenItem.count}` }}
+            {{ chosenStackInfo.name
+            }}{{ (chosenStackInfo.num ?? 1) === 1 ? "" : `*${chosenStackInfo.num}` }}
             <span style="font-weight: 500; font-size: 14px; margin: 40px">{{
-              calaculateWeight(chosenItem)
+              calculateWeight(chosenStackInfo)
             }}</span>
           </template>
-          <el-descriptions-item>{{ chosenItem.description }}</el-descriptions-item>
+          <el-descriptions-item>{{ chosenStackInfo.description }}</el-descriptions-item>
         </el-descriptions>
       </div>
       <div v-if="isEditing" class="item-object-editor">
         <el-form>
-          <el-form-item label="名称：">
-            <el-input v-model="chosenItem.name" />
-          </el-form-item>
-          <el-form-item label="描述：">
-            <el-input type="textarea" v-model="chosenItem.description" />
+          <el-form-item label="额外描述：">
+            <el-input type="textarea" v-model="chosenStackInfo.stackDescription" />
           </el-form-item>
           <el-form-item label="数量">
-            <el-input-number label="数量" v-model="chosenItem.count" />
-          </el-form-item>
-          <el-form-item label="单重">
-            <el-input-number v-model="chosenItem.pound" />磅
-            <el-input-number v-model="chosenItem.ounce" />盎司
+            <el-input-number label="数量" v-model="chosenStackInfo.num" />
           </el-form-item>
         </el-form>
       </div>
@@ -61,10 +59,12 @@
 </template>
 
 <script lang="ts" setup>
-import { updateCharacterInfo } from "@/api/socket-tasks";
-import { CharacterInfo, ItemObject } from "@trpg/shared";
-import { ElMessage } from "element-plus";
+import { ENTITY_DATABASE, type CharacterInfo, type ItemInfo } from "@trpg/shared";
 import { PropType, computed, ref } from "vue";
+import { EntityStack, SingleEntityManager } from "general-model";
+import { ElOption, ElSelect } from "element-plus";
+
+EntityStack.INFO_DATABASE = ENTITY_DATABASE;
 
 const props = defineProps({
   characterInfo: {
@@ -73,65 +73,76 @@ const props = defineProps({
   },
 });
 
+const manager = new SingleEntityManager<ItemInfo>();
+
+type StackInfo = ReturnType<SingleEntityManager<ItemInfo>["listAllStackWithInfo"]>[number];
+
+const backpackInfo = ref<StackInfo[]>([]);
+function putInManager(id: number, num = 1, description = "") {
+  const entity = new EntityStack<ItemInfo>(id, num);
+  entity.stackDescription = description;
+  manager.putInEntity(entity);
+  backpackInfo.value = manager.listAllStackWithInfo();
+  emitChange();
+}
+props.characterInfo.backpack.forEach((e) => {
+  putInManager(e.id, e.num, e.description);
+});
+
+function deleteStackOfManager(stackId: number) {
+  manager.storage = manager.storage.filter((e) => e.stackId !== stackId);
+  backpackInfo.value = manager.listAllStackWithInfo();
+  emitChange();
+}
+
 if (!props.characterInfo.backpack) {
   props.characterInfo.backpack = [];
 }
 
 const totalWeight = computed(() => {
-  return calaculateWeight(props.characterInfo.backpack);
+  return calculateWeight(backpackInfo.value);
 });
 
-const chosenItem = ref<ItemObject | null>(null);
-function clickItem(item: ItemObject) {
-  chosenItem.value = item;
+const chosenStackInfo = ref<StackInfo | null>(null);
+function clickItem(stackInfo: StackInfo) {
+  chosenStackInfo.value = stackInfo;
   deleteLock.value = true;
 }
 
-const isEditing = ref(false);
+const isEditing = ref(true);
 function enterEditMode() {
   isEditing.value = true;
-  if (!chosenItem.value) {
-    chosenItem.value = props.characterInfo.backpack[0];
-  }
-  if (!chosenItem.value) {
-    handleAddItem();
+  if (!chosenStackInfo.value) {
+    chosenStackInfo.value = backpackInfo.value[0];
   }
 }
 
-function handleAddItem() {
+function handleAddItem(info: ItemInfo) {
   isEditing.value = true;
-
-  let maxId = 0;
-  props.characterInfo.backpack.forEach((e) => {
-    if (e.id > maxId) {
-      maxId = e.id;
-    }
-  });
-
-  const newItem = {
-    id: maxId + 1,
-    name: "",
-    count: 1,
-    description: "",
-    ounce: 0,
-    pound: 0,
-  };
-
-  chosenItem.value = newItem;
-  props.characterInfo.backpack.push(newItem);
+  putInManager(info.id, 1);
+  chosenStackInfo.value = backpackInfo.value[backpackInfo.value.length - 1];
 }
 
 const deleteLock = ref(true);
-function deleteItem(item: ItemObject) {
+function deleteItem(item: StackInfo) {
   if (deleteLock.value) {
     deleteLock.value = false;
     return;
   }
-
-  props.characterInfo.backpack = props.characterInfo.backpack.filter((e) => e !== item);
+  deleteStackOfManager(item.stackId);
+  chosenStackInfo.value = null;
+  emitChange();
 }
 
-function calaculateWeight(items: ItemObject | ItemObject[]) {
+function emitChange() {
+  props.characterInfo.backpack = manager.storage.map((e) => ({
+    id: e.id,
+    num: e.num,
+    description: e.stackDescription,
+  }));
+}
+
+function calculateWeight(items: StackInfo | StackInfo[]) {
   if (!Array.isArray(items)) {
     items = [items];
   }
@@ -139,7 +150,7 @@ function calaculateWeight(items: ItemObject | ItemObject[]) {
   let ounce = 0,
     pound = 0;
   items.forEach((e) => {
-    const count = e.count ?? 1;
+    const count = e.num ?? 1;
     ounce += e.ounce * count;
     pound += e.pound * count;
   });
