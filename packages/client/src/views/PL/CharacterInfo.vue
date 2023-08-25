@@ -63,13 +63,12 @@
         </div>
       </div>
     </InfoCell>
-    <InfoCell prefix="物品" :text="itemsInBackpackText" />
     <InfoCell prefix="已准备法术">
       <SpellItem
         v-for="e in spellsPreparedInfo"
         :spell-info="e"
         @switch-description="switchDescription"
-        :show-description="spellToShowDescription === e.id"
+        :show-description="spellToShowDescription === e._id"
       ></SpellItem>
     </InfoCell>
     <InfoCell prefix="已知法术">
@@ -77,14 +76,14 @@
         v-for="e in spellsKnownInfo"
         :spell-info="e"
         @switch-description="switchDescription"
-        :show-description="spellToShowDescription === e.id"
+        :show-description="spellToShowDescription === e._id"
       ></SpellItem>
     </InfoCell>
     <InfoCell prefix="外貌描述" :text="characterInfo.appearance"></InfoCell>
     <InfoCell prefix="角色背景">
       <p
         style="text-align: left; margin: 0 0 10px 0"
-        v-for="e in characterInfo.backgroundStory.split('\n')"
+        v-for="e in `${characterInfo.backgroundStory ?? ''}`.split('\n')"
       >
         {{ e }}
       </p>
@@ -93,9 +92,9 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType, computed, ref } from "vue";
+import { type PropType, computed, ref } from "vue";
 import InfoCell from "./components/InfoCell.vue";
-import { CharacterInfo, SpellInfo } from "@trpg/shared";
+import type { CharacterInfo, SpellInfo } from "@trpg/shared";
 import SpellItem from "../components/SpellItem.vue";
 import { useSocketStore } from "@/stores/useSocketStore";
 import { turnToSpellsInfo } from "@/utils/index";
@@ -104,15 +103,10 @@ const props = defineProps({
   characterInfo: { type: Object as PropType<CharacterInfo>, required: true },
 });
 
-const itemsInBackpackText = computed(() => {
-  console.log(props.characterInfo.backpack.map((e) => e.name));
-  return props.characterInfo.backpack.map((e) => e.name).join("，");
-});
-
 const spellsPreparedInfo = computed(() => {
   const result: SpellInfo[] = [];
   props.characterInfo.spellsPrepared.forEach((e) => {
-    const spellItem = useSocketStore().allSpellInfo.find((info) => info.id === e.spellId);
+    const spellItem = useSocketStore().allSpellInfo.find((info) => info._id === e.spellId);
     if (spellItem) {
       result.push(spellItem);
     }

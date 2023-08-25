@@ -1,5 +1,9 @@
 <template>
   <div class="proficiencies-editor">
+    <TipPopover trigger="click" :teleported="true" placement="right">
+      <template #reference> ? </template>
+      <ProficiencyBonus />
+    </TipPopover>
     <div>熟练项（技能、武器、护甲、工具）</div>
     <div style="text-align: left">熟练加值：3</div>
     <div
@@ -25,8 +29,10 @@
 </template>
 
 <script lang="ts" setup>
-import { CharacterInfo, ProficiencyObject, ProficiencyType } from "@trpg/shared";
-import { PropType, computed, onMounted, ref, watch } from "vue";
+import { type CharacterInfo, type ProficiencyObject } from "@trpg/shared";
+import { type PropType, computed, onMounted, ref, watch } from "vue";
+import TipPopover from "@/views/components/tip-popovers/TipPopover.vue";
+import ProficiencyBonus from "@/views/components/tip-popovers/ProficiencyBonus.vue";
 
 const props = defineProps({
   characterInfo: {

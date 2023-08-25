@@ -1,45 +1,37 @@
 <template>
   <div class="spells-of-character-content">
     <div class="spells-of-character">
-      <div v-for="s in spellInfoToShowInLeftList" :key="s.id">
+      <div v-for="s in spellInfoToShowInLeftList" :key="s._id">
         <SpellItem
           :spell-info="s"
-          :show-description="spellIdToShowDescription.includes(s.id)"
+          :show-description="spellIdToShowDescription.includes(s._id)"
           @switch-description="handleSwitchDescription"
         />
-        <div v-if="spellIdToShowDescription.includes(s.id)" class="spell-on-character-info">
-          <TapToEditDescription v-model="getSpellOnCharacterInfo(s.id).reason" />
-          <div class="delete-button" @click="() => handleDeleteSpell(s.id)">-</div>
+        <div v-if="spellIdToShowDescription.includes(s._id)" class="spell-on-character-info">
+          <TapToEditDescription v-model="getSpellOnCharacterInfo(s._id).reason" />
+          <div class="delete-button" @click="() => handleDeleteSpell(s._id)">-</div>
         </div>
       </div>
       <el-button class="switch-button" @click="() => (showSpellList = !showSpellList)">
         {{ showSpellList ? `关闭列表` : `打开列表` }}
       </el-button>
     </div>
-    <div class="spells-in-database" v-show="showSpellList">
-      <div v-for="spellInfo in useSocketStore().allSpellInfo" :key="spellInfo.id">
-        <SpellItem
-          :spell-info="spellInfo"
-          :show-description="spellIdToShowDescription.includes(spellInfo.id)"
-          @switch-description="handleSwitchDescription"
-        />
-        <div v-if="spellIdToShowDescription.includes(spellInfo.id)">
-          <div v-if="spellsOnCharacter.map((e) => e.spellId).includes(spellInfo.id)">
-            该法术已存在列表中
-          </div>
-          <div v-else class="add-button" @click="() => handleAddSpell(spellInfo.id)">+</div>
-        </div>
-      </div>
-    </div>
+    <SpellSelect
+      v-if="showSpellList"
+      :spell-database="useSocketStore().allSpellInfo"
+      @select="handleAddSpell"
+      :default-class-option="character.class"
+    />
   </div>
 </template>
 <script lang="ts" setup>
-import { PropType, computed, nextTick, ref } from "vue";
-import { CharacterInfo } from "@trpg/shared";
+import { type PropType, computed, nextTick, ref } from "vue";
+import type { CharacterInfo } from "@trpg/shared";
 import SpellItem from "@/views/components/SpellItem.vue";
 import { useSocketStore } from "@/stores/useSocketStore";
 import TapToEditDescription from "./TapToEditDescription.vue";
 import { turnToSpellsInfo } from "@/utils";
+import SpellSelect from "@/views/components/SpellSelect.vue";
 
 const props = defineProps({
   character: {
@@ -77,17 +69,8 @@ function handleDeleteSpell(spellId: string) {
   }
 }
 
-const reasonInputRef = ref();
-function handleEditReason(spellId: string) {
-  isEditingReasonOfSpellId.value = spellId;
-  nextTick(() => {
-    document.getElementById("reason_input")?.focus();
-  });
-}
-
 const spellIdToShowDescription = ref<string[]>([]);
 const showSpellList = ref(false);
-const isEditingReasonOfSpellId = ref<string | null>(null);
 
 const spellsOnCharacter = computed(() => {
   return knownOrPrepared.value === "prepared"
@@ -149,14 +132,6 @@ function getSpellOnCharacterInfo(id: string) {
     margin: 2px;
     line-height: 24px;
   }
-}
-
-.spells-in-database {
-  width: 100%;
-  max-height: 400px;
-  overflow: auto;
-  border-left: 1px solid #ddd;
-  margin-right: -8px;
 }
 
 .delete-button {

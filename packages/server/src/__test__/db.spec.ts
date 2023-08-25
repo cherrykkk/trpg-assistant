@@ -1,12 +1,26 @@
-import { test, expect } from "vitest";
-import { useTask } from "../taskByMongoDB";
-import { connectToMongoDB, collections } from "../connect";
+import { test, expect, describe } from "vitest";
+import { useMongoDB } from "../connect";
+import { ObjectId } from "mongodb";
+// import { io, Socket } from "socket.io-client";
+import { initSocket } from "../socket-io";
+import type { ClientEvents, ServerEvents } from "@trpg/shared";
 const gameInstanceId = "6446094202fe8565888799c3";
 
-test("db data", async () => {
-  await connectToMongoDB();
-  const tasks = useTask(collections);
+let testGameInstanceId = "";
 
-  const characterList = await tasks.queryAllDocument("characters", gameInstanceId);
-  expect(characterList.length).toBeGreaterThan(0);
+describe("test db", async () => {
+  const { collections } = await useMongoDB();
+  test("string _id", () => {
+    collections.games.findOne({ _id: "6446094202fe8565888799c3" });
+  });
+
+  // test("socket", async () => {
+  //   initSocket(collections);
+  //   const socket: Socket<ServerEvents, ClientEvents> = io(`127.0.0.1:3333`);
+
+  //   socket.on("connect", () => {
+  //     console.log("connect");
+  //     socket.emit("signIn: signInAsDM", "6446094202fe8565888799c3");
+  //   });
+  // });
 });

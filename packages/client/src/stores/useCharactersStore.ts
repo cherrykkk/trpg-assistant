@@ -5,7 +5,9 @@ import { useSceneStore } from "./useSceneStore";
 export const useCharactersStore = defineStore("character", {
   state: () => ({
     count: 0,
-    characters: [] as CharacterInfo[],
+    characters: JSON.parse(
+      localStorage.getItem("data: allCharactersInfo") ?? "[]"
+    ) as CharacterInfo[],
     starCharacterIds: [] as number[],
     chosenCharacter: null as CharacterInfo | null,
   }),

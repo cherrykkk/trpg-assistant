@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { SpellInfo } from "@trpg/shared";
+import { type SpellInfo } from "@trpg/shared";
 
 export const useSpellsStore = defineStore("spells", {
   state: () => {

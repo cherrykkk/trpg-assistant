@@ -40,7 +40,7 @@ import { useCharactersStore } from "@/stores/useCharactersStore";
 import CharacterInfoEditor from "./components/CharacterInfoEditor.vue";
 import CharacterCollapse from "./components/CharacterCollapse.vue";
 import { ref } from "vue";
-import { CharacterInfo } from "@trpg/shared";
+import type { CharacterInfo } from "@trpg/shared";
 
 const characterScope = ref<"star" | CharacterInfo["scope"]>("PC");
 

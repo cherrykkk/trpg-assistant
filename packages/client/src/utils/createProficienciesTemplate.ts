@@ -1,4 +1,4 @@
-import { ProficiencyObject } from "@trpg/shared";
+import { type ProficiencyObject } from "@trpg/shared";
 
 export function createProficienciesTemplate(): ProficiencyObject[] {
   return [

@@ -7,7 +7,9 @@
         }})
         <div v-for="skill in AbilityType[abilityProperty]" class="skill-tag">
           {{ skill }}
-          <span v-if="character.proficiencies && character.proficiencies.includes(skill)">
+          <span
+            v-if="character.proficiencies && character.proficiencies.includes(skill as unknown as ProficiencyObject)"
+          >
             ({{ proficiencyBonus }})
           </span>
         </div>
@@ -18,13 +20,14 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType, ref } from "vue";
+import { type PropType, ref } from "vue";
 import { characterAdvancement } from "@/stores/constants";
 import {
   AbilityType,
   AbilityPropertyToName,
   AbilityPropertyList,
-  CharacterInfo,
+  type CharacterInfo,
+  type ProficiencyObject,
 } from "@trpg/shared";
 
 const props = defineProps({

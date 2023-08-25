@@ -1,5 +1,11 @@
 import { useSocketStore } from "@/stores/useSocketStore";
-import { CharacterInfo, LayerInfo, SpellInfo, SpellOnCharacter, CanvasMap } from "@trpg/shared";
+import type {
+  CharacterInfo,
+  LayerInfo,
+  SpellInfo,
+  SpellOnCharacter,
+  CanvasMap,
+} from "@trpg/shared";
 import { ElMessage } from "element-plus";
 import { createProficienciesTemplate } from "./createProficienciesTemplate";
 
@@ -10,7 +16,7 @@ export function copyCharacter(c: CharacterInfo) {
 export function turnToSpellsInfo(data: SpellOnCharacter[]) {
   const result: SpellInfo[] = [];
   data.forEach((e) => {
-    const spellItem = useSocketStore().allSpellInfo.find((info) => info.id === e.spellId);
+    const spellItem = useSocketStore().allSpellInfo.find((info) => info._id === e.spellId);
     if (spellItem) {
       result.push(spellItem);
     }
@@ -21,7 +27,7 @@ export function turnToSpellsInfo(data: SpellOnCharacter[]) {
 
 export function createNewCharacterInfoTemplate(): CharacterInfo {
   return {
-    id: "",
+    _id: "",
     gameInstanceId: "",
     scope: "template",
     name: "",

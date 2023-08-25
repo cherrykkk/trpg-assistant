@@ -1,6 +1,6 @@
 <template>
   <el-collapse v-model="chosenCharacter" accordion>
-    <el-collapse-item v-for="character in characters" :key="character.id" class="character-item">
+    <el-collapse-item v-for="character in characters" :key="character._id" class="character-item">
       <template #title>
         <div class="collapse-title">
           <span>{{ character.name }}</span>
@@ -33,7 +33,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { PropType } from "vue";
+import { type PropType } from "vue";
 import { copyCharacter } from "@/utils/index";
 import type { CharacterInfo } from "@trpg/shared";
 

@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed, HTMLAttributes, watch } from "vue";
+import { ref, onMounted, computed, type HTMLAttributes, watch } from "vue";
 import { useEventListener } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import { useSocketStore } from "@/stores/useSocketStore";

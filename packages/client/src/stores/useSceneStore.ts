@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
-import { Scene } from "@trpg/shared";
+import { type Scene } from "@trpg/shared";
+import { ElMessage } from "element-plus";
 
 export const useSceneStore = defineStore("scene", {
   state: () => ({
-    scenes: [] as Scene[],
+    scenes: JSON.parse(localStorage.getItem("data: allScenes") ?? "[]") as Scene[],
     currentScene: null as null | Scene,
-    isEditing: false,
-    isCombating: true,
+    editTarget: null as null | "path" | "story",
+    isCombating: false,
     sceneTree: [] as Scene[],
   }),
   getters: {
@@ -40,9 +41,9 @@ export const useSceneStore = defineStore("scene", {
       if (!this.currentScene) {
         this.currentScene = this.scenes[0];
       } else {
-        const currentSceneId = this.currentScene.id;
+        const currentSceneId = this.currentScene._id;
         if (this.currentScene) {
-          this.currentScene = this.scenes.find((e) => e.id === currentSceneId) ?? null;
+          this.currentScene = this.scenes.find((e) => e._id === currentSceneId) ?? null;
 
           if (!this.currentScene) {
             this.currentScene = this.scenes[0];
@@ -84,6 +85,13 @@ export const useSceneStore = defineStore("scene", {
             i--;
           }
         }
+      }
+    },
+    changeCurrentScene(newScene: Scene | null) {
+      if (this.editTarget !== null) {
+        ElMessage.warning("请先保存或取消编辑");
+      } else {
+        this.currentScene = newScene;
       }
     },
   },

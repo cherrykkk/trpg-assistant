@@ -6,9 +6,6 @@ import type {
   GameInstance,
   CanvasMap,
 } from "@trpg/shared";
-import type { ObjectId, WithId } from "mongodb";
-
-export type Document<T extends AllInfo> = WithId<Omit<T, "id">>;
 
 export type AllInfo = CharacterInfo | Message | SpellInfo | Scene | GameInstance | CanvasMap;
 
@@ -19,15 +16,6 @@ export type CollectionName =
   | "spells"
   | "games"
   | "CanvasMaps";
-
-type InfoTypeMap = {
-  chatacters: CharacterInfo;
-  messages: Message;
-  spells: SpellInfo;
-  scenes: Scene;
-  games: GameInstance;
-  CanvasMap: CanvasMap;
-};
 
 // export type InfoType<T extends CollectionName> = T extends "characters"
 //   ? CharacterInfo

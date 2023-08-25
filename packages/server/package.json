@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node src/main.ts",
+    "test": "vitest",
+    "test-ui": "vitest --ui",
     "script": "ts-node ./scripts/run.ts"
   },
   "keywords": [],
@@ -12,12 +14,14 @@
   "license": "ISC",
   "dependencies": {
     "@trpg/shared": "workspace:*",
+    "@types/node": "^20.5.1",
     "dotenv": "^16.0.3",
     "mongodb": "^5.1.0",
     "socket.io": "^4.5.1"
   },
   "devDependencies": {
     "@vitest/ui": "^0.34.1",
+    "socket.io-client": "^4.6.1",
     "ts-node": "^10.9.1",
     "vitest": "^0.34.1"
   }

@@ -1,0 +1,113 @@
+<template>
+  <div class="spell-select">
+    <div class="filter-option">
+      <select @change="handleSelectClass">
+        <option v-for="e in classOption" :selected="filterClass === e">{{ e }}</option>
+      </select>
+    </div>
+    <div class="spells-in-database">
+      <div v-for="spellInfo in filteredSpellDatabase" :key="spellInfo._id">
+        <SpellItem
+          :spell-info="spellInfo"
+          :show-description="spellIdToShowDescription.includes(spellInfo._id)"
+          @switch-description="handleSwitchDescription"
+        />
+        <div v-if="spellIdToShowDescription.includes(spellInfo._id)">
+          <div v-if="existSpell.map((e) => e.spellId).includes(spellInfo._id)">
+            该法术已存在列表中
+          </div>
+          <div v-else class="add-button" @click="() => handleAddSpell(spellInfo._id)">+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script lang="ts" setup>
+import { type PropType, computed, nextTick, ref, reactive } from "vue";
+import SpellItem from "@/views/components/SpellItem.vue";
+import type { SpellInfo, SpellOnCharacter } from "@trpg/shared";
+
+const props = defineProps({
+  spellDatabase: {
+    type: Array as PropType<SpellInfo[]>,
+    default: [],
+  },
+  existSpell: {
+    type: Array as PropType<SpellOnCharacter[]>,
+    default: [],
+  },
+  defaultClassOption: {
+    type: String,
+  },
+});
+
+type ClassOption = keyof SpellInfo | "全部";
+
+const emits = defineEmits<{
+  (event: "select", id: string): void;
+}>();
+
+function handleSwitchDescription(id: string) {
+  if (spellIdToShowDescription.value.includes(id)) {
+    spellIdToShowDescription.value = spellIdToShowDescription.value.filter((e) => e !== id);
+  } else {
+    spellIdToShowDescription.value.push(id);
+  }
+}
+function handleAddSpell(spellId: string) {
+  emits("select", spellId);
+}
+
+const spellIdToShowDescription = ref<string[]>([]);
+
+// filter
+const classOption = ["全部", "诗人", "牧师", "德鲁伊", "圣武士", "游侠", "术士", "邪术士", "法师"];
+const filterClass = ref<keyof SpellInfo | "全部">("全部");
+(function initFilterClass() {
+  console.log(props.defaultClassOption, classOption.includes(props.defaultClassOption ?? ""));
+  if (classOption.includes(props.defaultClassOption ?? "")) {
+    filterClass.value = props.defaultClassOption as ClassOption;
+  }
+})();
+
+function handleSelectClass(e: Event) {
+  filterClass.value = (e.target as HTMLSelectElement).value as ClassOption;
+}
+
+const filteredSpellDatabase = computed(() => {
+  let result = props.spellDatabase;
+  const fc = filterClass.value;
+  if (fc !== "全部") {
+    result = props.spellDatabase.filter((e) => e[fc]);
+  }
+  return result.sort((a, b) => a.等级 - b.等级);
+});
+</script>
+<style lang="less" scoped>
+.spell-select {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+  max-height: 400px;
+  border-left: 1px solid #ddd;
+  margin-right: -8px;
+}
+.spells-in-database {
+  overflow: auto;
+}
+
+.delete-button {
+  background-color: #e18989;
+  color: white;
+  width: 24px;
+  border-radius: 50%;
+}
+
+.add-button {
+  background-color: #8fc58f;
+  color: white;
+  margin: 0 10px 10px 10px;
+  cursor: pointer;
+}
+</style>

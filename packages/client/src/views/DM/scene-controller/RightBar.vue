@@ -12,13 +12,13 @@
     <SceneCharacter v-if="chosenCharacter" :character="chosenCharacter" />
   </div>
 
-  <div class="util-buttons">
+  <div>
     <el-select placeholder="迁入角色" filterable style="margin: 2px 10px">
       <el-option
         v-for="character in charactersToSelect"
-        :key="character.id"
+        :key="character._id"
         :label="character.name"
-        :value="character.id"
+        :value="character._id"
         @click="() => moveCharacterToCurrentLocation(character)"
       >
         <div style="display: flex; justify-content: space-between">
@@ -40,14 +40,17 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
+import { computed, ref, type PropType } from "vue";
 import SceneCharacter from "./Character.vue";
 import { useCharactersStore } from "@/stores/useCharactersStore";
-import { CharacterInfo } from "@trpg/shared";
-import CharacterInfoEditor from "./CharacterInfoEditor.vue";
+import type { CharacterInfo, Scene } from "@trpg/shared";
+import CharacterInfoEditor from "../components/CharacterInfoEditor.vue";
 import { useDoubleClick } from "@/utils";
-import { useSceneStore } from "@/stores/useSceneStore";
 import { updateCharacterInfo } from "@/api/socket-tasks";
+
+const props = defineProps({
+  scene: { type: Object as PropType<Scene>, required: true },
+});
 
 const sortedCharacters = computed(() => {
   return useCharactersStore().charactersInCurrentScene.sort(
@@ -72,7 +75,7 @@ function handleCreateCharacter() {
 
 const charactersToSelect = computed(() => {
   return useCharactersStore()
-    .characters.filter((c) => c.location.sceneName !== useSceneStore().currentScene?.name)
+    .characters.filter((c) => c.location.sceneName !== props.scene.name)
     .sort((a, b) => {
       if (b.scope === "PC") return 1;
       else return -1;
@@ -80,8 +83,8 @@ const charactersToSelect = computed(() => {
 });
 
 function moveCharacterToCurrentLocation(character: CharacterInfo) {
-  character.location.sceneName = useSceneStore().currentScene?.name || "未知";
-  updateCharacterInfo(character.id, character);
+  character.location.sceneName = props.scene.name || "未知";
+  updateCharacterInfo(character._id, character);
 }
 
 const isEditingCharacterInfo = ref(false);
@@ -105,10 +108,6 @@ const isEditingCharacterInfo = ref(false);
   .character-item-chosen {
     border: 2px solid red;
   }
-}
-.util-buttons {
-  position: absolute;
-  bottom: 10px;
 }
 
 .el-input-number {

@@ -65,10 +65,10 @@
 
 <script lang="ts" setup>
 import { updateSceneInfo } from "@/api/socket-tasks";
-import { SceneItem } from "@trpg/shared";
-import { Scene } from "@trpg/shared";
+import type { SceneItem, Scene } from "@trpg/shared";
+import {} from "@trpg/shared";
 import { ElMessage } from "element-plus";
-import { PropType, ref } from "vue";
+import { type PropType, ref } from "vue";
 
 const props = defineProps({
   sceneInfo: {
@@ -145,7 +145,7 @@ function deletePoint(point: { x: number; y: number }) {
 
 function handleOk() {
   if (chosenItem.value) {
-    updateSceneInfo(props.sceneInfo.id, props.sceneInfo);
+    updateSceneInfo(props.sceneInfo._id, props.sceneInfo);
   }
   isEditing.value = false;
 }
@@ -162,7 +162,7 @@ function handleDeleteItem() {
   chosenItem.value = null;
   isEditing.value = false;
 
-  updateSceneInfo(props.sceneInfo.id, props.sceneInfo);
+  updateSceneInfo(props.sceneInfo._id, props.sceneInfo);
 }
 </script>
 

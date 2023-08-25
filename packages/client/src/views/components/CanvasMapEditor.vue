@@ -64,11 +64,11 @@
 
 <script lang="ts" setup>
 import ResizablePanel from "@/views/components/ResizablePanel.vue";
-import { ref, onMounted, computed, HTMLAttributes, watch, PropType } from "vue";
-import { BrushAction, CanvasMap, LayerInfo, Point } from "@trpg/shared";
+import { ref, onMounted, computed, type HTMLAttributes, watch, type PropType } from "vue";
+import type { BrushAction, CanvasMap, LayerInfo, Point } from "@trpg/shared";
 import { useEventListener } from "@vueuse/core";
 import { ElButton, ElRadioButton, ElRadioGroup } from "element-plus";
-import EditCell from "@/views/DM/components/EditCell.vue";
+import EditCell from "@/views/components/EditCell.vue";
 
 const currentColor = ref("#333");
 

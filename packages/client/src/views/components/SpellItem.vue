@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="spell-info-item" @click="() => emits('switchDescription', spellInfo.id)">
+    <div class="spell-info-item" @click="() => emits('switchDescription', spellInfo._id)">
       <div class="level-icon">
         {{ spellInfo.等级 }}
       </div>
@@ -11,8 +11,8 @@
 </template>
 
 <script lang="ts" setup>
-import { SpellInfo } from "@trpg/shared";
-import { computed, PropType } from "vue";
+import type { SpellInfo } from "@trpg/shared";
+import { computed, type PropType } from "vue";
 
 const props = defineProps({
   spellInfo: {

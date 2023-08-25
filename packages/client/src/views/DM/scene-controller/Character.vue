@@ -30,10 +30,10 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType, ref } from "vue";
-import AbilityCheck from "./AbilityCheck.vue";
+import { type PropType, ref } from "vue";
+import AbilityCheck from "../components/AbilityCheck.vue";
 import SpellTag from "@/views/components/SpellTag.vue";
-import type { CharacterInfo, Scene } from "@trpg/shared";
+import type { CharacterInfo } from "@trpg/shared";
 import { updateCharacterInfo, sendMessage } from "@/api/socket-tasks";
 
 const props = defineProps({
@@ -45,7 +45,7 @@ function handleSubmitChangeHP() {
   const previousHP = props.character.currentHP;
 
   props.character.currentHP += changeOfHP.value;
-  updateCharacterInfo(props.character.id, props.character);
+  updateCharacterInfo(props.character._id, props.character);
   sendMessage(
     `${props.character.name}更新了信息：${previousHP}HP → ${props.character.currentHP}HP`
   );
@@ -58,7 +58,7 @@ function handleSubmitChangeInitiative() {
   sendMessage(
     `${props.character.name}更新了信息：本场战斗先攻为 ${props.character.currentInitiative}`
   );
-  updateCharacterInfo(props.character.id, props.character);
+  updateCharacterInfo(props.character._id, props.character);
 }
 
 function move(dx: number, dy: number) {
@@ -78,7 +78,7 @@ function resetPosition() {
 function moveAndUpdateInfo(x: number, y: number) {
   props.character.location.x = x;
   props.character.location.y = y;
-  updateCharacterInfo(props.character.id, { location: props.character.location });
+  updateCharacterInfo(props.character._id, { location: props.character.location });
 }
 </script>
 <style lang="less" scoped>

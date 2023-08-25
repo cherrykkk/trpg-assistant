@@ -1,8 +1,9 @@
 import { io, Socket } from "socket.io-client";
-import { ClientEvents, ServerEvents } from "@trpg/shared";
+import type { ClientEvents, ServerEvents } from "@trpg/shared";
 import { useSocketStore } from "@/stores/useSocketStore";
 import { useSceneStore } from "@/stores/useSceneStore";
 import { useCharactersStore } from "@/stores/useCharactersStore";
+import { ElMessage } from "element-plus";
 
 export function createSocketAndInitAbility(role: "DM" | "player", password: string) {
   const socket: Socket<ServerEvents, ClientEvents> = io(`${location.hostname}:3333`);
@@ -24,6 +25,7 @@ export function createSocketAndInitAbility(role: "DM" | "player", password: stri
 
   socket.on("data: allCharactersInfo", (data) => {
     useCharactersStore().characters = data;
+    localStorage.setItem("data: allCharactersInfo", JSON.stringify(data));
   });
 
   socket.on("data: allSpellInfo", (data) => {
@@ -33,6 +35,11 @@ export function createSocketAndInitAbility(role: "DM" | "player", password: stri
   socket.on("data: allScenes", (data) => {
     useSceneStore().scenes = data;
     useSceneStore().refresh();
+    try {
+      localStorage.setItem("data: allScenes", JSON.stringify(data));
+    } catch (err) {
+      ElMessage("写入缓存失败：" + err);
+    }
   });
 
   socket.on("data: allMessage", (data) => {

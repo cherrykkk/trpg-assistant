@@ -1,43 +1,29 @@
-import { ObjectId } from "mongodb";
-import { connectToMongoDB, collections } from "../src/connect";
-import { renameKey } from "./renameKey";
-import { ProficiencyObject } from "@trpg/shared";
+import { Collection } from "mongodb";
+import { useMongoDB } from "../src/connect";
 
-connectToMongoDB().then((client) => {
-  // turnFormat();
-  // addProperty();
-  // addGameInstance();
+useMongoDB().then(({ collections }) => {
+  // turnFormat(collections.messages);
+  turnFormat(collections.characters);
+  turnFormat(collections.equipments);
+  turnFormat(collections.games);
+  turnFormat(collections.scenes);
+  turnFormat(collections.spells);
 });
 
-function addProperty() {
-  collections.messages.updateMany(
-    {},
-    {
-      $set: {
-        gameInstanceId: "6446094202fe8565888799c3",
-      },
+async function turnFormat(collection: Collection<any>) {
+  const docs = await collection.find().toArray();
+
+  collection.deleteMany();
+  docs.forEach((d) => {
+    console.log(typeof d._id, d._id.toString());
+    if (typeof d._id !== "string") {
+      collection.insertOne({
+        ...d,
+        //@ts-ignore
+        _id: d._id.toString(),
+      });
+    } else {
+      collection.insertOne(d);
     }
-  );
-}
-
-function addGameInstance(gameInstanceName: string = "新建游戏实例") {
-  return collections.games.insertOne({
-    _id: new ObjectId(),
-    name: gameInstanceName,
-    description: "",
-  });
-}
-
-async function turnFormat() {
-  const characters = await collections.characters.find({}).toArray();
-  characters.forEach((c) => {
-    c.backpack =
-      c.backpack?.map((e: any) => ({
-        id: 0,
-        description: e.name + " " + e.description + " ounce:" + e.ounce + " pound:" + e.pound,
-        num: e.count,
-      })) || [];
-
-    collections.characters.updateOne({ _id: c._id }, { $set: c });
   });
 }

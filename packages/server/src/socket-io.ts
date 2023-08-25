@@ -1,7 +1,7 @@
 import { Server, Socket } from "socket.io";
-import { collections } from "./connect";
-import { useTask } from "./taskByMongoDB";
-import { CharacterInfo, ClientEvents, Scene, ServerEvents } from "@trpg/shared";
+import { type CollectionList } from "./connect";
+import type { CharacterInfo, ClientEvents, Scene, ServerEvents } from "@trpg/shared";
+import { ObjectId } from "mongodb";
 
 const port = 3333;
 
@@ -17,153 +17,205 @@ const socketToPlayer = new Map<
 >();
 const socketToDM = new Map<Socket<ClientEvents, ServerEvents>, string>();
 
-export function initSocket() {
+export function initSocket(collections: CollectionList) {
   io.listen(port);
   console.log(`websocket开始监听${port}端口`);
-}
 
-const tasks = useTask(collections);
+  io.on("connection", async (socket) => {
+    socketToPlayer.forEach((e) => {
+      console.log(e);
+    });
 
-io.on("connection", async (socket) => {
-  socketToPlayer.forEach((e) => {
-    console.log(e);
-  });
+    socket.on("signIn: signInAsDM", (gameInstanceId) => {
+      registerDMSocket(socket, gameInstanceId, collections, { broadcastUpdateToPlayers });
+    });
 
-  socket.on("signIn: signInAsDM", (gameId) => {
-    const gameInstance = tasks.getGameInstanceById(gameId);
-    if (!gameInstance) {
-      console.log(`客户端上传了不存在的 gameId: ${gameId} `);
-      return;
-    }
+    socket.on("signIn: signInAsPlayer", async (characterId) => {
+      const character = await collections.characters.findOne({ _id: characterId });
+      if (!character) {
+        console.log(`客户端上传了不存在的 characterId: ${characterId} `);
+        return;
+      }
 
-    socketToDM.set(socket, gameId);
-    sendInitDataToDMSocket(socket, gameId);
-    attachSharedEventToSocket(socket, gameId);
-    attachEventToSocket(socket, gameId);
-  });
-
-  socket.on("signIn: signInAsPlayer", async (characterId) => {
-    const character = await tasks.getCharacterInfoById(characterId);
-    if (!character) {
-      console.log(`客户端上传了不存在的 characterId: ${characterId} `);
-      return;
-    }
-
-    sendInitDataToSinglePlayerSocket(socket, character);
-    socketToPlayer.set(socket, { characterId, characterName: character.name });
-  });
-});
-
-async function sendInitDataToSinglePlayerSocket(
-  socket: Socket<ClientEvents, ServerEvents>,
-  characterInfo: CharacterInfo
-) {
-  socket.emit("data: playerCharacter", characterInfo);
-}
-
-function broadcastUpdateToPlayers() {
-  socketToPlayer.forEach((e, socket) => {
-    tasks.getCharacterInfoById(e.characterId).then((playerCharacterInfo) => {
-      socket.emit("data: playerCharacter", playerCharacterInfo);
+      sendInitDataToSinglePlayerSocket(socket, character);
+      socketToPlayer.set(socket, { characterId, characterName: character.name });
     });
   });
+
+  async function sendInitDataToSinglePlayerSocket(
+    socket: Socket<ClientEvents, ServerEvents>,
+    characterInfo: CharacterInfo
+  ) {
+    socket.emit("data: playerCharacter", characterInfo);
+  }
+
+  function broadcastUpdateToPlayers() {
+    socketToPlayer.forEach((e, socket) => {
+      collections.characters.findOne({ _id: e.characterId }).then((playerCharacterInfo) => {
+        if (playerCharacterInfo) socket.emit("data: playerCharacter", playerCharacterInfo);
+      });
+    });
+  }
+
+  function broadcastSceneMapUpdateToPlayers() {}
 }
 
-async function sendInitDataToDMSocket(
+async function registerDMSocket(
   socket: Socket<ClientEvents, ServerEvents>,
-  gameInstanceId: string
+  gameInstanceId: string,
+  collections: CollectionList,
+  tasks: {
+    broadcastUpdateToPlayers: () => void;
+  }
 ) {
-  const characterList = await tasks.queryAllDocument("characters", gameInstanceId);
+  const gameInstance = await collections.games.findOne({ _id: gameInstanceId });
+  if (!gameInstance) {
+    console.log(`客户端上传了不存在的 gameId: ${gameInstanceId} `);
+    return;
+  }
 
-  tasks.queryAllDocument("scenes", gameInstanceId).then((scenes) => {
-    socket.emit("data: allScenes", scenes);
-  });
+  socketToDM.set(socket, gameInstanceId);
+  sendInitDataToDMSocket(socket, gameInstanceId);
+  attachSharedEventToSocket(socket, gameInstanceId, collections);
+  attachEventToSocket(socket, gameInstanceId);
 
-  socket.emit("data: allCharactersInfo", characterList);
+  // function declaration
+  async function sendInitDataToDMSocket(
+    socket: Socket<ClientEvents, ServerEvents>,
+    gameInstanceId: string
+  ) {
+    collections.characters
+      .find({ gameInstanceId })
+      .toArray()
+      .then((characterList) => {
+        socket.emit("data: allCharactersInfo", characterList);
+      });
 
-  tasks.queryAllDocument("messages", gameInstanceId).then((messages) => {
-    socket.emit("data: allMessage", messages);
-  });
-  tasks.queryAllDocument("spells").then((spells) => {
-    socket.emit("data: allSpellInfo", spells);
-  });
+    collections.scenes
+      .find({ gameInstanceId })
+      .toArray()
+      .then((scenes) => {
+        socket.emit("data: allScenes", scenes);
+      });
+
+    collections.messages
+      .find({ gameInstanceId })
+      .toArray()
+      .then((messages) => {
+        socket.emit("data: allMessage", messages);
+      });
+    collections.spells
+      .find()
+      .toArray()
+      .then((spells) => {
+        socket.emit("data: allSpellInfo", spells);
+      });
+  }
+
+  function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>, gameInstanceId: string) {
+    socket.on("operator: createCharacterInfo", async (data) => {
+      data.gameInstanceId = gameInstanceId;
+      data._id = new ObjectId().toString();
+      await collections.characters.insertOne(data);
+      const allCharactersInfo = await collections.characters.find({ gameInstanceId }).toArray();
+      socket.emit("data: allCharactersInfo", allCharactersInfo);
+    });
+    socket.on("operator: updateCharacterInfo", async (characterId, characterInfo) => {
+      delete characterInfo._id;
+      await collections.characters.updateOne({ _id: characterId }, { $set: characterInfo });
+
+      const allCharactersInfo = await collections.characters.find({ gameInstanceId }).toArray();
+      tasks.broadcastUpdateToPlayers();
+      socket.emit("data: allCharactersInfo", allCharactersInfo);
+    });
+
+    socket.on("operator: createSceneInfo", async (data: Scene) => {
+      data.gameInstanceId = gameInstanceId;
+      data._id = new ObjectId().toString();
+      await collections.scenes.insertOne(data);
+      sendAllScenesInfo(gameInstanceId, socket);
+    });
+
+    socket.on("operator: updateSceneInfo", async (id, data) => {
+      delete data._id;
+      await collections.scenes.updateOne({ _id: id }, { $set: data });
+      sendAllScenesInfo(gameInstanceId, socket);
+    });
+
+    socket.on("operator: updateSpellInfo", async (id, data) => {
+      delete data._id;
+      await collections.spells.updateOne({ _id: id }, { $set: data });
+
+      const allSpellInfo = await collections.spells.find().toArray();
+      socket.emit("data: allSpellInfo", allSpellInfo);
+    });
+
+    socket.on("operator: deleteCharacterInfo", async (characterId) => {
+      await collections.characters.deleteOne({ _id: characterId });
+
+      const allCharactersInfo = await collections.characters.find({ gameInstanceId }).toArray();
+      socket.emit("data: allCharactersInfo", allCharactersInfo);
+    });
+  }
+
+  function sendAllScenesInfo(gameInstanceId: string, socket: Socket<ClientEvents, ServerEvents>) {
+    collections.scenes
+      .find({ gameInstanceId })
+      .toArray()
+      .then((docs) => {
+        socket.emit("data: allScenes", docs);
+      });
+  }
 }
 
 function attachSharedEventToSocket(
   socket: Socket<ClientEvents, ServerEvents>,
-  gameInstanceId: string
+  gameInstanceId: string,
+  collections: CollectionList
 ) {
   socket.on("operator: rollDice", async (characterId, diceType) => {
     let characterName = "DM";
     if (characterId !== "DM") {
-      const characterInfo = await tasks.getCharacterInfoById(characterId);
+      const characterInfo = await collections.characters.findOne({ _id: characterId });
+      if (!characterInfo) return;
       characterName = characterInfo.name;
     }
 
-    const result = tasks.rollDice(diceType);
-    await writeMessage(gameInstanceId, `${characterName} 投出了(d${diceType}) ${result} `);
+    function rollDice(diceType: number) {
+      return Math.ceil(Math.random() * diceType);
+    }
+    const result = rollDice(diceType);
+    await writeMessage(
+      collections.messages,
+      gameInstanceId,
+      `${characterName} 投出了(d${diceType}) ${result} `
+    );
     broadcastMessages(gameInstanceId);
   });
 
   socket.on("message: sendMessage", (message) => {
-    writeMessage(gameInstanceId, message);
+    writeMessage(collections.messages, gameInstanceId, message);
     broadcastMessages(gameInstanceId);
   });
+
+  function broadcastMessages(gameInstanceId: string) {
+    collections.messages
+      .find({ gameInstanceId })
+      .toArray()
+      .then((docs) => {
+        io.emit("data: allMessage", docs);
+      });
+  }
 }
 
-function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>, gameInstanceId: string) {
-  socket.on("operator: createCharacterInfo", async (data) => {
-    data.gameInstanceId = gameInstanceId;
-    await tasks.insertAsDoc("characters", data);
-    const allCharactersInfo = await tasks.queryAllDocument("characters", gameInstanceId);
-    socket.emit("data: allCharactersInfo", allCharactersInfo);
-  });
-  socket.on("operator: updateCharacterInfo", async (characterId, characterInfo) => {
-    const result = await tasks.updateDocument("characters", characterId, characterInfo);
-
-    const allCharactersInfo = await tasks.queryAllDocument("characters", gameInstanceId);
-    broadcastUpdateToPlayers();
-    socket.emit("data: allCharactersInfo", allCharactersInfo);
-  });
-
-  socket.on("operator: createSceneInfo", async (data: Scene) => {
-    data.gameInstanceId = gameInstanceId;
-    await tasks.insertAsDoc("scenes", data);
-    sendAllScenesInfo(gameInstanceId, socket);
-  });
-
-  socket.on("operator: updateSceneInfo", async (id, data) => {
-    await tasks.updateDocument("scenes", id, data);
-    sendAllScenesInfo(gameInstanceId, socket);
-  });
-
-  socket.on("operator: updateSpellInfo", async (id, data) => {
-    await tasks.updateDocument("spells", id, data);
-
-    const allSpellInfo = await tasks.getAllSpellInfo();
-    socket.emit("data: allSpellInfo", allSpellInfo);
-  });
-
-  socket.on("operator: deleteCharacterInfo", async (characterId) => {
-    await tasks.deleteDocument("characters", characterId);
-    const allCharactersInfo = await tasks.queryAllDocument("characters", gameInstanceId);
-    socket.emit("data: allCharactersInfo", allCharactersInfo);
+function writeMessage(
+  messageCollection: CollectionList["messages"],
+  gameInstanceId: string,
+  messageContent: string
+) {
+  messageCollection.insertOne({
+    content: messageContent,
+    gameInstanceId,
+    _id: new ObjectId().toString(),
   });
 }
-
-function broadcastMessages(gameInstanceId: string) {
-  tasks.queryAllDocument("messages", gameInstanceId).then((messages) => {
-    io.emit("data: allMessage", messages);
-  });
-}
-
-function writeMessage(gameInstanceId, messageContent: string) {
-  tasks.insertAsDoc("messages", { content: messageContent, gameInstanceId, id: "" });
-}
-function sendAllScenesInfo(gameInstanceId: string, socket: Socket<ClientEvents, ServerEvents>) {
-  tasks.queryAllDocument("scenes", gameInstanceId).then((scenes) => {
-    socket.emit("data: allScenes", scenes);
-  });
-}
-
-function broadcastSceneMapUpdateToPlayers() {}

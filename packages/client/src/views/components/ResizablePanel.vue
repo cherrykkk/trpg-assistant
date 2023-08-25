@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType, ref } from "vue";
+import { type PropType, ref } from "vue";
 
 const props = defineProps({
   defaultWidth: {
