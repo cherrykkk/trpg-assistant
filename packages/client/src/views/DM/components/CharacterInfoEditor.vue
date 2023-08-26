@@ -26,12 +26,12 @@
         <EditCell v-model="editedData.race" title="种族" />
         <EditCell v-model="editedData.subRace" title="亚种" />
         <EditCell v-model="editedData.language" title="语言" />
-        <TipPopover>
-          <template #reference>？</template>
-          <TipAlignment />
-        </TipPopover>
-        <EditCell v-model="editedData.alignment" title="阵营" />
-
+        <EditCell v-model="editedData.alignment">
+          <TipPopover>
+            <template #reference>？阵营</template>
+            <TipAlignment />
+          </TipPopover>
+        </EditCell>
         <EditCell v-model="editedData.experience" title="经验" />
         <EditCell v-model="editedData.maxHP" title="最大血量" />
         <EditCell v-model="editedData.currentHP" title="当前血量" />
@@ -40,7 +40,12 @@
       </div>
       <div class="ability-and-proficiencies-area">
         <div class="ability-info-panel">
-          <EditCell v-model="editedData.strength" title="力量" />
+          <EditCell v-model="editedData.strength">
+            <TipPopover>
+              <template #reference>？力量</template>
+              <StrengthAbilityVue />
+            </TipPopover>
+          </EditCell>
           <EditCell v-model="editedData.dexterity" title="敏捷" />
           <EditCell v-model="editedData.constitution" title="体质" />
           <EditCell v-model="editedData.intelligence" title="智力" />
@@ -96,6 +101,7 @@ import EntityStorage from "@/views/components/EntityStorage.vue";
 import TipPopover from "@/views/components/tip-popovers/TipPopover.vue";
 import TipAlignment from "@/views/components/tip-popovers/TipAlignment.vue";
 import PassiveChecks from "@/views/components/tip-popovers/PassiveChecks.vue";
+import StrengthAbilityVue from "@/views/components/tip-popovers/StrengthAbility.vue";
 
 const props = defineProps({
   character: {

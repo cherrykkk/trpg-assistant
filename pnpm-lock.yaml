@@ -44,8 +44,8 @@ importers:
         specifier: ^2.1.3
         version: 2.1.3(typescript@5.0.4)(vue@3.3.4)
       rich-text-component:
-        specifier: ^0.0.1
-        version: 0.0.1(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^0.0.2
+        version: 0.0.2(react-dom@18.2.0)(react@18.2.0)
       socket.io-client:
         specifier: ^4.6.1
         version: 4.6.1
@@ -2166,8 +2166,8 @@ packages:
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
     dev: true
 
-  /rich-text-component@0.0.1(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-UkukoQpUoq9HQQEL6h1qFFtypcNhnWrP6L+9IbUxukRwkGEv+kNCzPaRRHabH1bMSnMzIP0Mop7DVksBVJ1PSQ==}
+  /rich-text-component@0.0.2(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-svh8SwVdE8ifIBv1+OXOq/Phj+KSwRO+GJqcdQg+djcgmzGJUbuJBZvcgnltvOaFvggNRDfo3xprA8+os13x3A==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'

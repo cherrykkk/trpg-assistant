@@ -2,6 +2,7 @@
   <div>
     <button @click="() => rollDice(20)">d20</button>
     <button @click="() => rollDice(12)">d12</button>
+    <button @click="() => rollDice(10)">d10</button>
     <button @click="() => rollDice(8)">d8</button>
     <button @click="() => rollDice(6)">d6</button>
     <button @click="() => rollDice(4)">d4</button>
