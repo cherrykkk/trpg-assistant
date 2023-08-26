@@ -95,6 +95,7 @@ const filteredSpellDatabase = computed(() => {
 }
 .spells-in-database {
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .delete-button {

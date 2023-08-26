@@ -3,12 +3,13 @@
     <ScenePath />
     <div class="scene-info-container" :key="scene._id" v-if="!isCombating && scene">
       <template v-if="useSceneStore().editTarget !== 'story'">
+        <RichTextRenderer :initial-value="scene.richTextDescription" />
         <IconButton
+          style="position: absolute; right: 0; bottom: 0; z-index: 1"
           icon="icon-edit.svg"
           label="编辑"
           @click="useSceneStore().editTarget = 'story'"
         />
-        <RichTextRenderer :initial-value="scene.richTextDescription" />
       </template>
       <template v-else>
         <IconButton icon="icon-edit.svg" label="保存" @click="updateEdit" />
@@ -99,6 +100,7 @@ function updateEdit() {
 }
 
 .scene-info-container {
+  position: relative;
   padding: 10px;
   flex-grow: 1;
   overflow: hidden;

@@ -24,6 +24,7 @@ export const useSocketStore = defineStore("socket", {
       itemObjects: [{}],
     },
     currentScene: {} as Scene | {},
+    allCharacters: [] as CharacterInfo[],
   }),
   getters: {
     socket(state) {

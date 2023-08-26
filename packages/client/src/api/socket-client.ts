@@ -2,7 +2,6 @@ import { io, Socket } from "socket.io-client";
 import type { ClientEvents, ServerEvents } from "@trpg/shared";
 import { useSocketStore } from "@/stores/useSocketStore";
 import { useSceneStore } from "@/stores/useSceneStore";
-import { useCharactersStore } from "@/stores/useCharactersStore";
 import { ElMessage } from "element-plus";
 
 export function createSocketAndInitAbility(role: "DM" | "player", password: string) {
@@ -24,7 +23,7 @@ export function createSocketAndInitAbility(role: "DM" | "player", password: stri
   });
 
   socket.on("data: allCharactersInfo", (data) => {
-    useCharactersStore().characters = data;
+    useSocketStore().allCharacters = data;
     localStorage.setItem("data: allCharactersInfo", JSON.stringify(data));
   });
 

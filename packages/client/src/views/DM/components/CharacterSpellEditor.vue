@@ -121,6 +121,7 @@ function getSpellOnCharacterInfo(id: string) {
 .spells-of-character {
   width: 100%;
   overflow: auto;
+  overscroll-behavior: contain;
 
   .switch-button {
     margin: 20px;

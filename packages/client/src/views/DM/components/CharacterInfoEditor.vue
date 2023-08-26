@@ -13,8 +13,8 @@
       <el-radio-group v-model="editedData.scope" size="large" style="margin-bottom: 10px">
         <el-radio-button label="PC" />
         <el-radio-button label="NPC" />
-        <el-radio-button label="template" />
         <el-radio-button label="monster" />
+        <el-radio-button label="template" />
       </el-radio-group>
       <br />
       <div class="base-info-list">
@@ -165,7 +165,7 @@ function saveChanges() {
   if (backpackRef.value) {
     editedData.backpack = backpackRef.value.getData();
   }
-  if (!props.character) {
+  if (!props.character || !props.character._id) {
     createCharacterInfo(editedData);
   } else {
     updateCharacterInfo(props.character._id, editedData);

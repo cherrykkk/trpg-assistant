@@ -27,7 +27,20 @@
         </div>
       </el-option>
     </el-select>
-    <el-button @click="handleCreateCharacter">新增角色</el-button>
+    <el-button @click="handleCreateCharacter()">新增角色</el-button>
+    <ElDropdown @command="handleCreateCharacter">
+      <ElButton> 模板创建 </ElButton>
+      <template #dropdown>
+        <ElDropdownMenu>
+          <ElDropdownItem
+            v-for="e in useSocketStore().allCharacters.filter((c) => c.scope === 'template')"
+            :command="e"
+          >
+            {{ e.name }}</ElDropdownItem
+          >
+        </ElDropdownMenu>
+      </template>
+    </ElDropdown>
   </div>
 
   <el-drawer v-model="isEditingCharacterInfo" :size="800" direction="ltr">
@@ -42,20 +55,28 @@
 <script lang="ts" setup>
 import { computed, ref, type PropType } from "vue";
 import SceneCharacter from "./Character.vue";
-import { useCharactersStore } from "@/stores/useCharactersStore";
 import type { CharacterInfo, Scene } from "@trpg/shared";
 import CharacterInfoEditor from "../components/CharacterInfoEditor.vue";
 import { useDoubleClick } from "@/utils";
 import { updateCharacterInfo } from "@/api/socket-tasks";
+import {
+  ElSelect,
+  ElOption,
+  ElButton,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
+} from "element-plus";
+import { useSocketStore } from "@/stores/useSocketStore";
 
 const props = defineProps({
   scene: { type: Object as PropType<Scene>, required: true },
 });
 
 const sortedCharacters = computed(() => {
-  return useCharactersStore().charactersInCurrentScene.sort(
-    (a, b) => b.currentInitiative - a.currentInitiative
-  );
+  return useSocketStore()
+    .allCharacters.filter((character) => character.location?.sceneName === props.scene.name)
+    .sort((a, b) => b.currentInitiative - a.currentInitiative);
 });
 
 const chosenCharacter = ref<CharacterInfo | null>(null);
@@ -68,14 +89,20 @@ function handleClickCharacter(c: CharacterInfo) {
   handleDoubleClickCharacter();
   chosenCharacter.value = c;
 }
-function handleCreateCharacter() {
-  chosenCharacter.value = null;
+function handleCreateCharacter(template?: CharacterInfo) {
+  if (template) {
+    const newC = JSON.parse(JSON.stringify(template)) as CharacterInfo;
+    newC._id = "";
+    chosenCharacter.value = newC;
+  } else {
+    chosenCharacter.value = null;
+  }
   isEditingCharacterInfo.value = true;
 }
 
 const charactersToSelect = computed(() => {
-  return useCharactersStore()
-    .characters.filter((c) => c.location.sceneName !== props.scene.name)
+  return useSocketStore()
+    .allCharacters.filter((c) => c.location.sceneName !== props.scene.name)
     .sort((a, b) => {
       if (b.scope === "PC") return 1;
       else return -1;

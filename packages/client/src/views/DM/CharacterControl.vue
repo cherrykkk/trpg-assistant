@@ -3,25 +3,25 @@
     <el-tabs v-model="characterScope" class="character-control">
       <el-tab-pane label="PC" name="PC">
         <CharacterCollapse
-          :characters="useCharactersStore().characters.filter((e) => e.scope === 'PC')"
+          :characters="useSocketStore().allCharacters.filter((e) => e.scope === 'PC')"
           @edit-story="openEditBoard"
         />
       </el-tab-pane>
       <el-tab-pane label="NPC" name="NPC">
         <CharacterCollapse
-          :characters="useCharactersStore().characters.filter((e) => e.scope === 'NPC')"
-          @edit-story="openEditBoard"
-        />
-      </el-tab-pane>
-      <el-tab-pane label="template" name="template">
-        <CharacterCollapse
-          :characters="useCharactersStore().characters.filter((e) => e.scope === 'template')"
+          :characters="useSocketStore().allCharacters.filter((e) => e.scope === 'NPC')"
           @edit-story="openEditBoard"
         />
       </el-tab-pane>
       <el-tab-pane label="monster" name="monster">
         <CharacterCollapse
-          :characters="useCharactersStore().characters.filter((e) => e.scope === 'monster')"
+          :characters="useSocketStore().allCharacters.filter((e) => e.scope === 'monster')"
+          @edit-story="openEditBoard"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="template" name="template">
+        <CharacterCollapse
+          :characters="useSocketStore().allCharacters.filter((e) => e.scope === 'template')"
           @edit-story="openEditBoard"
         />
       </el-tab-pane>
@@ -36,11 +36,11 @@
 </template>
 
 <script lang="ts" setup>
-import { useCharactersStore } from "@/stores/useCharactersStore";
 import CharacterInfoEditor from "./components/CharacterInfoEditor.vue";
 import CharacterCollapse from "./components/CharacterCollapse.vue";
 import { ref } from "vue";
 import type { CharacterInfo } from "@trpg/shared";
+import { useSocketStore } from "@/stores/useSocketStore";
 
 const characterScope = ref<"star" | CharacterInfo["scope"]>("PC");
 
