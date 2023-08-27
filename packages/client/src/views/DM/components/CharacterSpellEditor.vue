@@ -104,18 +104,13 @@ function getSpellOnCharacterInfo(id: string) {
     return result;
   }
 }
-
-// function removeSpell(spellName: string) {
-//   props.character.spells.splice(props.character.spells.indexOf(spellName), 1);
-//   // updateCharacterInfo(props.character.id, { spells: props.character.spells });
-// }
 </script>
 <style lang="less" scoped>
 .spells-of-character-content {
   display: flex;
   border: 2px solid #ccc;
   position: relative;
-  height: 400px;
+  height: 600px;
   padding: 10px;
 }
 

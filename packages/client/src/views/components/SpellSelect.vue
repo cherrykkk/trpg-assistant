@@ -27,7 +27,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { type PropType, computed, nextTick, ref, reactive } from "vue";
+import { type PropType, computed, ref } from "vue";
 import SpellItem from "@/views/components/SpellItem.vue";
 import type { SpellInfo, SpellOnCharacter } from "@trpg/shared";
 
@@ -98,7 +98,6 @@ const filteredSpellDatabase = computed(() => {
   flex-direction: column;
   overflow: hidden;
   width: 100%;
-  max-height: 400px;
   border-left: 1px solid #ddd;
   margin-right: -8px;
 }

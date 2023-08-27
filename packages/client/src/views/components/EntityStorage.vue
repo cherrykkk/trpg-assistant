@@ -16,6 +16,9 @@
           <ElOption v-for="item in ENTITY_DATABASE" :key="item.id" :label="item.name" :value="item"
         /></ElSelect>
       </div>
+      <span style="font-weight: 500; font-size: 14px"
+        >共计{{ manager.calculateWeight(manager.storage.value) }}</span
+      >
     </div>
     <div v-if="stackInDialog" class="entity-editor">
       <h2>

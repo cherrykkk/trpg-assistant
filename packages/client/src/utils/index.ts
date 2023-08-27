@@ -9,10 +9,6 @@ import type {
 import { ElMessage } from "element-plus";
 import { createProficienciesTemplate } from "./createProficienciesTemplate";
 
-export function copyCharacter(c: CharacterInfo) {
-  console.log("暂未实现");
-}
-
 export function turnToSpellsInfo(data: SpellOnCharacter[]) {
   const result: SpellInfo[] = [];
   data.forEach((e) => {

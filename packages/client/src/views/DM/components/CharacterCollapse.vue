@@ -16,13 +16,6 @@
       </div>
       <div>{{ character.backgroundStory }}</div>
       <el-button @click="emit('editStory', character)" size="small">编辑信息</el-button>
-      <el-button
-        @click="() => copyCharacter(character)"
-        v-if="character.scope === 'monster'"
-        size="small"
-      >
-        复制角色
-      </el-button>
       <el-divider />
       <div>
         <span v-for="item in character.equipment">{{ item }}</span>
@@ -34,7 +27,6 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { type PropType } from "vue";
-import { copyCharacter } from "@/utils/index";
 import type { CharacterInfo } from "@trpg/shared";
 
 const chosenCharacter = ref();
