@@ -27,23 +27,21 @@ const props = defineProps({
 const emits = defineEmits(["switchDescription"]);
 
 const mainColor = computed(() => {
+  const colors = [
+    "#ddd",
+    "#bcd52d",
+    "#77bd41",
+    "#1cad6e",
+    "#23bad2",
+    "#006fb9",
+    "#412b8b",
+    "#9b0d81",
+    "#df412b",
+    "#f28a17",
+  ];
   const level = props.spellInfo.等级;
-  let mainColor = "#ddd";
-  if (level == 0) {
-    mainColor = "#ddd";
-  } else if (level <= 2) {
-    mainColor = "#aedff7";
-  } else if (level <= 4) {
-    mainColor = "#ff9ceca1";
-  } else if (level <= 6) {
-    mainColor = "#c4d01e";
-  } else if (level <= 8) {
-    mainColor = "#ff8d00";
-  } else {
-    mainColor = "#ff5961";
-  }
 
-  return mainColor;
+  return colors[level] ?? colors[0];
 });
 </script>
 <style lang="less" scoped>

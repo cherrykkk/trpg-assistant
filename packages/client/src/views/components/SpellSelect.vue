@@ -13,12 +13,16 @@
           @switch-description="handleSwitchDescription"
         />
         <div v-if="spellIdToShowDescription.includes(spellInfo._id)">
-          <div v-if="existSpell.map((e) => e.spellId).includes(spellInfo._id)">
-            该法术已存在列表中
+          <div v-if="existSpell.map((e) => e.spellId).includes(spellInfo._id)" class="add-button">
+            ~
           </div>
           <div v-else class="add-button" @click="() => handleAddSpell(spellInfo._id)">+</div>
         </div>
       </div>
+    </div>
+    <div style="position: absolute; top: 0; right: 0; cursor: pointer">
+      <button v-if="spellIdToShowDescription.length === 0" @click="expandAll">全部展开</button>
+      <button v-else @click="spellIdToShowDescription = []">全部收起</button>
     </div>
   </div>
 </template>
@@ -54,6 +58,11 @@ function handleSwitchDescription(id: string) {
     spellIdToShowDescription.value.push(id);
   }
 }
+
+function expandAll() {
+  spellIdToShowDescription.value = filteredSpellDatabase.value.map((e) => e._id);
+}
+
 function handleAddSpell(spellId: string) {
   emits("select", spellId);
 }
@@ -96,6 +105,23 @@ const filteredSpellDatabase = computed(() => {
 .spells-in-database {
   overflow: auto;
   overscroll-behavior: contain;
+  > div {
+    position: relative;
+    .add-button {
+      background-color: #8fc58f;
+      color: white;
+      cursor: pointer;
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 24px;
+      width: 1em;
+      line-height: 1em;
+      border-radius: 50%;
+      margin: 2px 3px 0 0;
+      font-weight: 900;
+    }
+  }
 }
 
 .delete-button {
@@ -103,12 +129,5 @@ const filteredSpellDatabase = computed(() => {
   color: white;
   width: 24px;
   border-radius: 50%;
-}
-
-.add-button {
-  background-color: #8fc58f;
-  color: white;
-  margin: 0 10px 10px 10px;
-  cursor: pointer;
 }
 </style>

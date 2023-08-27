@@ -19,6 +19,7 @@
     <SpellSelect
       v-if="showSpellList"
       :spell-database="useSocketStore().allSpellInfo"
+      :exist-spell="character.spellsKnown"
       @select="handleAddSpell"
       :default-class-option="character.class"
     />

@@ -5,16 +5,20 @@
       <template v-if="useSceneStore().editTarget !== 'story'">
         <RichTextRenderer :initial-value="scene.richTextDescription" />
         <IconButton
-          style="position: absolute; right: 0; bottom: 0; z-index: 1"
+          class="rich-text-button"
           icon="icon-edit.svg"
           label="编辑"
           @click="useSceneStore().editTarget = 'story'"
         />
       </template>
       <template v-else>
-        <IconButton icon="icon-edit.svg" label="保存" @click="updateEdit" />
         <RichTextEditor ref="richTextEditorRef" :initial-value="scene.richTextDescription" />
-        <!-- <SceneStoryEditor :scene="scene" /> -->
+        <IconButton
+          class="rich-text-button"
+          icon="icon-edit.svg"
+          label="保存"
+          @click="updateEdit"
+        />
       </template>
     </div>
     <div class="scene-info-container" :key="scene._id" v-if="isCombating">
@@ -104,5 +108,11 @@ function updateEdit() {
   padding: 10px;
   flex-grow: 1;
   overflow: hidden;
+}
+.rich-text-button {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
 }
 </style>
