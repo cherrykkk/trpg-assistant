@@ -10,6 +10,7 @@ import type {
   CanvasMap,
 } from "@trpg/shared";
 import { ElMessage } from "element-plus";
+import type { ItemInfo } from "@trpg/shared";
 
 export const useSocketStore = defineStore("socket", {
   state: () => ({
@@ -25,6 +26,12 @@ export const useSocketStore = defineStore("socket", {
     },
     currentScene: {} as Scene | {},
     allCharacters: [] as CharacterInfo[],
+
+    allOtherType: {
+      customAdventuringGears: [],
+    } as { customAdventuringGears: ItemInfo[] } & {
+      [name in string]: any;
+    },
   }),
   getters: {
     socket(state) {

@@ -7,14 +7,18 @@ export interface ClientEvents {
   "operator: createSceneInfo": (value: Scene) => void;
   // update
   "operator: updateCharacterInfo": (characterId: string, value: Partial<CharacterInfo>) => void;
-  "operator: updateSceneInfo": (characterId: string, value: Partial<Scene>) => void;
-  "operator: updateSpellInfo": (characterId: string, value: Partial<SpellInfo>) => void;
+  "operator: updateSceneInfo": (id: string, value: Partial<Scene>) => void;
+  "operator: updateSpellInfo": (id: string, value: Partial<SpellInfo>) => void;
+  "operator: updateOtherTypes": (name: string, value: unknown) => void;
+  "operator: uploadImage": (name: string, base64: string) => string;
   // delete
   "operator: deleteCharacterInfo": (characterId: string) => void;
   "operator: deleteSceneInfo": (characterId: string) => void;
   // actions with system message
   "message: sendMessage": (message: string) => void;
   "operator: abilityCheck": (characterId: string, ability: string, skill: string) => void;
+  "request: uploadImage": (imageData: string, cb: (key: string) => void) => void;
+  "request: downloadImage": (key: string, cb: (data: string) => void) => void;
 }
 
 export interface ServerEvents {
@@ -23,6 +27,8 @@ export interface ServerEvents {
   "data: allSpellInfo": (data: SpellInfo[]) => void;
   "data: allMessage": (data: Message[]) => void;
   "data: allScenes": (data: Scene[]) => void;
+  "data: allOtherTypes": (data: OtherTypeInfo[]) => void;
+  "data: image": (key: string, data: string) => void;
   "message: system": (message: string) => void;
   "message: player": (message: string) => void;
   "message: DM": (message: string) => void;
@@ -139,7 +145,7 @@ export interface Scene {
 export function createSceneTemplate(): Scene {
   return {
     _id: "",
-    gameInstanceId: " ",
+    gameInstanceId: "",
     picture: undefined,
     name: "",
     description: "",
@@ -167,6 +173,13 @@ export interface GameInstance {
   _id: string;
   name: string;
   description: string;
+}
+
+export interface OtherTypeInfo {
+  _id: string;
+  gameInstanceId: string;
+  name: string;
+  data: unknown;
 }
 
 // export const AbilityType = {
@@ -238,8 +251,8 @@ export interface ItemInfo {
 export const ENTITY_DATABASE: ItemInfo[] = [
   {
     id: 0,
-    name: "未定义",
-    description: "未定义",
+    name: "其他",
+    description: "自定义",
   },
   {
     id: 1,

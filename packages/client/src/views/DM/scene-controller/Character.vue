@@ -26,6 +26,7 @@ import { type PropType, ref } from "vue";
 import AbilityCheck from "../components/AbilityCheck.vue";
 import type { CharacterInfo } from "@trpg/shared";
 import { updateCharacterInfo, sendMessage } from "@/api/socket-tasks";
+import { ElMessage } from "element-plus";
 
 const props = defineProps({
   character: { type: Object as PropType<CharacterInfo>, required: true },
@@ -35,12 +36,16 @@ const changeOfHP = ref(0);
 function handleSubmitChangeHP() {
   const previousHP = props.character.currentHP;
 
-  props.character.currentHP += changeOfHP.value;
-  updateCharacterInfo(props.character._id, props.character);
-  sendMessage(
-    `${props.character.name}更新了信息：${previousHP}HP → ${props.character.currentHP}HP`
-  );
-  changeOfHP.value = 0;
+  if (isNaN(previousHP)) {
+    ElMessage(`功能禁用。原因：血量不为数字`);
+  } else {
+    props.character.currentHP = Number(previousHP) + changeOfHP.value;
+    updateCharacterInfo(props.character._id, props.character);
+    sendMessage(
+      `${props.character.name}更新了信息：${previousHP}HP → ${props.character.currentHP}HP`
+    );
+    changeOfHP.value = 0;
+  }
 }
 
 const oldInitiative = ref(props.character.currentInitiative);

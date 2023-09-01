@@ -10,7 +10,3 @@ declare module "*.vue" {
     showPopover: () => void;
   }
 }
-
-declare interface Window {
-  slateEditor: any;
-}

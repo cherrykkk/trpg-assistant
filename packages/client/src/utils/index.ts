@@ -8,6 +8,7 @@ import type {
 } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 import { createProficienciesTemplate } from "./createProficienciesTemplate";
+import { CHARACTER_ADVANCEMENT } from "@/stores/constants";
 
 export function turnToSpellsInfo(data: SpellOnCharacter[]) {
   const result: SpellInfo[] = [];
@@ -118,4 +119,13 @@ export function createCanvasMapTemplate(): CanvasMap {
     offsetX: 0,
     offsetY: 0,
   };
+}
+
+export function getLevelAndBonus(exp: number) {
+  for (let data of [...CHARACTER_ADVANCEMENT].reverse()) {
+    if (data.exp <= exp) {
+      return data;
+    }
+  }
+  return CHARACTER_ADVANCEMENT[0];
 }

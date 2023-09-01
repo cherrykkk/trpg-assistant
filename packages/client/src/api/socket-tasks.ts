@@ -6,6 +6,7 @@ export function updateCharacterInfo(characterId: string, property: Partial<Chara
 }
 
 export function updateSceneInfo(id: string, data: Scene) {
+  console.log("updateSceneInfo data", data);
   if (!id) {
     createSceneInfo(data);
   } else {
@@ -18,6 +19,10 @@ export function createSceneInfo(data: Scene) {
 
 export function updateSpellInfo(id: string, data: SpellInfo) {
   useSocketStore().socket.emit("operator: updateSpellInfo", id, data);
+}
+
+export function updateOtherTypeInfo(name: string, data: unknown) {
+  useSocketStore().socket.emit("operator: updateOtherTypes", name, data);
 }
 
 export function createCharacterInfo(data: CharacterInfo) {
@@ -34,4 +39,22 @@ export function sendMessage(message: string) {
 
 export function signInAsPlayer(characterId: string) {
   useSocketStore().socket.emit("signIn: signInAsPlayer", characterId);
+}
+
+export function uploadImage(base64: string): Promise<string> {
+  const socket = useSocketStore().socket;
+  return new Promise((resolve, reject) => {
+    socket.emit("request: uploadImage", base64, (key) => {
+      resolve(key);
+    });
+  });
+}
+
+export function downloadImage(key: string): Promise<string> {
+  const socket = useSocketStore().socket;
+  return new Promise((resolve, reject) => {
+    socket.emit("request: downloadImage", key, (data) => {
+      resolve(data);
+    });
+  });
 }

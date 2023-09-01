@@ -1,6 +1,7 @@
 <template>
   <el-popover placement="left" width="260">
     <div class="ability-board">
+      <div>熟练加值: {{ getLevelAndBonus(character.experience).proficiencyBonus }}</div>
       <div v-for="abilityProperty in AbilityPropertyList" class="ability-tag">
         {{ AbilityPropertyToName[abilityProperty] }}({{
           Math.floor((character[abilityProperty] - 10) / 2)
@@ -10,7 +11,7 @@
           <span
             v-if="character.proficiencies && character.proficiencies.includes(skill as unknown as ProficiencyObject)"
           >
-            ({{ proficiencyBonus }})
+            {{ getLevelAndBonus(character.experience).proficiencyBonus }}
           </span>
         </div>
       </div>
@@ -21,7 +22,6 @@
 
 <script lang="ts" setup>
 import { type PropType, ref } from "vue";
-import { characterAdvancement } from "@/stores/constants";
 import {
   AbilityType,
   AbilityPropertyToName,
@@ -29,6 +29,7 @@ import {
   type CharacterInfo,
   type ProficiencyObject,
 } from "@trpg/shared";
+import { getLevelAndBonus } from "@/utils";
 
 const props = defineProps({
   character: {
@@ -36,21 +37,6 @@ const props = defineProps({
     required: true,
   },
 });
-
-const proficiencyBonus = getProficiencyBonus(props.character.experience);
-
-function getProficiencyBonus(experience: number) {
-  let bonus = 0;
-  for (let i = 0; i < characterAdvancement.length; i++) {
-    if (experience >= characterAdvancement[i][0]) {
-      bonus = characterAdvancement[i][1];
-    } else break;
-  }
-  return bonus;
-}
-
-const ability = ref("敏捷");
-const difficulty = ref(5);
 </script>
 <style lang="less" scoped>
 .ability-board {

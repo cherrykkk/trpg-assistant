@@ -41,7 +41,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { type PropType, ref } from "vue";
+import { type PropType, ref, toRaw } from "vue";
 import type { Scene } from "@trpg/shared";
 import RichTextRenderer from "@/views/components/RichTextRenderer.vue";
 import CanvasMapEditor from "@/views/components/CanvasMapEditor.vue";
@@ -62,11 +62,11 @@ const emits = defineEmits(["change-scene"]);
 const isCombating = ref(false);
 
 const richTextEditorRef = ref<InstanceType<typeof RichTextEditor>>();
-function updateEdit() {
+async function updateEdit() {
   if (!scene.value) return;
-  scene.value.richTextDescription = richTextEditorRef.value?.getData();
+  scene.value.richTextDescription = await richTextEditorRef.value?.getData();
 
-  updateSceneInfo(scene.value._id, scene.value);
+  updateSceneInfo(scene.value._id, toRaw(scene.value));
 
   // createSceneInfo(editedScene);
 

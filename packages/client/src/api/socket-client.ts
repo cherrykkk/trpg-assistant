@@ -45,5 +45,9 @@ export function createSocketAndInitAbility(role: "DM" | "player", password: stri
     useSocketStore().messageList = data;
   });
 
+  socket.on("data: allOtherTypes", (data) => {
+    data.forEach((e) => (useSocketStore().allOtherType[e.name] = e.data));
+  });
+
   return socket;
 }

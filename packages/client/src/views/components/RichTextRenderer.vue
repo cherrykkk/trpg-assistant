@@ -5,8 +5,9 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, toRaw } from "vue";
 import { createRichTextRenderer } from "rich-text-component";
+import { downloadImage } from "@/api/socket-tasks";
 
 const props = defineProps({
   initialValue: {
@@ -21,12 +22,16 @@ const props = defineProps({
   },
 });
 
-console.log(props.initialValue);
 const richTextRendererRef = ref();
 onMounted(() => {
   if (!richTextRendererRef.value) throw "unexpected no richTextRendererRef";
 
-  createRichTextRenderer(richTextRendererRef.value, props.initialValue);
+  createRichTextRenderer(richTextRendererRef.value, toRaw(props.initialValue), {
+    downloadImage,
+    uploadImage: () => {
+      return Promise.resolve("");
+    },
+  });
 });
 </script>
 

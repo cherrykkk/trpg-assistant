@@ -7,6 +7,7 @@ import logger from "./logger";
 const port = 3333;
 
 const io = new Server<ClientEvents, ServerEvents>({
+  maxHttpBufferSize: 1e8, // 100 MB
   cors: {
     origin: "*",
   },
@@ -108,12 +109,20 @@ async function registerDMSocket(
       .then((messages) => {
         socket.emit("data: allMessage", messages);
       });
+
     collections.spells
       .find()
       .toArray()
       .then((spells) => {
         socket.emit("data: allSpellInfo", spells);
       });
+
+    // collections.otherTypes
+    //   .find({ gameInstanceId })
+    //   .toArray()
+    //   .then((data) => {
+    //     socket.emit("data: allOtherTypes", data);
+    //   });
   }
 
   function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>, gameInstanceId: string) {
@@ -154,11 +163,26 @@ async function registerDMSocket(
       socket.emit("data: allSpellInfo", allSpellInfo);
     });
 
+    socket.on("operator: updateOtherTypes", async (name, data) => {
+      await collections.otherTypes.updateOne({ gameInstanceId, name }, { $set: data });
+    });
+
     socket.on("operator: deleteCharacterInfo", async (characterId) => {
       await collections.characters.deleteOne({ _id: characterId });
 
       const allCharactersInfo = await collections.characters.find({ gameInstanceId }).toArray();
       socket.emit("data: allCharactersInfo", allCharactersInfo);
+    });
+
+    socket.on("request: uploadImage", async (data, cb) => {
+      const exist = await collections.otherTypes.findOne({ _id: data });
+      if (exist) {
+        cb(exist._id);
+      } else {
+        const _id = new ObjectId().toString();
+        collections.otherTypes.insertOne({ _id, name: "", data, gameInstanceId });
+        cb(_id);
+      }
     });
   }
 
@@ -200,6 +224,15 @@ function attachSharedEventToSocket(
   socket.on("message: sendMessage", (message) => {
     writeMessage(collections.messages, gameInstanceId, message);
     broadcastMessages(gameInstanceId);
+  });
+
+  socket.on("request: downloadImage", async (key, cb) => {
+    const doc = await collections.otherTypes.findOne({ _id: key });
+    if (doc) {
+      cb(doc.data as string);
+    } else {
+      cb(key);
+    }
   });
 
   function broadcastMessages(gameInstanceId: string) {

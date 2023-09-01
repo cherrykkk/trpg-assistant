@@ -3,26 +3,20 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, toRaw, toValue, unref } from "vue";
 import { createRichTextEditor } from "rich-text-component";
+import { downloadImage, uploadImage } from "@/api/socket-tasks";
 
 const props = defineProps({
   initialValue: {
     type: Array,
-    default: [
-      {
-        type: "paragraph",
-        children: [{ text: "" }],
-      },
-    ],
   },
 });
 
-console.log("initial", props.initialValue);
+let editorUtils: ReturnType<typeof createRichTextEditor>;
 defineExpose({
-  getData: () => {
-    console.log("windowSlate", window.slateEditor);
-    return window.slateEditor?.children;
+  getData: async () => {
+    return editorUtils.getData();
   },
 });
 
@@ -30,7 +24,10 @@ const richTextRef = ref();
 onMounted(() => {
   if (!richTextRef.value) throw "unexpected no richTextRef";
 
-  createRichTextEditor(richTextRef.value, props.initialValue);
+  editorUtils = createRichTextEditor(richTextRef.value, toRaw(props.initialValue) as any, {
+    downloadImage,
+    uploadImage,
+  });
 
   addEventListener("beforeunload", tryToStopLeavePage);
 });

@@ -41,6 +41,10 @@
         </ElDropdownMenu>
       </template>
     </ElDropdown>
+    <TipPopover>
+      <template #reference><button>? 战斗提示</button></template>
+      <TipCombat />
+    </TipPopover>
   </div>
 
   <el-drawer v-model="isEditingCharacterInfo" :size="800" direction="ltr">
@@ -68,6 +72,8 @@ import {
   ElDropdownMenu,
 } from "element-plus";
 import { useSocketStore } from "@/stores/useSocketStore";
+import TipPopover from "@/views/components/tip-popovers/TipPopover.vue";
+import TipCombat from "@/views/components/tip-popovers/TipCombat.vue";
 
 const props = defineProps({
   scene: { type: Object as PropType<Scene>, required: true },
