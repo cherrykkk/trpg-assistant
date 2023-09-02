@@ -8,6 +8,7 @@ import type {
   Scene,
   SpellInfo,
 } from "@trpg/shared";
+import logger from "./logger";
 
 export async function useMongoDB() {
   dotenv.config();
@@ -34,7 +35,7 @@ export async function useMongoDB() {
     CanvasMaps: db.collection<CanvasMap>("CanvasMaps"),
   };
 
-  console.log(`Successfully connected to database: ${db.databaseName} `);
+  logger.info(`Successfully connected to database: ${db.databaseName} `);
 
   return { collections, client };
 }

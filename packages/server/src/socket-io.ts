@@ -2,6 +2,7 @@ import { Server, Socket } from "socket.io";
 import { type CollectionList } from "./connect";
 import type { CharacterInfo, ClientEvents, Scene, ServerEvents } from "@trpg/shared";
 import { ObjectId } from "mongodb";
+import logger from "./logger";
 
 const port = 3333;
 
@@ -19,21 +20,24 @@ const socketToDM = new Map<Socket<ClientEvents, ServerEvents>, string>();
 
 export function initSocket(collections: CollectionList) {
   io.listen(port);
-  console.log(`websocket开始监听${port}端口`);
+  logger.info(`websocket开始监听${port}端口`);
 
   io.on("connection", async (socket) => {
+    logger.info(`socket connected: ${socket.id}`);
     socketToPlayer.forEach((e) => {
       console.log(e);
     });
 
     socket.on("signIn: signInAsDM", (gameInstanceId) => {
+      logger.info(`signInAsDM, socket: ${socket.id}, gameInstanceId: ${gameInstanceId}`);
       registerDMSocket(socket, gameInstanceId, collections, { broadcastUpdateToPlayers });
     });
 
     socket.on("signIn: signInAsPlayer", async (characterId) => {
+      logger.info(`signInAsPlayer, socket: ${socket.id}, characterId: ${characterId}`);
       const character = await collections.characters.findOne({ _id: characterId });
       if (!character) {
-        console.log(`客户端上传了不存在的 characterId: ${characterId} `);
+        logger.warn(`客户端上传了不存在的 characterId: ${characterId} `);
         return;
       }
 
@@ -70,7 +74,7 @@ async function registerDMSocket(
 ) {
   const gameInstance = await collections.games.findOne({ _id: gameInstanceId });
   if (!gameInstance) {
-    console.log(`客户端上传了不存在的 gameId: ${gameInstanceId} `);
+    logger.warn(`客户端上传了不存在的 gameId: ${gameInstanceId} `);
     return;
   }
 
