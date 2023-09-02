@@ -13,7 +13,7 @@
     />
     <template v-if="currentScene">
       <ResizablePanel v-if="!isCombating" resize-direction="left" :default-width="200">
-        <RightBar :scene="currentScene" />
+        <RightBar :scene="currentScene" :key="currentScene._id" />
       </ResizablePanel>
     </template>
   </div>

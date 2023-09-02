@@ -1,7 +1,7 @@
 export interface ClientEvents {
   "signIn: signInAsPlayer": (characterId: string) => void;
   "signIn: signInAsDM": (gameId: string) => void;
-  "operator: rollDice": (characterId: string | "DM", value: number) => void;
+  "operator: rollDice": (characterId: string | "DM", value: number | number[]) => void;
   // create
   "operator: createCharacterInfo": (value: CharacterInfo) => void;
   "operator: createSceneInfo": (value: Scene) => void;

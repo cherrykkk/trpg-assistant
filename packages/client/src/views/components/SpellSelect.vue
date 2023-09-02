@@ -12,7 +12,7 @@
           :show-description="spellIdToShowDescription.includes(spellInfo._id)"
           @switch-description="handleSwitchDescription"
         />
-        <div v-if="spellIdToShowDescription.includes(spellInfo._id)">
+        <div v-if="!hideAddButton && spellIdToShowDescription.includes(spellInfo._id)">
           <div v-if="existSpell.map((e) => e.spellId).includes(spellInfo._id)" class="add-button">
             ~
           </div>
@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-    <div style="position: absolute; top: 0; right: 0; cursor: pointer">
+    <div class="quick-operator">
       <button v-if="spellIdToShowDescription.length === 0" @click="expandAll">全部展开</button>
       <button v-else @click="spellIdToShowDescription = []">全部收起</button>
     </div>
@@ -43,6 +43,7 @@ const props = defineProps({
   defaultClassOption: {
     type: String,
   },
+  hideAddButton: Boolean,
 });
 
 type ClassOption = keyof SpellInfo | "全部";
@@ -73,9 +74,10 @@ const spellIdToShowDescription = ref<string[]>([]);
 const classOption = ["全部", "诗人", "牧师", "德鲁伊", "圣武士", "游侠", "术士", "邪术士", "法师"];
 const filterClass = ref<keyof SpellInfo | "全部">("全部");
 (function initFilterClass() {
-  console.log(props.defaultClassOption, classOption.includes(props.defaultClassOption ?? ""));
   if (classOption.includes(props.defaultClassOption ?? "")) {
     filterClass.value = props.defaultClassOption as ClassOption;
+  } else if (props.defaultClassOption === "吟游诗人") {
+    filterClass.value = "诗人";
   }
 })();
 
@@ -128,5 +130,11 @@ const filteredSpellDatabase = computed(() => {
   color: white;
   width: 24px;
   border-radius: 50%;
+}
+.quick-operator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
 }
 </style>

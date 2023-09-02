@@ -32,6 +32,7 @@ export function initSocket(collections: CollectionList) {
     socket.on("signIn: signInAsDM", (gameInstanceId) => {
       logger.info(`signInAsDM, socket: ${socket.id}, gameInstanceId: ${gameInstanceId}`);
       registerDMSocket(socket, gameInstanceId, collections, { broadcastUpdateToPlayers });
+      attachSharedEventToSocket(socket, gameInstanceId, collections);
     });
 
     socket.on("signIn: signInAsPlayer", async (characterId) => {
@@ -43,6 +44,7 @@ export function initSocket(collections: CollectionList) {
       }
 
       sendInitDataToSinglePlayerSocket(socket, character);
+      attachSharedEventToSocket(socket, character.gameInstanceId, collections);
       socketToPlayer.set(socket, { characterId, characterName: character.name });
     });
   });
@@ -95,7 +97,6 @@ async function registerDMSocket(
 
   socketToDM.set(socket, gameInstanceId);
   sendInitDataToDMSocket(socket, gameInstanceId);
-  attachSharedEventToSocket(socket, gameInstanceId, collections);
   attachEventToSocket(socket, gameInstanceId);
 
   // function declaration
@@ -226,12 +227,28 @@ function attachSharedEventToSocket(
     function rollDice(diceType: number) {
       return Math.ceil(Math.random() * diceType);
     }
-    const result = rollDice(diceType);
-    await writeMessage(
-      collections.messages,
-      gameInstanceId,
-      `${characterName} 投出了(d${diceType}) ${result} `
-    );
+
+    let diceResultMessage = "";
+    if (typeof diceType === "number") {
+      const result = rollDice(diceType);
+      diceResultMessage = `${characterName} 投出了(d${diceType}) ${result} `;
+    } else if (Array.isArray(diceType)) {
+      if (diceType.length === 0) return;
+      if (diceType.length === 1) {
+        const result = rollDice(diceType[0]);
+        diceResultMessage = `${characterName} 投出了(d${diceType}) ${result} `;
+      } else {
+        const results = diceType.map((d) => rollDice(d));
+        diceResultMessage = `${characterName} 投出了(${diceType
+          .map((d, i) => `d${d}`)
+          .join("+")}) ${results.join("+")}=${results.reduce((a, b) => a + b)} `;
+      }
+    } else {
+      return;
+    }
+
+    await writeMessage(collections.messages, gameInstanceId, diceResultMessage);
+
     broadcastMessages(gameInstanceId);
   });
 

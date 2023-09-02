@@ -1,40 +1,54 @@
 <template>
   <div class="message-room-vue">
-    <DiceController />
+    <DiceController @roll-dice="handleRollDice" />
     <div class="history-area" ref="historyAreaRef">
       <div v-for="e in useSocketStore().messageList">
         {{ e.content }}
       </div>
     </div>
-    <el-input type="text-area" v-model="messageContentInEdit" class="message-text-area"></el-input>
+    <!-- <el-input type="text-area" v-model="messageContentInEdit" class="message-text-area"></el-input> -->
   </div>
 </template>
 <script lang="ts" setup>
-import { onBeforeUpdate, onUpdated, ref } from "vue";
+import { onBeforeUpdate, onMounted, onUpdated, ref } from "vue";
 import DiceController from "./DiceController.vue";
 import { useSocketStore } from "@/stores/useSocketStore";
+import { rollDice } from "@/api/socket-tasks";
 
 const historyAreaRef = ref();
 
 (function autoScroll() {
-  let currentIsShowingButton = true;
+  let keepBottom = true;
 
   onBeforeUpdate(() => {
     if (!historyAreaRef.value) return;
     const { clientHeight, scrollHeight, scrollTop } = historyAreaRef.value;
-    currentIsShowingButton = scrollTop + clientHeight > scrollHeight - 10;
+    keepBottom = scrollTop + clientHeight > scrollHeight - 10;
   });
 
   onUpdated(() => {
     if (historyAreaRef.value) {
-      if (currentIsShowingButton) {
+      if (keepBottom) {
         historyAreaRef.value.scrollTop = historyAreaRef.value.scrollHeight;
       }
     }
   });
 })();
 
+onMounted(() => {
+  historyAreaRef.value.scrollTop = historyAreaRef.value.scrollHeight;
+});
+
 const messageContentInEdit = ref("");
+
+function handleRollDice(diceType: number | number[]) {
+  const playerId = useSocketStore().playerCharacterInfo?._id;
+  if (playerId) {
+    rollDice(playerId, diceType);
+  } else {
+    rollDice("DM", diceType);
+  }
+}
 </script>
 
 <style lang="less" scoped>

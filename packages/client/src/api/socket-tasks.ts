@@ -6,7 +6,6 @@ export function updateCharacterInfo(characterId: string, property: Partial<Chara
 }
 
 export function updateSceneInfo(id: string, data: Scene) {
-  console.log("updateSceneInfo data", data);
   if (!id) {
     createSceneInfo(data);
   } else {
@@ -57,4 +56,8 @@ export function downloadImage(key: string): Promise<string> {
       resolve(data);
     });
   });
+}
+
+export function rollDice(characterId: string, diceType: number | number[]) {
+  useSocketStore().socket.emit("operator: rollDice", characterId, diceType);
 }

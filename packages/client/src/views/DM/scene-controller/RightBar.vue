@@ -3,13 +3,13 @@
     <div
       v-for="c in sortedCharacters"
       class="character-item"
-      :class="{ 'character-item-chosen': c === chosenCharacter }"
+      :class="{ 'character-item-chosen': c._id === chosenCharacter?._id }"
       @click="() => handleClickCharacter(c)"
     >
       <div>{{ c.name }}</div>
       <div class="append-info">先攻{{ c.currentInitiative }}</div>
     </div>
-    <SceneCharacter v-if="chosenCharacter" :character="chosenCharacter" />
+    <QuickEditCharacter v-if="chosenCharacter" :character="chosenCharacter" />
   </div>
 
   <div>
@@ -58,7 +58,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, type PropType } from "vue";
-import SceneCharacter from "./Character.vue";
+import QuickEditCharacter from "./QuickEditCharacter.vue";
 import type { CharacterInfo, Scene } from "@trpg/shared";
 import CharacterInfoEditor from "../components/CharacterInfoEditor.vue";
 import { useDoubleClick } from "@/utils";

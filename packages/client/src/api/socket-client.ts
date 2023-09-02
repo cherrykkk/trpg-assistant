@@ -10,13 +10,13 @@ export function createSocketAndInitAbility(role: "DM" | "player", password: stri
   socket.on("connect", () => {
     if (role === "DM") {
       socket.emit("signIn: signInAsDM", password);
-      useSocketStore().connectedSocket = socket;
     } else {
       socket.emit("signIn: signInAsPlayer", password);
       socket.on("data: playerCharacter", (characterInfo) => {
         useSocketStore().playerCharacterInfo = characterInfo;
       });
     }
+    useSocketStore().connectedSocket = socket;
   });
   socket.on("disconnect", () => {
     useSocketStore().connectedSocket = null;

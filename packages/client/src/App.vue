@@ -21,10 +21,10 @@ body {
   margin: 0;
 }
 * {
-  border-radius: 3px;
   box-sizing: border-box;
 }
 button {
   border: 1px solid #999;
+  cursor: pointer;
 }
 </style>
