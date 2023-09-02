@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node src/main.ts",
+    "dev": "nodemon --exec  'ts-node' src/main.ts",
     "test": "vitest",
     "test-ui": "vitest --ui",
     "script": "ts-node ./scripts/run.ts"
@@ -21,8 +21,10 @@
   },
   "devDependencies": {
     "@vitest/ui": "^0.34.1",
+    "nodemon": "^3.0.1",
     "socket.io-client": "^4.6.1",
     "ts-node": "^10.9.1",
-    "vitest": "^0.34.1"
+    "vitest": "^0.34.1",
+    "winston": "^3.10.0"
   }
 }
