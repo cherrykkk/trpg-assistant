@@ -63,17 +63,9 @@
         </div>
       </div>
     </InfoCell>
-    <InfoCell prefix="已准备法术">
+    <InfoCell prefix="法术">
       <SpellItem
-        v-for="e in spellsPreparedInfo"
-        :spell-info="e"
-        @switch-description="switchDescription"
-        :show-description="spellToShowDescription === e._id"
-      ></SpellItem>
-    </InfoCell>
-    <InfoCell prefix="已知法术">
-      <SpellItem
-        v-for="e in spellsKnownInfo"
+        v-for="e in spellAndInfo"
         :spell-info="e"
         @switch-description="switchDescription"
         :show-description="spellToShowDescription === e._id"
@@ -96,26 +88,15 @@ import { type PropType, computed, ref } from "vue";
 import InfoCell from "./components/InfoCell.vue";
 import type { CharacterInfo, SpellInfo } from "@trpg/shared";
 import SpellItem from "../components/SpellItem.vue";
-import { useSocketStore } from "@/stores/useSocketStore";
 import { turnToSpellsInfo } from "@/utils/index";
 
 const props = defineProps({
   characterInfo: { type: Object as PropType<CharacterInfo>, required: true },
 });
 
-const spellsPreparedInfo = computed(() => {
-  const result: SpellInfo[] = [];
-  props.characterInfo.spellsPrepared.forEach((e) => {
-    const spellItem = useSocketStore().allSpellInfo.find((info) => info._id === e.spellId);
-    if (spellItem) {
-      result.push(spellItem);
-    }
-  });
-  return result;
-});
-
-const spellsKnownInfo = computed(() => {
-  return turnToSpellsInfo(props.characterInfo.spellsKnown);
+const spellAndInfo = computed(() => {
+  console.log(turnToSpellsInfo(props.characterInfo.spells));
+  return turnToSpellsInfo(props.characterInfo.spells);
 });
 
 const spellToShowDescription = ref<string | null>(null);

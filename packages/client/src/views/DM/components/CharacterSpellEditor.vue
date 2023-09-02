@@ -19,7 +19,7 @@
     <SpellSelect
       v-if="showSpellList"
       :spell-database="useSocketStore().allSpellInfo"
-      :exist-spell="character.spellsKnown"
+      :exist-spell="character.spells"
       @select="handleAddSpell"
       :default-class-option="character.class"
     />
@@ -53,51 +53,22 @@ function handleSwitchDescription(id: string) {
 }
 
 function handleAddSpell(spellId: string) {
-  if (knownOrPrepared.value === "prepared") {
-    props.character.spellsPrepared.push({ spellId, reason: "" });
-  } else {
-    props.character.spellsKnown.push({ spellId, reason: "" });
-  }
+  props.character.spells.push({ spellId, reason: "" });
 }
 
 function handleDeleteSpell(spellId: string) {
-  if (knownOrPrepared.value === "prepared") {
-    props.character.spellsPrepared = props.character.spellsPrepared.filter(
-      (e) => e.spellId !== spellId
-    );
-  } else {
-    props.character.spellsKnown = props.character.spellsKnown.filter((e) => e.spellId !== spellId);
-  }
+  props.character.spells = props.character.spells.filter((e) => e.spellId !== spellId);
 }
 
 const spellIdToShowDescription = ref<string[]>([]);
 const showSpellList = ref(false);
 
-const spellsOnCharacter = computed(() => {
-  return knownOrPrepared.value === "prepared"
-    ? props.character.spellsPrepared
-    : props.character.spellsKnown;
-  // const result: { spellInfo: SpellInfo, reason: string }[] = []
-  // props.character.spellsKnown.forEach(e => {
-  //   const spellInfo = useSocketStore().allSpellInfo.find(spellInfo => spellInfo.id === e.spellId)
-  //   if (!spellInfo) {
-  //     console.log(`无法找到 id 为 ${e.spellId} 的法术`)
-  //     return
-  //   }
-  //   result.push({
-  //     spellInfo,
-  //     reason: e.reason
-  //   })
-  // })
-  // return result
-});
-
 const spellInfoToShowInLeftList = computed(() => {
-  return turnToSpellsInfo(spellsOnCharacter.value);
+  return turnToSpellsInfo(props.character.spells);
 });
 
 function getSpellOnCharacterInfo(id: string) {
-  const result = spellsOnCharacter.value.find((e) => e.spellId === id);
+  const result = props.character.spells.find((e) => e.spellId === id);
   if (!result) {
     throw Error("未找到法术" + id);
   } else {

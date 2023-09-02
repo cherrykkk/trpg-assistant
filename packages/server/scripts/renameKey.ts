@@ -1,10 +1,12 @@
-export function renameKey(collection) {
+import type { Collection } from "mongodb";
+
+export function renameKey(collection: Collection<any>) {
   // 重命名键名
   collection.updateMany(
     {},
     {
       $rename: {
-        法术说明: "description",
+        spellsKnown: "spells",
       },
     }
   );

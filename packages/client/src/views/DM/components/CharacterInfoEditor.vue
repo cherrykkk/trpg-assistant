@@ -140,7 +140,7 @@ const { canCopy, playerInfoURL, copyPlayerURL } = initClipboard();
 
 function initClipboard() {
   const canCopy = Boolean(navigator.clipboard);
-  const playerInfoURL = `${location.host}/player/${props.character?._id}`;
+  const playerInfoURL = `${location.host}/#/player/${props.character?._id}`;
   async function copyPlayerURL() {
     navigator.clipboard.writeText(playerInfoURL);
     ElMessage.success("已复制");

@@ -52,6 +52,20 @@ export function initSocket(collections: CollectionList) {
     characterInfo: CharacterInfo
   ) {
     socket.emit("data: playerCharacter", characterInfo);
+
+    collections.messages
+      .find({ gameInstanceId: characterInfo.gameInstanceId })
+      .toArray()
+      .then((messages) => {
+        socket.emit("data: allMessage", messages);
+      });
+
+    collections.spells
+      .find()
+      .toArray()
+      .then((spells) => {
+        socket.emit("data: allSpellInfo", spells);
+      });
   }
 
   function broadcastUpdateToPlayers() {
