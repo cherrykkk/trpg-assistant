@@ -9,9 +9,13 @@
     <div class="spell-info-description" v-if="showDescription">
       {{ spellInfo.法术说明 }}
       <div style="color: #333">
-        <b> {{ spellInfo.专注 }} {{ spellInfo.仪式 }} </b>
+        <b> {{ spellInfo.专注 }} {{ spellInfo.仪式 }} {{ spellInfo.持续时间 }} </b>
         &nbsp;
-        <span style="color: #ccc; float: right">成分：{{ spellInfo.法术成分 }}</span>
+        <span style="color: #ccc; float: right"
+          >{{ spellInfo.施法时间 }} {{ spellInfo.施法距离 }} {{ spellInfo.持续时间 }} 成分：{{
+            spellInfo.法术成分
+          }}</span
+        >
       </div>
       <div style="color: #999" v-if="spellInfo.法术升阶">升阶：{{ spellInfo.法术升阶 }}</div>
     </div>

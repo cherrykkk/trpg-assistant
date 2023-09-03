@@ -99,6 +99,8 @@ function handleCreateCharacter(template?: CharacterInfo) {
   if (template) {
     const newC = JSON.parse(JSON.stringify(template)) as CharacterInfo;
     newC._id = "";
+    newC.location.sceneName = props.scene.name;
+    newC.scope = "monster";
     chosenCharacter.value = newC;
   } else {
     chosenCharacter.value = null;

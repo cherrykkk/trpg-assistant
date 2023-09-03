@@ -78,6 +78,8 @@ const filterClass = ref<keyof SpellInfo | "全部">("全部");
     filterClass.value = props.defaultClassOption as ClassOption;
   } else if (props.defaultClassOption === "吟游诗人") {
     filterClass.value = "诗人";
+  } else if (props.defaultClassOption === "邪术师") {
+    filterClass.value = "邪术士";
   }
 })();
 

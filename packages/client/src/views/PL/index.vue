@@ -10,7 +10,7 @@
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item command="character">角色面板</el-dropdown-item>
-        <el-dropdown-item command="map">地图示意</el-dropdown-item>
+        <!-- <el-dropdown-item command="map">地图示意</el-dropdown-item> -->
         <el-dropdown-item command="message">掷骰消息</el-dropdown-item>
         <el-dropdown-item command="spellDatabase">法术查询</el-dropdown-item>
       </el-dropdown-menu>

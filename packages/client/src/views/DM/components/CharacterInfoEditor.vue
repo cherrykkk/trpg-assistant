@@ -32,12 +32,22 @@
             <TipAlignment />
           </TipPopover>
         </EditCell>
-        <EditCell v-model="editedData.experience" title="经验" />
+        <EditCell v-model="editedData.experience"
+          >经验（等级：{{ getLevelAndBonus(editedData.experience).level }}）</EditCell
+        >
         <EditCell v-model="editedData.maxHP" title="最大血量" />
         <EditCell v-model="editedData.currentHP" title="当前血量" />
         <EditCell v-model="editedData.speed" title="速度" />
         <EditCell v-model="editedData.armorClass" title="AC" />
+        <EditCell v-model="editedData.spellDifficultyClass" title="法术豁免" />
+        <EditCell v-model="editedData.spellcastingAbility">
+          <TipPopover>
+            <template #reference>？施法关键属性</template>
+            <TipSpellcastingAbility />
+          </TipPopover>
+        </EditCell>
       </div>
+      <!-- <SkillsPanel :character-info="editedData" /> -->
       <div class="ability-and-proficiencies-area">
         <div class="ability-info-panel">
           <EditCell v-model="editedData.strength">
@@ -89,7 +99,7 @@
 
 <script lang="ts" setup>
 import { type PropType, onBeforeUnmount, reactive, ref } from "vue";
-import { createNewCharacterInfoTemplate } from "@/utils/index";
+import { createNewCharacterInfoTemplate, getLevelAndBonus } from "@/utils/index";
 import { useSceneStore } from "@/stores/useSceneStore";
 import { updateCharacterInfo, createCharacterInfo, deleteCharacterInfo } from "@/api/socket-tasks";
 import EditCell from "../../components/EditCell.vue";
@@ -102,6 +112,8 @@ import TipPopover from "@/views/components/tip-popovers/TipPopover.vue";
 import TipAlignment from "@/views/components/tip-popovers/TipAlignment.vue";
 import PassiveChecks from "@/views/components/tip-popovers/PassiveChecks.vue";
 import StrengthAbilityVue from "@/views/components/tip-popovers/StrengthAbility.vue";
+import SkillsPanel from "@/views/components/SkillsPanel.vue";
+import TipSpellcastingAbility from "@/views/components/tip-popovers/TipSpellcastingAbility.vue";
 
 const props = defineProps({
   character: {

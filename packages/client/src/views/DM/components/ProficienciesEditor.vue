@@ -5,7 +5,6 @@
       <ProficiencyBonus />
     </TipPopover>
     <div>熟练项（技能、武器、护甲、工具）</div>
-    <div style="text-align: left">熟练加值：3</div>
     <div
       v-for="(proficienciesList, index) in proficienciesDivided"
       class="items-list"

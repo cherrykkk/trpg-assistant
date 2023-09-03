@@ -48,7 +48,7 @@ export function createNewCharacterInfoTemplate(): CharacterInfo {
     wisdom: 0,
     charisma: 0,
     equipment: [],
-    spellsKnown: [],
+    spells: [],
     appearance: "",
     speed: 30,
     location: { sceneName: "", x: 1, y: 1 },
