@@ -61,13 +61,6 @@ export function initSocket(collections: CollectionList) {
       .then((messages) => {
         socket.emit("data: allMessage", messages);
       });
-
-    collections.spells
-      .find()
-      .toArray()
-      .then((spells) => {
-        socket.emit("data: allSpellInfo", spells);
-      });
   }
 
   function broadcastUpdateToPlayers() {
@@ -125,13 +118,6 @@ async function registerDMSocket(
         socket.emit("data: allMessage", messages);
       });
 
-    collections.spells
-      .find()
-      .toArray()
-      .then((spells) => {
-        socket.emit("data: allSpellInfo", spells);
-      });
-
     // collections.otherTypes
     //   .find({ gameInstanceId })
     //   .toArray()
@@ -168,14 +154,6 @@ async function registerDMSocket(
       delete data._id;
       await collections.scenes.updateOne({ _id: id }, { $set: data });
       sendAllScenesInfo(gameInstanceId, socket);
-    });
-
-    socket.on("operator: updateSpellInfo", async (id, data) => {
-      delete data._id;
-      await collections.spells.updateOne({ _id: id }, { $set: data });
-
-      const allSpellInfo = await collections.spells.find().toArray();
-      socket.emit("data: allSpellInfo", allSpellInfo);
     });
 
     socket.on("operator: updateOtherTypes", async (name, data) => {
@@ -285,5 +263,6 @@ function writeMessage(
     content: messageContent,
     gameInstanceId,
     _id: new ObjectId().toString(),
+    time: new Date().toLocaleString(),
   });
 }

@@ -3,7 +3,10 @@
     <DiceController @roll-dice="handleRollDice" />
     <div class="history-area" ref="historyAreaRef">
       <div v-for="e in useSocketStore().messageList">
-        {{ e.content }}
+        <div class="message-time">{{ e.time }}</div>
+        <div>
+          {{ e.content }}
+        </div>
       </div>
     </div>
     <!-- <el-input type="text-area" v-model="messageContentInEdit" class="message-text-area"></el-input> -->
@@ -66,6 +69,11 @@ function handleRollDice(diceType: number | number[]) {
   position: relative;
   flex-grow: 1;
   overflow-y: auto;
+}
+
+.message-time {
+  font-size: 12px;
+  color: #ccc;
 }
 .message-text-area {
   margin: 10px 0;

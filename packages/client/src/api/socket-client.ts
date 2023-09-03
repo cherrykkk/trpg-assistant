@@ -27,10 +27,6 @@ export function createSocketAndInitAbility(role: "DM" | "player", password: stri
     localStorage.setItem("data: allCharactersInfo", JSON.stringify(data));
   });
 
-  socket.on("data: allSpellInfo", (data) => {
-    useSocketStore().allSpellInfo = data;
-  });
-
   socket.on("data: allScenes", (data) => {
     useSceneStore().scenes = data;
     useSceneStore().refresh();

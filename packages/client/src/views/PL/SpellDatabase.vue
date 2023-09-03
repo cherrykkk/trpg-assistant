@@ -1,7 +1,6 @@
 <template>
   <div class="spell-database-page">
     <SpellSelect
-      :spell-database="useSocketStore().allSpellInfo"
       :hide-add-button="true"
       :default-class-option="useSocketStore().playerCharacterInfo?.class"
     />

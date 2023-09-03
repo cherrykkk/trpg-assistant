@@ -1,10 +1,10 @@
-import { useSocketStore } from "@/stores/useSocketStore";
-import type {
-  CharacterInfo,
-  LayerInfo,
-  SpellInfo,
-  SpellOnCharacter,
-  CanvasMap,
+import {
+  type CharacterInfo,
+  type LayerInfo,
+  type SpellInfo,
+  type SpellOnCharacter,
+  type CanvasMap,
+  SPELL_DATABASE,
 } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 import { createProficienciesTemplate } from "./createProficienciesTemplate";
@@ -13,12 +13,12 @@ import { CHARACTER_ADVANCEMENT } from "@/stores/constants";
 export function turnToSpellsInfo(data: SpellOnCharacter[]) {
   const result: SpellInfo[] = [];
   data.forEach((e) => {
-    const spellItem = useSocketStore().allSpellInfo.find((info) => info._id === e.spellId);
+    const spellItem = SPELL_DATABASE.find((info) => info._id === e.spellId);
     if (spellItem) {
       result.push(spellItem);
     }
   });
-  result.sort((a, b) => a.等级 - b.等级);
+  result.sort((a, b) => a.level - b.level);
   return result;
 }
 

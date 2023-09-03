@@ -2,22 +2,24 @@
   <div class="spell-item">
     <div class="spell-info-item" @click="() => emits('switchDescription', spellInfo._id)">
       <div class="level-icon">
-        {{ spellInfo.等级 }}
+        {{ spellInfo.level }}
       </div>
-      {{ spellInfo.法术名称 }}
+      {{ spellInfo.spellName }}
     </div>
     <div class="spell-info-description" v-if="showDescription">
-      {{ spellInfo.法术说明 }}
+      {{ spellInfo.description }}
       <div style="color: #333">
-        <b> {{ spellInfo.专注 }} {{ spellInfo.仪式 }} {{ spellInfo.持续时间 }} </b>
+        <b>
+          <span v-if="spellInfo.concentration">专注 </span>
+          <span v-if="spellInfo.ritual">仪式</span>
+          {{ spellInfo.duration }}
+        </b>
         &nbsp;
         <span style="color: #ccc; float: right"
-          >{{ spellInfo.施法时间 }} {{ spellInfo.施法距离 }} {{ spellInfo.持续时间 }} 成分：{{
-            spellInfo.法术成分
-          }}</span
+          >{{ spellInfo.castingTime }} {{ spellInfo.range }} 成分：{{ spellInfo.material }}</span
         >
       </div>
-      <div style="color: #999" v-if="spellInfo.法术升阶">升阶：{{ spellInfo.法术升阶 }}</div>
+      <div style="color: #999" v-if="spellInfo.higherLevel">升阶：{{ spellInfo.higherLevel }}</div>
     </div>
   </div>
 </template>
@@ -51,7 +53,7 @@ const mainColor = computed(() => {
     "#df412b",
     "#f28a17",
   ];
-  const level = props.spellInfo.等级;
+  const level = props.spellInfo.level;
 
   return colors[level] ?? colors[0];
 });

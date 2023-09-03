@@ -18,7 +18,6 @@
     </div>
     <SpellSelect
       v-if="showSpellList"
-      :spell-database="useSocketStore().allSpellInfo"
       :exist-spell="character.spells"
       @select="handleAddSpell"
       :default-class-option="character.class"
@@ -29,7 +28,6 @@
 import { type PropType, computed, nextTick, ref } from "vue";
 import type { CharacterInfo } from "@trpg/shared";
 import SpellItem from "@/views/components/SpellItem.vue";
-import { useSocketStore } from "@/stores/useSocketStore";
 import TapToEditDescription from "./TapToEditDescription.vue";
 import { turnToSpellsInfo } from "@/utils";
 import SpellSelect from "@/views/components/SpellSelect.vue";

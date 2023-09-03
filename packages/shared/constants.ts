@@ -8,7 +8,6 @@ export interface ClientEvents {
   // update
   "operator: updateCharacterInfo": (characterId: string, value: Partial<CharacterInfo>) => void;
   "operator: updateSceneInfo": (id: string, value: Partial<Scene>) => void;
-  "operator: updateSpellInfo": (id: string, value: Partial<SpellInfo>) => void;
   "operator: updateOtherTypes": (name: string, value: unknown) => void;
   "operator: uploadImage": (name: string, base64: string) => string;
   // delete
@@ -24,7 +23,6 @@ export interface ClientEvents {
 export interface ServerEvents {
   "data: playerCharacter": (data: CharacterInfo) => void;
   "data: allCharactersInfo": (data: CharacterInfo[]) => void;
-  "data: allSpellInfo": (data: SpellInfo[]) => void;
   "data: allMessage": (data: Message[]) => void;
   "data: allScenes": (data: Scene[]) => void;
   "data: allOtherTypes": (data: OtherTypeInfo[]) => void;
@@ -97,35 +95,11 @@ export interface SpellOnCharacter {
   reason: string;
 }
 
-export interface SpellInfo {
-  _id: string;
-  等级: number;
-  法术名称: string;
-  派系: string;
-  施法时间: string;
-  施法距离: string;
-  法术成分: string;
-  持续时间: string;
-  专注: boolean;
-  豁免: boolean;
-  仪式: boolean;
-  施法材料: string;
-  法术说明: string;
-  法术升阶: string;
-  诗人: string;
-  牧师: string;
-  德鲁伊: string;
-  圣武士: string;
-  游侠: string;
-  术士: string;
-  邪术士: string;
-  法师: string;
-}
-
 export interface Message {
   _id: string;
   gameInstanceId: string;
   content: string;
+  time: string;
 }
 
 export interface Scene {
@@ -134,11 +108,6 @@ export interface Scene {
   name: string;
   father: string | null;
   richTextDescription: any;
-  description?: string;
-  areaX?: number;
-  areaY?: number;
-  picture?: string;
-  items: SceneItem[];
   children: Scene[];
   relatedMapIDs: String[];
   storage: StoredStackData[];
@@ -147,14 +116,9 @@ export function createSceneTemplate(): Scene {
   return {
     _id: "",
     gameInstanceId: "",
-    picture: undefined,
     name: "",
-    description: "",
     richTextDescription: undefined,
     father: null,
-    areaX: 10,
-    areaY: 10,
-    items: [],
     children: [],
     relatedMapIDs: [],
     storage: [],

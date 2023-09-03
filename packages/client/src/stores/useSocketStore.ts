@@ -17,7 +17,6 @@ export const useSocketStore = defineStore("socket", {
     connectedSocket: null as Socket<ServerEvents, ClientEvents> | null,
     playerCharacterInfo: null as CharacterInfo | null,
     messageList: [] as Message[],
-    allSpellInfo: [] as SpellInfo[],
     allCanvasMap: [] as CanvasMap[],
     currentMap: null as CanvasMap | null,
     gameInstanceId: "",

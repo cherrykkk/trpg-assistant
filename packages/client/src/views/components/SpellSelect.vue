@@ -29,13 +29,9 @@
 <script lang="ts" setup>
 import { type PropType, computed, ref } from "vue";
 import SpellItem from "@/views/components/SpellItem.vue";
-import type { SpellInfo, SpellOnCharacter } from "@trpg/shared";
+import { type SpellOnCharacter, type SpellInfo, SPELL_DATABASE } from "@trpg/shared";
 
 const props = defineProps({
-  spellDatabase: {
-    type: Array as PropType<SpellInfo[]>,
-    default: [],
-  },
   existSpell: {
     type: Array as PropType<SpellOnCharacter[]>,
     default: [],
@@ -71,15 +67,13 @@ function handleAddSpell(spellId: string) {
 const spellIdToShowDescription = ref<string[]>([]);
 
 // filter
-const classOption = ["全部", "诗人", "牧师", "德鲁伊", "圣武士", "游侠", "术士", "邪术士", "法师"];
+const classOption = ["全部", "诗人", "牧师", "德鲁伊", "圣武士", "游侠", "术士", "邪术师", "法师"];
 const filterClass = ref<keyof SpellInfo | "全部">("全部");
 (function initFilterClass() {
   if (classOption.includes(props.defaultClassOption ?? "")) {
     filterClass.value = props.defaultClassOption as ClassOption;
   } else if (props.defaultClassOption === "吟游诗人") {
     filterClass.value = "诗人";
-  } else if (props.defaultClassOption === "邪术师") {
-    filterClass.value = "邪术士";
   }
 })();
 
@@ -88,12 +82,12 @@ function handleSelectClass(e: Event) {
 }
 
 const filteredSpellDatabase = computed(() => {
-  let result = props.spellDatabase;
+  let result = [...SPELL_DATABASE];
   const fc = filterClass.value;
   if (fc !== "全部") {
-    result = props.spellDatabase.filter((e) => e[fc]);
+    result = result.filter((e) => e[fc]);
   }
-  return result.sort((a, b) => a.等级 - b.等级);
+  return result.sort((a, b) => a.level - b.level);
 });
 </script>
 <style lang="less" scoped>
