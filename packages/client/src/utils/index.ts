@@ -5,6 +5,8 @@ import {
   type SpellOnCharacter,
   type CanvasMap,
   SPELL_DATABASE,
+  type SceneInfo,
+  type ClientScene,
 } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 import { createProficienciesTemplate } from "./createProficienciesTemplate";
@@ -51,7 +53,7 @@ export function createNewCharacterInfoTemplate(): CharacterInfo {
     spells: [],
     appearance: "",
     speed: 30,
-    location: { sceneName: "", x: 1, y: 1 },
+    locationSceneId: "",
     currentInitiative: 0,
     backpack: [],
   };
@@ -127,4 +129,23 @@ export function getLevelAndBonus(exp: number) {
     }
   }
   return CHARACTER_ADVANCEMENT[0];
+}
+
+export function getSceneTreeAndClientScenes(allScenes: SceneInfo[]) {
+  const clientScenes: ClientScene[] = allScenes.map((e) => ({ ...e, children: [] }));
+  const notTopSceneList: ClientScene[] = [];
+
+  for (let i = 0; i < clientScenes.length; i++) {
+    const scene = clientScenes[i];
+    if (scene.fatherId) {
+      const fatherScene = clientScenes.find((e) => e._id === scene.fatherId);
+      if (fatherScene) {
+        notTopSceneList.push(scene);
+        fatherScene.children.push(scene);
+      }
+    }
+  }
+
+  const topSceneTreeList = clientScenes.filter((e) => !notTopSceneList.includes(e));
+  return { topSceneTreeList, clientScenes };
 }

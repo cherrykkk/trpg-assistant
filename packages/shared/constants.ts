@@ -4,10 +4,10 @@ export interface ClientEvents {
   "operator: rollDice": (characterId: string | "DM", value: number | number[]) => void;
   // create
   "operator: createCharacterInfo": (value: CharacterInfo) => void;
-  "operator: createSceneInfo": (value: Scene) => void;
+  "operator: createSceneInfo": (value: SceneInfo) => void;
   // update
   "operator: updateCharacterInfo": (characterId: string, value: Partial<CharacterInfo>) => void;
-  "operator: updateSceneInfo": (id: string, value: Partial<Scene>) => void;
+  "operator: updateSceneInfo": (id: string, value: Partial<SceneInfo>) => void;
   "operator: updateOtherTypes": (name: string, value: unknown) => void;
   "operator: uploadImage": (name: string, base64: string) => string;
   // delete
@@ -24,7 +24,7 @@ export interface ServerEvents {
   "data: playerCharacter": (data: CharacterInfo) => void;
   "data: allCharactersInfo": (data: CharacterInfo[]) => void;
   "data: allMessage": (data: Message[]) => void;
-  "data: allScenes": (data: Scene[]) => void;
+  "data: allScenes": (data: SceneInfo[]) => void;
   "data: allOtherTypes": (data: OtherTypeInfo[]) => void;
   "data: image": (key: string, data: string) => void;
   "message: system": (message: string) => void;
@@ -64,9 +64,9 @@ export interface CharacterInfo {
   spells: SpellOnCharacter[];
   appearance: string;
   speed: number;
-  location: { sceneName: string; x: number; y: number };
   currentInitiative: number;
   backpack: StoredStackData[];
+  locationSceneId: string;
 }
 
 export interface StoredStackData {
@@ -102,25 +102,28 @@ export interface Message {
   time: string;
 }
 
-export interface Scene {
+export interface SceneInfo {
   _id: string;
   gameInstanceId: string;
   name: string;
-  father: string | null;
+  fatherId: string | null;
   richTextDescription: any;
-  children: Scene[];
   relatedMapIDs: String[];
   storage: StoredStackData[];
 }
-export function createSceneTemplate(): Scene {
+
+export type ClientScene = SceneInfo & {
+  children: ClientScene[];
+};
+export function createSceneTemplate(): ClientScene {
   return {
     _id: "",
     gameInstanceId: "",
-    name: "",
+    name: "未命名",
     richTextDescription: undefined,
-    father: null,
-    children: [],
+    fatherId: null,
     relatedMapIDs: [],
+    children: [],
     storage: [],
   };
 }

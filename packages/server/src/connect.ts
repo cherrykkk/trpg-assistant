@@ -6,7 +6,7 @@ import type {
   GameInstance,
   Message,
   OtherTypeInfo,
-  Scene,
+  SceneInfo,
   SpellInfo,
 } from "@trpg/shared";
 import logger from "./logger";
@@ -31,7 +31,7 @@ export async function useMongoDB() {
     characters: db.collection<CharacterInfo>("characters"),
     spells: db.collection<SpellInfo>("spells"),
     equipments: db.collection("equipments"),
-    scenes: db.collection<Scene>("scenes"),
+    scenes: db.collection<SceneInfo>("scenes"),
     messages: db.collection<Message>("messages"),
     CanvasMaps: db.collection<CanvasMap>("CanvasMaps"),
     otherTypes: db.collection<OtherTypeInfo>("otherTypes"),

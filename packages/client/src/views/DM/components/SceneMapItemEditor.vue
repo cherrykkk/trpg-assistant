@@ -65,14 +65,14 @@
 
 <script lang="ts" setup>
 import { updateSceneInfo } from "@/api/socket-tasks";
-import type { SceneItem, Scene } from "@trpg/shared";
+import type { SceneItem, SceneInfo } from "@trpg/shared";
 import {} from "@trpg/shared";
 import { ElMessage } from "element-plus";
 import { type PropType, ref } from "vue";
 
 const props = defineProps({
   sceneInfo: {
-    type: Object as PropType<Scene>,
+    type: Object as PropType<SceneInfo>,
     required: true,
   },
 });

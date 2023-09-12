@@ -73,22 +73,16 @@
 
       <EditCell :textarea="true" v-model="editedData.appearance" title="角色外貌描述" />
       <EditCell :textarea="true" v-model="editedData.backgroundStory" title="角色背景故事" />
-      <el-input v-model="editedData.location.sceneName">
-        <template #prepend>所处地点</template>
-        <template #append>
-          <el-select
-            v-model="editedData.location.sceneName"
-            placeholder="Select"
-            style="width: 115px"
-          >
-            <el-option
-              v-for="scene in useSceneStore().scenes"
-              :key="scene.name"
-              :value="scene.name"
-            />
-          </el-select>
-        </template>
-      </el-input>
+      <ElTreeSelect
+        v-model="editedData.locationSceneId"
+        placeholder="所属"
+        :data="useSocketStore().clientSceneTree"
+        node-key="_id"
+        filterable
+        :props="{ label: 'name' }"
+        check-on-click-node
+        @node-click="(scene) => (editedData.locationSceneId = scene._id)"
+      />
     </div>
     <div class="backpack-container">
       <EntityStorage :init-stored-stack-data="editedData.backpack" ref="backpackRef" />
@@ -100,12 +94,12 @@
 <script lang="ts" setup>
 import { type PropType, onBeforeUnmount, reactive, ref } from "vue";
 import { createNewCharacterInfoTemplate, getLevelAndBonus } from "@/utils/index";
-import { useSceneStore } from "@/stores/useSceneStore";
+import { useSocketStore } from "@/stores/useSocketStore";
 import { updateCharacterInfo, createCharacterInfo, deleteCharacterInfo } from "@/api/socket-tasks";
 import EditCell from "../../components/EditCell.vue";
 import type { CharacterInfo } from "@trpg/shared";
 import CharacterSpellEditor from "./CharacterSpellEditor.vue";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElTreeSelect } from "element-plus";
 import ProficienciesEditor from "./ProficienciesEditor.vue";
 import EntityStorage from "@/views/components/EntityStorage.vue";
 import TipPopover from "@/views/components/tip-popovers/TipPopover.vue";
@@ -124,9 +118,9 @@ const emit = defineEmits(["closeDialog"]);
 
 const editedData = reactive(props.character ?? createNewCharacterInfoTemplate());
 
-const scene = useSceneStore().currentScene;
+const scene = useSocketStore().currentScene;
 if (!props.character && scene) {
-  editedData.location.sceneName = scene.name;
+  editedData.locationSceneId = scene._id;
 }
 
 let deleteLock = true;

@@ -1,13 +1,13 @@
 import type {
   CharacterInfo,
   Message,
-  Scene,
+  SceneInfo,
   SpellInfo,
   GameInstance,
   CanvasMap,
 } from "@trpg/shared";
 
-export type AllInfo = CharacterInfo | Message | SpellInfo | Scene | GameInstance | CanvasMap;
+export type AllInfo = CharacterInfo | Message | SpellInfo | SceneInfo | GameInstance | CanvasMap;
 
 export type CollectionName =
   | "characters"
@@ -24,7 +24,7 @@ export type CollectionName =
 //   : T extends "spells"
 //   ? SpellInfo
 //   : T extends "scenes"
-//   ? Scene
+//   ? SceneInfo
 //   : T extends "games"
 //   ? GameInstance
 //   : CanvasMap;

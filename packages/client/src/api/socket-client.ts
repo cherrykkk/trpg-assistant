@@ -1,8 +1,8 @@
 import { io, Socket } from "socket.io-client";
 import type { ClientEvents, ServerEvents } from "@trpg/shared";
 import { useSocketStore } from "@/stores/useSocketStore";
-import { useSceneStore } from "@/stores/useSceneStore";
 import { ElMessage } from "element-plus";
+import { getSceneTreeAndClientScenes } from "@/utils";
 
 export function createSocketAndInitAbility(role: "DM" | "player", password: string) {
   const socket: Socket<ServerEvents, ClientEvents> = io(`${location.hostname}:3333`);
@@ -28,8 +28,9 @@ export function createSocketAndInitAbility(role: "DM" | "player", password: stri
   });
 
   socket.on("data: allScenes", (data) => {
-    useSceneStore().scenes = data;
-    useSceneStore().refresh();
+    const { topSceneTreeList, clientScenes } = getSceneTreeAndClientScenes(data);
+    useSocketStore().clientSceneTree = topSceneTreeList;
+    useSocketStore().allClientScenes = clientScenes;
     try {
       localStorage.setItem("data: allScenes", JSON.stringify(data));
     } catch (err) {

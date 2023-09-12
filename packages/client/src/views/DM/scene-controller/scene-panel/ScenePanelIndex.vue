@@ -1,14 +1,13 @@
 <template>
   <div class="scene-detail" v-if="scene">
-    <ScenePath />
     <div class="scene-info-container" :key="scene._id" v-if="!isCombating && scene">
-      <template v-if="useSceneStore().editTarget !== 'story'">
+      <template v-if="useSocketStore().editTarget !== 'story'">
         <RichTextRenderer :initial-value="scene.richTextDescription" />
         <IconButton
           class="rich-text-button"
           icon="icon-edit.svg"
           label="编辑"
-          @click="useSceneStore().editTarget = 'story'"
+          @click="useSocketStore().editTarget = 'story'"
         />
       </template>
       <template v-else>
@@ -42,23 +41,18 @@
 </template>
 <script lang="ts" setup>
 import { type PropType, ref, toRaw } from "vue";
-import type { Scene } from "@trpg/shared";
+import type { ClientScene, SceneInfo } from "@trpg/shared";
 import RichTextRenderer from "@/views/components/RichTextRenderer.vue";
 import CanvasMapEditor from "@/views/components/CanvasMapEditor.vue";
 import EntityStorage from "@/views/components/EntityStorage.vue";
 import { updateSceneInfo } from "@/api/socket-tasks";
 import { storeToRefs } from "pinia";
-import { useSceneStore } from "@/stores/useSceneStore";
+import { useSocketStore } from "@/stores/useSocketStore";
 import IconButton from "@/views/components/IconButton.vue";
 import RichTextEditor from "@/views/components/RichTextEditor.vue";
-import ScenePath from "./ScenePath.vue";
 
-const props = defineProps({
-  path: { type: Array as PropType<Scene[]>, required: true },
-});
-
-const { currentScene: scene } = storeToRefs(useSceneStore());
-const emits = defineEmits(["change-scene"]);
+const { currentScene: scene } = storeToRefs(useSocketStore());
+const emits = defineEmits<{ (event: "change-scene", scene: ClientScene): void }>();
 const isCombating = ref(false);
 
 const richTextEditorRef = ref<InstanceType<typeof RichTextEditor>>();
@@ -70,7 +64,7 @@ async function updateEdit() {
 
   // createSceneInfo(editedScene);
 
-  useSceneStore().editTarget = null;
+  useSocketStore().editTarget = null;
 }
 </script>
 

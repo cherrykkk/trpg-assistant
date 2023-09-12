@@ -6,11 +6,19 @@ import type {
   SpellInfo,
   Message,
   CharacterInfo,
-  Scene,
+  SceneInfo,
   CanvasMap,
+  ClientScene,
 } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 import type { ItemInfo } from "@trpg/shared";
+import { getSceneTreeAndClientScenes } from "@/utils";
+
+const localStorageAllScenes = JSON.parse(
+  localStorage.getItem("data: allScenes") ?? "[]"
+) as SceneInfo[];
+
+const { topSceneTreeList, clientScenes } = getSceneTreeAndClientScenes(localStorageAllScenes);
 
 export const useSocketStore = defineStore("socket", {
   state: () => ({
@@ -18,14 +26,16 @@ export const useSocketStore = defineStore("socket", {
     playerCharacterInfo: null as CharacterInfo | null,
     messageList: [] as Message[],
     allCanvasMap: [] as CanvasMap[],
+    allClientScenes: clientScenes,
     currentMap: null as CanvasMap | null,
     gameInstanceId: "",
     handbook: {
       itemObjects: [{}],
     },
-    currentScene: {} as Scene | {},
+    currentScene: null as ClientScene | null,
+    clientSceneTree: topSceneTreeList,
+    editTarget: null as null | "path" | "story",
     allCharacters: [] as CharacterInfo[],
-
     allOtherType: {
       customAdventuringGears: [],
     } as { customAdventuringGears: ItemInfo[] } & {

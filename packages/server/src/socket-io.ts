@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { type CollectionList } from "./connect";
-import type { CharacterInfo, ClientEvents, Scene, ServerEvents } from "@trpg/shared";
+import type { CharacterInfo, ClientEvents, SceneInfo, ServerEvents } from "@trpg/shared";
 import { ObjectId } from "mongodb";
 import logger from "./logger";
 
@@ -143,7 +143,7 @@ async function registerDMSocket(
       socket.emit("data: allCharactersInfo", allCharactersInfo);
     });
 
-    socket.on("operator: createSceneInfo", async (data: Scene) => {
+    socket.on("operator: createSceneInfo", async (data: SceneInfo) => {
       data.gameInstanceId = gameInstanceId;
       data._id = new ObjectId().toString();
       await collections.scenes.insertOne(data);

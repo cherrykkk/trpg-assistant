@@ -9,7 +9,9 @@
           <span>{{ character.class }}</span>
           <span>{{ character.alignment }}</span>
         </div>
-        <span class="character-location">{{ character.location.sceneName }}</span>
+        <span class="character-location">{{
+          useSocketStore().allClientScenes.find((s) => s._id === character.locationSceneId)?.name
+        }}</span>
       </template>
       <div v-if="character.titles">
         <el-tag size="small" v-for="e in character.titles.split(' ')">{{ e }}</el-tag>
@@ -28,6 +30,7 @@
 import { ref } from "vue";
 import { type PropType } from "vue";
 import type { CharacterInfo } from "@trpg/shared";
+import { useSocketStore } from "@/stores/useSocketStore";
 
 const chosenCharacter = ref();
 const props = defineProps({

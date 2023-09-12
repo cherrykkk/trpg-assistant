@@ -23,7 +23,9 @@
       >
         <div style="display: flex; justify-content: space-between">
           <span>{{ character.name }}</span>
-          <span style="text-align: right; color: #999">{{ character.location.sceneName }}</span>
+          <span style="text-align: right; color: #999">{{
+            useSocketStore().allClientScenes.find((s) => s._id === character.locationSceneId)?.name
+          }}</span>
         </div>
       </el-option>
     </el-select>
@@ -59,7 +61,7 @@
 <script lang="ts" setup>
 import { computed, ref, type PropType } from "vue";
 import QuickEditCharacter from "./QuickEditCharacter.vue";
-import type { CharacterInfo, Scene } from "@trpg/shared";
+import type { CharacterInfo, SceneInfo } from "@trpg/shared";
 import CharacterInfoEditor from "../components/CharacterInfoEditor.vue";
 import { useDoubleClick } from "@/utils";
 import { updateCharacterInfo } from "@/api/socket-tasks";
@@ -76,12 +78,12 @@ import TipPopover from "@/views/components/tip-popovers/TipPopover.vue";
 import TipCombat from "@/views/components/tip-popovers/TipCombat.vue";
 
 const props = defineProps({
-  scene: { type: Object as PropType<Scene>, required: true },
+  scene: { type: Object as PropType<SceneInfo>, required: true },
 });
 
 const sortedCharacters = computed(() => {
   return useSocketStore()
-    .allCharacters.filter((character) => character.location?.sceneName === props.scene.name)
+    .allCharacters.filter((character) => character.locationSceneId === props.scene._id)
     .sort((a, b) => b.currentInitiative - a.currentInitiative);
 });
 
@@ -99,7 +101,7 @@ function handleCreateCharacter(template?: CharacterInfo) {
   if (template) {
     const newC = JSON.parse(JSON.stringify(template)) as CharacterInfo;
     newC._id = "";
-    newC.location.sceneName = props.scene.name;
+    newC.locationSceneId = props.scene._id;
     newC.scope = "monster";
     chosenCharacter.value = newC;
   } else {
@@ -110,7 +112,7 @@ function handleCreateCharacter(template?: CharacterInfo) {
 
 const charactersToSelect = computed(() => {
   return useSocketStore()
-    .allCharacters.filter((c) => c.location.sceneName !== props.scene.name)
+    .allCharacters.filter((c) => c.locationSceneId !== props.scene._id)
     .sort((a, b) => {
       if (b.scope === "PC") return 1;
       else return -1;
@@ -118,7 +120,7 @@ const charactersToSelect = computed(() => {
 });
 
 function moveCharacterToCurrentLocation(character: CharacterInfo) {
-  character.location.sceneName = props.scene.name || "未知";
+  character.locationSceneId = props.scene._id;
   updateCharacterInfo(character._id, character);
 }
 

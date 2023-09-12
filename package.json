@@ -9,6 +9,7 @@
     "dev": "pnpm /dev-/",
     "dev-server": "pnpm -C ./packages/server dev",
     "dev-client": "pnpm -C ./packages/client dev",
+    "server-script": "pnpm -C ./packages/server script",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

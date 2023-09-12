@@ -1,18 +1,19 @@
 import { useSocketStore } from "@/stores/useSocketStore";
-import type { CharacterInfo, Scene } from "@trpg/shared";
+import type { CharacterInfo, ClientScene, SceneInfo } from "@trpg/shared";
 
 export function updateCharacterInfo(characterId: string, property: Partial<CharacterInfo>) {
   useSocketStore().socket.emit("operator: updateCharacterInfo", characterId, property);
 }
 
-export function updateSceneInfo(id: string, data: Scene) {
+export function updateSceneInfo(id: string, data: SceneInfo | ClientScene) {
+  data = { ...data, children: undefined };
   if (!id) {
     createSceneInfo(data);
   } else {
     useSocketStore().socket.emit("operator: updateSceneInfo", id, data);
   }
 }
-export function createSceneInfo(data: Scene) {
+export function createSceneInfo(data: SceneInfo) {
   useSocketStore().socket.emit("operator: createSceneInfo", data);
 }
 
