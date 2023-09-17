@@ -10,8 +10,9 @@
       <el-descriptions-item label="阵营">{{ characterInfo.alignment }}</el-descriptions-item>
       <el-descriptions-item label="经验">{{ characterInfo.experience }}</el-descriptions-item>
       <el-descriptions-item label="速度">{{ characterInfo.speed }}</el-descriptions-item>
-      <el-descriptions-item label="最高血量">{{ characterInfo.maxHP }}</el-descriptions-item>
-      <el-descriptions-item label="当前血量">{{ characterInfo.currentHP }}</el-descriptions-item>
+      <el-descriptions-item label="HP"
+        >{{ characterInfo.currentHP }}/{{ characterInfo.maxHP }}</el-descriptions-item
+      >
       <el-descriptions-item label="力量">{{ characterInfo.strength }}</el-descriptions-item>
       <el-descriptions-item label="敏捷">{{ characterInfo.dexterity }}</el-descriptions-item>
       <el-descriptions-item label="体质">{{ characterInfo.constitution }}</el-descriptions-item>
@@ -63,6 +64,11 @@
         </div>
       </div>
     </InfoCell>
+    <SpellSlotsPanel
+      :max="levelAndConfig.spellSlotNum"
+      v-model="characterInfo.spellSlotNum"
+      :editable="false"
+    />
     <InfoCell prefix="法术">
       <SpellItem
         v-for="e in spellAndInfo"
@@ -84,11 +90,13 @@
 </template>
 
 <script lang="ts" setup>
-import { type PropType, computed, ref } from "vue";
+import { type PropType, computed, ref, toRef } from "vue";
 import InfoCell from "./components/InfoCell.vue";
 import type { CharacterInfo, SpellInfo } from "@trpg/shared";
 import SpellItem from "../components/SpellItem.vue";
 import { turnToSpellsInfo } from "@/utils/index";
+import SpellSlotsPanel from "../components/SpellSlotsPanel.vue";
+import { useLevelAndConfig } from "@/stores/hooks";
 
 const props = defineProps({
   characterInfo: { type: Object as PropType<CharacterInfo>, required: true },
@@ -108,6 +116,8 @@ function switchDescription(id: string) {
   }
 }
 console.log(props.characterInfo);
+
+const { levelAndConfig } = useLevelAndConfig(toRef(props.characterInfo));
 </script>
 
 <style lang="less" scoped>

@@ -33,7 +33,7 @@
           </TipPopover>
         </EditCell>
         <EditCell v-model="editedData.experience"
-          >经验（等级：{{ getLevelAndBonus(editedData.experience).level }}）</EditCell
+          >经验（等级：{{ levelAndConfig.level }}）</EditCell
         >
         <EditCell v-model="editedData.maxHP" title="最大血量" />
         <EditCell v-model="editedData.currentHP" title="当前血量" />
@@ -87,13 +87,18 @@
     <div class="backpack-container">
       <EntityStorage :init-stored-stack-data="editedData.backpack" ref="backpackRef" />
     </div>
+    <SpellSlotsPanel
+      v-if="levelAndConfig.spellSlotNum.length"
+      :max="levelAndConfig.spellSlotNum"
+      v-model="editedData.spellSlotNum"
+    />
     <CharacterSpellEditor :character="editedData" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { type PropType, onBeforeUnmount, reactive, ref } from "vue";
-import { createNewCharacterInfoTemplate, getLevelAndBonus } from "@/utils/index";
+import { type PropType, onBeforeUnmount, reactive, ref, toRef } from "vue";
+import { createNewCharacterInfoTemplate } from "@/utils/index";
 import { useSocketStore } from "@/stores/useSocketStore";
 import { updateCharacterInfo, createCharacterInfo, deleteCharacterInfo } from "@/api/socket-tasks";
 import EditCell from "../../components/EditCell.vue";
@@ -108,6 +113,8 @@ import PassiveChecks from "@/views/components/tip-popovers/PassiveChecks.vue";
 import StrengthAbilityVue from "@/views/components/tip-popovers/StrengthAbility.vue";
 import SkillsPanel from "@/views/components/SkillsPanel.vue";
 import TipSpellcastingAbility from "@/views/components/tip-popovers/TipSpellcastingAbility.vue";
+import SpellSlotsPanel from "@/views/components/SpellSlotsPanel.vue";
+import { useLevelAndConfig } from "@/stores/hooks";
 
 const props = defineProps({
   character: {
@@ -178,6 +185,9 @@ function saveChanges() {
     ElMessage.success("已保存");
   }
 }
+
+const { levelAndConfig } = useLevelAndConfig(toRef(editedData));
+
 onBeforeUnmount(() => {
   saveChanges();
 });

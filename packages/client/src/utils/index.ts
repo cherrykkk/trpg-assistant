@@ -10,7 +10,8 @@ import {
 } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 import { createProficienciesTemplate } from "./createProficienciesTemplate";
-import { CHARACTER_ADVANCEMENT } from "@/stores/constants";
+import { CHARACTER_ADVANCEMENT } from "@/constants/characterAdvancement";
+import { DNDClassData } from "@/constants/DNDclassData";
 
 export function turnToSpellsInfo(data: SpellOnCharacter[]) {
   const result: SpellInfo[] = [];
@@ -129,6 +130,14 @@ export function getLevelAndBonus(exp: number) {
     }
   }
   return CHARACTER_ADVANCEMENT[0];
+}
+
+export function getSpellSlotNum(DNDClass: string, level: number) {
+  const classData = DNDClassData.find((e) => e.class === DNDClass);
+
+  if (classData && classData.advancementConfig) {
+    return classData.advancementConfig.find((e) => e.level === level)?.spellSlotsNum;
+  } else return null;
 }
 
 export function getSceneTreeAndClientScenes(allScenes: SceneInfo[]) {

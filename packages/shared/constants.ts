@@ -68,6 +68,7 @@ export interface CharacterInfo {
   wisdom: number;
   charisma: number;
   equipment: string[];
+  spellSlotNum?: number[];
   spells: SpellOnCharacter[];
   appearance: string;
   speed: number;

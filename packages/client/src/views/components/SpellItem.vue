@@ -27,6 +27,7 @@
 <script lang="ts" setup>
 import type { SpellInfo } from "@trpg/shared";
 import { computed, type PropType } from "vue";
+import { SPELL_LEVEL_COLORS } from "@/constants/spellColors";
 
 const props = defineProps({
   spellInfo: {
@@ -41,21 +42,9 @@ const props = defineProps({
 const emits = defineEmits(["switchDescription"]);
 
 const mainColor = computed(() => {
-  const colors = [
-    "#ddd",
-    "#bcd52d",
-    "#77bd41",
-    "#1cad6e",
-    "#23bad2",
-    "#006fb9",
-    "#412b8b",
-    "#9b0d81",
-    "#df412b",
-    "#f28a17",
-  ];
   const level = props.spellInfo.level;
 
-  return colors[level] ?? colors[0];
+  return SPELL_LEVEL_COLORS[level] ?? SPELL_LEVEL_COLORS[0];
 });
 </script>
 <style lang="less" scoped>
