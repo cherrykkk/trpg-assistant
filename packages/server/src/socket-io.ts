@@ -1,7 +1,13 @@
 import { Server, Socket } from "socket.io";
 import { type CollectionList } from "./connect";
-import type { CharacterInfo, ClientEvents, SceneInfo, ServerEvents } from "@trpg/shared";
-import { ObjectId } from "mongodb";
+import type {
+  CharacterInfo,
+  ClientEvents,
+  ResourceType,
+  SceneInfo,
+  ServerEvents,
+} from "@trpg/shared";
+import { ObjectId, Binary } from "mongodb";
 import logger from "./logger";
 
 const port = 3333;
@@ -177,6 +183,23 @@ async function registerDMSocket(
         cb(_id);
       }
     });
+
+    socket.on(
+      "request: uploadBlob",
+      async (resourceType: ResourceType, buffer: Buffer, mimeType: string, cb) => {
+        logger.info(`uploadBlob, buffer length: ${buffer.length}`);
+        const _id = new ObjectId().toString();
+        const binary = new Binary(buffer);
+        collections.blobs.insertOne({
+          _id,
+          resourceType,
+          data: binary,
+          mimeType,
+          gameInstanceId,
+        });
+        cb(_id);
+      }
+    );
   }
 
   function sendAllScenesInfo(gameInstanceId: string, socket: Socket<ClientEvents, ServerEvents>) {
@@ -241,6 +264,15 @@ function attachSharedEventToSocket(
       cb(doc.data as string);
     } else {
       cb(key);
+    }
+  });
+
+  socket.on("request: downloadBlob", async (key: string, cb) => {
+    const doc = await collections.blobs.findOne({ _id: key });
+    if (doc) {
+      cb({ ...doc, data: doc.data.buffer });
+    } else {
+      cb(null);
     }
   });
 

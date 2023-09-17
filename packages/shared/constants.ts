@@ -1,3 +1,5 @@
+import type { Binary } from "mongodb";
+
 export interface ClientEvents {
   "signIn: signInAsPlayer": (characterId: string) => void;
   "signIn: signInAsDM": (gameId: string) => void;
@@ -18,6 +20,13 @@ export interface ClientEvents {
   "operator: abilityCheck": (characterId: string, ability: string, skill: string) => void;
   "request: uploadImage": (imageData: string, cb: (key: string) => void) => void;
   "request: downloadImage": (key: string, cb: (data: string) => void) => void;
+  "request: uploadBlob": (
+    resourceType: ResourceType,
+    buffer: unknown, // 客户端发送时，发送ArrayBuffer, 服务端接收时接收到Buffer
+    mimeType: string,
+    cb: (key: string) => void
+  ) => void;
+  "request: downloadBlob": (id: string, cb: (blob: ResourceBlob | null) => void) => void;
 }
 
 export interface ServerEvents {
@@ -149,6 +158,23 @@ export interface OtherTypeInfo {
   name: string;
   data: unknown;
 }
+
+export type ResourceType = "image";
+
+interface BaseResourceBlob {
+  _id: string;
+  gameInstanceId: string;
+  resourceType: ResourceType;
+  mimeType: string;
+}
+
+export type ResourceBlob = BaseResourceBlob & {
+  data: ArrayBuffer;
+};
+
+export type ResourceBlobEntity = BaseResourceBlob & {
+  data: Binary;
+};
 
 export const ABILITY_SKILL_ZN = {
   力量: ["运动"],

@@ -6,6 +6,7 @@ import type {
   GameInstance,
   Message,
   OtherTypeInfo,
+  ResourceBlobEntity,
   SceneInfo,
   SpellInfo,
 } from "@trpg/shared";
@@ -35,6 +36,7 @@ export async function useMongoDB() {
     messages: db.collection<Message>("messages"),
     CanvasMaps: db.collection<CanvasMap>("CanvasMaps"),
     otherTypes: db.collection<OtherTypeInfo>("otherTypes"),
+    blobs: db.collection<ResourceBlobEntity>("blobs"),
   };
 
   logger.info(`Successfully connect to database: ${db.databaseName} `);
