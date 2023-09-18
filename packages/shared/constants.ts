@@ -18,11 +18,9 @@ export interface ClientEvents {
   // actions with system message
   "message: sendMessage": (message: string) => void;
   "operator: abilityCheck": (characterId: string, ability: string, skill: string) => void;
-  "request: uploadImage": (imageData: string, cb: (key: string) => void) => void;
-  "request: downloadImage": (key: string, cb: (data: string) => void) => void;
   "request: uploadBlob": (
     resourceType: ResourceType,
-    buffer: unknown, // 客户端发送时，发送ArrayBuffer, 服务端接收时接收到Buffer
+    buffer: ArrayBuffer | Buffer, // 客户端发送时，发送ArrayBuffer, 服务端接收时接收到Buffer
     mimeType: string,
     cb: (key: string) => void
   ) => void;

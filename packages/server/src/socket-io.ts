@@ -110,12 +110,7 @@ async function registerDMSocket(
         socket.emit("data: allCharactersInfo", characterList);
       });
 
-    collections.scenes
-      .find({ gameInstanceId })
-      .toArray()
-      .then((scenes) => {
-        socket.emit("data: allScenes", scenes);
-      });
+    sendAllScenesInfo(gameInstanceId, socket);
 
     collections.messages
       .find({ gameInstanceId })
@@ -173,17 +168,6 @@ async function registerDMSocket(
       socket.emit("data: allCharactersInfo", allCharactersInfo);
     });
 
-    socket.on("request: uploadImage", async (data, cb) => {
-      const exist = await collections.otherTypes.findOne({ _id: data });
-      if (exist) {
-        cb(exist._id);
-      } else {
-        const _id = new ObjectId().toString();
-        collections.otherTypes.insertOne({ _id, name: "", data, gameInstanceId });
-        cb(_id);
-      }
-    });
-
     socket.on(
       "request: uploadBlob",
       async (resourceType: ResourceType, buffer: Buffer, mimeType: string, cb) => {
@@ -205,8 +189,9 @@ async function registerDMSocket(
   function sendAllScenesInfo(gameInstanceId: string, socket: Socket<ClientEvents, ServerEvents>) {
     collections.scenes
       .find({ gameInstanceId })
+      .project({ picture: 0, children: 0 })
       .toArray()
-      .then((docs) => {
+      .then((docs: SceneInfo[]) => {
         socket.emit("data: allScenes", docs);
       });
   }
@@ -256,15 +241,6 @@ function attachSharedEventToSocket(
   socket.on("message: sendMessage", (message) => {
     writeMessage(collections.messages, gameInstanceId, message);
     broadcastMessages(gameInstanceId);
-  });
-
-  socket.on("request: downloadImage", async (key, cb) => {
-    const doc = await collections.otherTypes.findOne({ _id: key });
-    if (doc) {
-      cb(doc.data as string);
-    } else {
-      cb(key);
-    }
   });
 
   socket.on("request: downloadBlob", async (key: string, cb) => {
