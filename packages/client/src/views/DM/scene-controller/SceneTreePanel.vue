@@ -5,7 +5,7 @@
     default-expand-all
     :props="{ label: 'name' }"
     :highlight-current="true"
-    @node-click="(scene: SceneInfo)=>$emit('select',scene)"
+    @node-click="(scene: ClientScene)=>$emit('select',scene)"
     :expand-on-click-node="false"
   >
     <template #default="{ node, data }">
