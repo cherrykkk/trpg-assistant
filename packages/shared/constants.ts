@@ -4,14 +4,22 @@ export interface ClientEvents {
   "signIn: signInAsPlayer": (characterId: string) => void;
   "signIn: signInAsDM": (gameId: string) => void;
   "operator: rollDice": (characterId: string | "DM", value: number | number[]) => void;
+  // canvasMap
+  "operator: updateCanvasMap": (data: CanvasMap, cb?: (_id: string) => void) => void;
   // create
   "operator: createCharacterInfo": (value: CharacterInfo) => void;
   "operator: createSceneInfo": (value: SceneInfo) => void;
   // update
   "operator: updateCharacterInfo": (characterId: string, value: Partial<CharacterInfo>) => void;
   "operator: updateSceneInfo": (id: string, value: Partial<SceneInfo>) => void;
-  "operator: updateOtherTypes": (name: string, value: unknown) => void;
   "operator: uploadImage": (name: string, base64: string) => string;
+  // create or update
+  "operator: storeAsOtherTypes": (
+    data: unknown,
+    _id: string | null,
+    name: string,
+    cb: (_id: string) => void
+  ) => void;
   // delete
   "operator: deleteCharacterInfo": (characterId: string) => void;
   "operator: deleteSceneInfo": (characterId: string) => void;
@@ -29,9 +37,11 @@ export interface ClientEvents {
 
 export interface ServerEvents {
   "data: playerCharacter": (data: CharacterInfo) => void;
+  "data: playerCanvasMapData": (data: CanvasMap) => void;
   "data: allCharactersInfo": (data: CharacterInfo[]) => void;
   "data: allMessage": (data: Message[]) => void;
   "data: allScenes": (data: SceneInfo[]) => void;
+  "data: allCanvasMap": (data: CanvasMap[]) => void;
   "data: allOtherTypes": (data: OtherTypeInfo[]) => void;
   "data: image": (key: string, data: string) => void;
   "message: system": (message: string) => void;
@@ -116,7 +126,7 @@ export interface SceneInfo {
   name: string;
   fatherId: string | null;
   richTextDescription: any;
-  relatedMapIDs: String[];
+  relatedMapId: string;
   storage: StoredStackData[];
 }
 
@@ -130,7 +140,7 @@ export function createSceneTemplate(): ClientScene {
     name: "未命名",
     richTextDescription: undefined,
     fatherId: null,
-    relatedMapIDs: [],
+    relatedMapId: "",
     children: [],
     storage: [],
   };
@@ -153,7 +163,7 @@ export interface GameInstance {
 
 export interface OtherTypeInfo {
   _id: string;
-  gameInstanceId: string;
+  gameInstanceId?: string;
   name: string;
   data: unknown;
 }
@@ -208,8 +218,10 @@ export const AbilityPropertyToName = {
 
 export interface CanvasMap {
   _id: string;
+  gameInstanceId: string;
   mapName: string;
   layers: LayerInfo[];
+  gridSize: number;
   width: number;
   height: number;
   scale: number;
@@ -217,9 +229,11 @@ export interface CanvasMap {
   offsetY: number;
 }
 export interface LayerInfo {
+  key: number;
   layerName: string;
   playerVisible: boolean;
   brushActions: BrushAction[];
+  isSelected: boolean;
 }
 
 export interface BrushAction {

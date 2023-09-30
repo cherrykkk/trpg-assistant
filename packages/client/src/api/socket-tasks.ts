@@ -1,5 +1,6 @@
 import { useSocketStore } from "@/stores/useSocketStore";
 import type {
+  CanvasMap,
   CharacterInfo,
   ClientScene,
   ResourceBlob,
@@ -21,10 +22,6 @@ export function updateSceneInfo(id: string, data: SceneInfo | ClientScene) {
 }
 export function createSceneInfo(data: SceneInfo) {
   useSocketStore().socket.emit("operator: createSceneInfo", data);
-}
-
-export function updateOtherTypeInfo(name: string, data: unknown) {
-  useSocketStore().socket.emit("operator: updateOtherTypes", name, data);
 }
 
 export function createCharacterInfo(data: CharacterInfo) {
@@ -86,4 +83,16 @@ function downloadBlob(blobId: string): Promise<Blob> {
 
 export function rollDice(characterId: string, diceType: number | number[]) {
   useSocketStore().socket.emit("operator: rollDice", characterId, diceType);
+}
+
+function storeOnServer(data: unknown, _id: string, name: string) {
+  return new Promise((resolve, reject) => {
+    useSocketStore().socket.emit("operator: storeAsOtherTypes", data, _id, name, (returnId) => {
+      resolve(returnId);
+    });
+  });
+}
+
+export function updateCanvasMap(mapData: CanvasMap, cb?: (_id: string) => void) {
+  useSocketStore().socket.emit("operator: updateCanvasMap", mapData, cb);
 }

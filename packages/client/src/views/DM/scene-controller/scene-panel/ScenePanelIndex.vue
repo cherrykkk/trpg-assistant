@@ -1,6 +1,6 @@
 <template>
   <div class="scene-detail" v-if="scene">
-    <div class="scene-info-container" :key="scene._id" v-if="!isCombating && scene">
+    <div class="scene-info-container" :key="scene._id" v-if="scene">
       <template v-if="useSocketStore().editTarget !== 'story'">
         <RichTextRenderer :initial-value="scene.richTextDescription" />
         <IconButton
@@ -20,11 +20,6 @@
         />
       </template>
     </div>
-    <div class="scene-info-container" :key="scene._id" v-if="isCombating">
-      <!-- <CanvasMapEditor v-if="isCombating" :map-info="mapInfo">
-        <template #characters> <CharactersPanel /></template
-      ></CanvasMapEditor> -->
-    </div>
     <div style="border-top: 2px solid #ccc; border-radius: 0">
       <EntityStorage
         :key="scene._id"
@@ -40,10 +35,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { type PropType, ref, toRaw } from "vue";
-import type { ClientScene, SceneInfo } from "@trpg/shared";
+import { ref, toRaw } from "vue";
+import type { ClientScene } from "@trpg/shared";
 import RichTextRenderer from "@/views/components/RichTextRenderer.vue";
-import CanvasMapEditor from "@/views/components/CanvasMapEditor.vue";
 import EntityStorage from "@/views/components/EntityStorage.vue";
 import { updateSceneInfo } from "@/api/socket-tasks";
 import { storeToRefs } from "pinia";
@@ -53,7 +47,6 @@ import RichTextEditor from "@/views/components/RichTextEditor.vue";
 
 const { currentScene: scene } = storeToRefs(useSocketStore());
 const emits = defineEmits<{ (event: "change-scene", scene: ClientScene): void }>();
-const isCombating = ref(false);
 
 const richTextEditorRef = ref<InstanceType<typeof RichTextEditor>>();
 async function updateEdit() {

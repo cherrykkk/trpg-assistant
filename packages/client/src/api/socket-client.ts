@@ -15,6 +15,9 @@ export function createSocketAndInitAbility(role: "DM" | "player", password: stri
       socket.on("data: playerCharacter", (characterInfo) => {
         useSocketStore().playerCharacterInfo = characterInfo;
       });
+      socket.on("data: playerCanvasMapData", (data) => {
+        useSocketStore().currentMap = data;
+      });
     }
     useSocketStore().connectedSocket = socket;
   });
@@ -40,6 +43,10 @@ export function createSocketAndInitAbility(role: "DM" | "player", password: stri
 
   socket.on("data: allMessage", (data) => {
     useSocketStore().messageList = data;
+  });
+
+  socket.on("data: allCanvasMap", (data) => {
+    useSocketStore().allCanvasMap = data;
   });
 
   socket.on("data: allOtherTypes", (data) => {

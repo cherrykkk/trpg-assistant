@@ -1,105 +1,15 @@
 <template>
   <div class="map-previewer">
-    <div class="map-canvas-container" @wheel.prevent="handleWheelEvent">
-      <canvas
-        ref="mapCanvasRef"
-        class="map-canvas"
-        :width="mapInfo.width"
-        :height="mapInfo.height"
-        :style="mapCanvasStyle"
-      ></canvas>
-    </div>
+    <SandboxMap v-if="currentMap" :map-info="currentMap" :follow-camera="false" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed, type HTMLAttributes, watch } from "vue";
-import { useEventListener } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import { useSocketStore } from "@/stores/useSocketStore";
-import { paintCanvas } from "@/utils/index";
+import SandboxMap from "@trpg/components/sandbox-canvas/SandboxMap.vue";
 
-const { currentSceneMapCanvasInfo: mapInfo } = storeToRefs(useSocketStore());
-
-useEventListener(document, "pointermove", (e) => {
-  handleMoveCanvas(e.movementX, e.movementY);
-});
-
-function handleMoveCanvas(deltaX: number, deltaY: number) {
-  let { offsetX, offsetY, width, height } = mapInfo.value;
-  offsetX -= deltaX;
-  offsetY -= deltaY;
-
-  const minX = 100 - width;
-  const maxX = 100;
-  const minY = 100 - height;
-  const maxY = 100;
-
-  offsetX = Math.min(maxX, offsetX);
-  offsetX = Math.max(minX, offsetX);
-  offsetY = Math.min(maxY, offsetY);
-  offsetY = Math.max(minY, offsetY);
-
-  mapInfo.value.offsetX = offsetX;
-  mapInfo.value.offsetY = offsetY;
-}
-
-function handleScaleCanvas(deltaY: number) {
-  let { scale } = mapInfo.value;
-  scale -= deltaY / 200;
-  if (scale > 3) {
-    scale = 3;
-  }
-  if (scale < 0.2) {
-    scale = 0.2;
-  }
-  mapInfo.value.scale = scale;
-}
-
-const mapCanvasStyle = computed<HTMLAttributes["style"]>(() => {
-  const { offsetX, offsetY, scale } = mapInfo.value;
-  return {
-    transform: `translate(${offsetX}px, ${offsetY}px) scale(${scale})`,
-  };
-});
-
-const mapCanvasRef = ref<HTMLCanvasElement>();
-
-let needRefreshCanvas = false;
-
-function handleWheelEvent(e: WheelEvent) {
-  if (e.ctrlKey) {
-    handleScaleCanvas(e.deltaY);
-  } else {
-    handleMoveCanvas(e.deltaX, e.deltaY);
-  }
-}
-
-onMounted(() => {
-  const ctx = mapCanvasRef.value?.getContext("2d");
-  if (!ctx) throw Error();
-
-  const autoDetectRefresh = () => {
-    requestAnimationFrame(() => {
-      if (needRefreshCanvas) {
-        ctx.clearRect(0, 0, mapInfo.value.width, mapInfo.value.height);
-        paintCanvas(ctx, mapInfo.value.layers, false);
-        needRefreshCanvas = false;
-      }
-      autoDetectRefresh();
-    });
-  };
-
-  autoDetectRefresh();
-});
-
-watch(
-  () => [mapInfo.value],
-  () => {
-    needRefreshCanvas = true;
-  },
-  { deep: true }
-);
+const { currentMap } = storeToRefs(useSocketStore());
 </script>
 
 <style lang="less" scoped>

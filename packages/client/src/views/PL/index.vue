@@ -3,6 +3,7 @@
     v-if="characterInfo && selectedPanel === 'character'"
     :character-info="characterInfo"
   />
+  <MapPreviewer v-if="selectedPanel === 'map'" />
   <MessageRoom v-if="selectedPanel === 'message'" />
   <SpellDatabase v-if="selectedPanel === 'spellDatabase'" />
   <ElDropdown class="switch-buttons-dropdown" @command="handleClickDropdownItem">
@@ -10,7 +11,7 @@
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item command="character">角色面板</el-dropdown-item>
-        <!-- <el-dropdown-item command="map">地图示意</el-dropdown-item> -->
+        <el-dropdown-item command="map">地图示意</el-dropdown-item>
         <el-dropdown-item command="message">掷骰消息</el-dropdown-item>
         <el-dropdown-item command="spellDatabase">法术查询</el-dropdown-item>
       </el-dropdown-menu>
@@ -28,6 +29,7 @@ import { useSocketStore } from "../../stores/useSocketStore";
 import { ref } from "vue";
 import { ElDropdown } from "element-plus";
 import SpellDatabase from "./SpellDatabase.vue";
+import MapPreviewer from "./components/MapPreviewer.vue";
 
 const route = useRoute();
 const characterId = route.params.id as string;

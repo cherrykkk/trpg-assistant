@@ -110,19 +110,6 @@ export function paintCanvas(
   });
 }
 
-export function createCanvasMapTemplate(): CanvasMap {
-  return {
-    _id: "",
-    mapName: "新建地图",
-    layers: [],
-    width: 400,
-    height: 400,
-    scale: 1,
-    offsetX: 0,
-    offsetY: 0,
-  };
-}
-
 export function getLevelAndBonus(exp: number) {
   for (let data of [...CHARACTER_ADVANCEMENT].reverse()) {
     if (data.exp <= exp) {
@@ -141,7 +128,10 @@ export function getSpellSlotNum(DNDClass: string, level: number) {
 }
 
 export function getSceneTreeAndClientScenes(allScenes: SceneInfo[]) {
-  const clientScenes: ClientScene[] = allScenes.map((e) => ({ ...e, children: [] }));
+  const clientScenes: ClientScene[] = allScenes.map((e) => ({
+    ...e,
+    children: [],
+  }));
   const notTopSceneList: ClientScene[] = [];
 
   for (let i = 0; i < clientScenes.length; i++) {

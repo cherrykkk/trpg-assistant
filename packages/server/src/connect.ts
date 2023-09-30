@@ -34,7 +34,7 @@ export async function useMongoDB() {
     equipments: db.collection("equipments"),
     scenes: db.collection<SceneInfo>("scenes"),
     messages: db.collection<Message>("messages"),
-    CanvasMaps: db.collection<CanvasMap>("CanvasMaps"),
+    canvasMaps: db.collection<CanvasMap>("canvasMaps"),
     otherTypes: db.collection<OtherTypeInfo>("otherTypes"),
     blobs: db.collection<ResourceBlobEntity>("blobs"),
   };

@@ -1,6 +1,7 @@
 import { Server, Socket } from "socket.io";
 import { type CollectionList } from "./connect";
 import type {
+  CanvasMap,
   CharacterInfo,
   ClientEvents,
   ResourceType,
@@ -67,6 +68,14 @@ export function initSocket(collections: CollectionList) {
       .then((messages) => {
         socket.emit("data: allMessage", messages);
       });
+
+    try {
+      const scene = await collections.scenes.findOne({ _id: characterInfo.locationSceneId });
+      const canvasMap = await collections.canvasMaps.findOne({ _id: scene.relatedMapId });
+      socket.emit("data: playerCanvasMapData", canvasMap);
+    } catch {
+      socket.emit("data: playerCanvasMapData", null);
+    }
   }
 
   function broadcastUpdateToPlayers() {
@@ -119,12 +128,12 @@ async function registerDMSocket(
         socket.emit("data: allMessage", messages);
       });
 
-    // collections.otherTypes
-    //   .find({ gameInstanceId })
-    //   .toArray()
-    //   .then((data) => {
-    //     socket.emit("data: allOtherTypes", data);
-    //   });
+    collections.canvasMaps
+      .find({ gameInstanceId })
+      .toArray()
+      .then((data) => {
+        socket.emit("data: allCanvasMap", data);
+      });
   }
 
   function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>, gameInstanceId: string) {
@@ -157,10 +166,6 @@ async function registerDMSocket(
       sendAllScenesInfo(gameInstanceId, socket);
     });
 
-    socket.on("operator: updateOtherTypes", async (name, data) => {
-      await collections.otherTypes.updateOne({ gameInstanceId, name }, { $set: data });
-    });
-
     socket.on("operator: deleteCharacterInfo", async (characterId) => {
       await collections.characters.deleteOne({ _id: characterId });
 
@@ -184,6 +189,20 @@ async function registerDMSocket(
         cb(_id);
       }
     );
+
+    socket.on("operator: updateCanvasMap", (data, cb) => {
+      if (!data._id) {
+        data._id = new ObjectId().toString();
+        data.gameInstanceId = gameInstanceId;
+        collections.canvasMaps.insertOne(data);
+
+        cb?.(data._id);
+      } else {
+        collections.canvasMaps.updateOne({ _id: data._id }, { $set: data });
+      }
+
+      broadcastCanvasMapToPlayers(data, collections, socketToPlayer);
+    });
   }
 
   function sendAllScenesInfo(gameInstanceId: string, socket: Socket<ClientEvents, ServerEvents>) {
@@ -202,6 +221,14 @@ function attachSharedEventToSocket(
   gameInstanceId: string,
   collections: CollectionList
 ) {
+  socket.on("operator: storeAsOtherTypes", (data, _id, name, cb) => {
+    if (!_id) _id = new ObjectId().toString();
+
+    cb(_id);
+
+    collections.otherTypes.insertOne({ _id, data, name });
+  });
+
   socket.on("operator: rollDice", async (characterId, diceType) => {
     let characterName = "DM";
     if (characterId !== "DM") {
@@ -272,5 +299,27 @@ function writeMessage(
     gameInstanceId,
     _id: new ObjectId().toString(),
     time: new Date().toLocaleString(),
+  });
+}
+
+async function broadcastCanvasMapToPlayers(
+  canvasMap: CanvasMap,
+  collections: CollectionList,
+  playerSockets: Map<
+    Socket<ClientEvents, ServerEvents>,
+    { characterId: string; characterName: string }
+  >
+) {
+  const relatedScenes = await collections.scenes.find({ relatedMapId: canvasMap._id }).toArray();
+  relatedScenes.forEach(async (scene) => {
+    const relatedCharacters = await collections.characters
+      .find({ locationSceneId: scene._id })
+      .toArray();
+
+    playerSockets.forEach((c, s) => {
+      if (relatedCharacters.find((r) => r._id === c.characterId)) {
+        s.emit("data: playerCanvasMapData", canvasMap);
+      }
+    });
   });
 }
