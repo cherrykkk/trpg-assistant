@@ -1,13 +1,18 @@
 <template>
   <div>
     <div class="layer-list">
-      <div v-for="e in layerList" @click="handleSelectLayer(e)" class="layer-item">
+      <div v-for="(e, i) in layerList" @click="handleSelectLayer(e)" class="layer-item">
         <div v-if="!e.isSelected">
           {{ e.layerName }}
         </div>
         <div v-else class="is-selected">
-          <!-- <EditCell v-model="e.layerName" /> -->
-          {{ e.layerName }}
+          <div
+            :contenteditable="layerNameEditingIndex === i"
+            @click="handleClickLayerName(i)"
+            @blur="handleLayerNameBlur"
+          >
+            {{ e.layerName }}
+          </div>
           <button class="delete-button" @click="handleDeleteLayer(e)">删除</button>
         </div>
       </div>
@@ -18,7 +23,7 @@
 
 <script lang="ts" setup>
 import type { LayerInfo } from "@trpg/shared";
-import type { PropType } from "vue";
+import { ref, type PropType, computed } from "vue";
 
 const props = defineProps({
   layerList: {
@@ -54,6 +59,22 @@ function handleAddLayer() {
   };
 
   emit("change", [...props.layerList, newLayer]);
+}
+
+const currentLayerIndex = computed(() => {
+  return props.layerList.findIndex((e) => e.isSelected);
+});
+
+const layerNameEditingIndex = ref(-1);
+function handleClickLayerName(layerIndex: number) {
+  if (layerIndex === currentLayerIndex.value) {
+    layerNameEditingIndex.value = layerIndex;
+  }
+}
+function handleLayerNameBlur(e: FocusEvent) {
+  props.layerList[layerNameEditingIndex.value].layerName = (e.target as HTMLDivElement).innerText;
+
+  emit("change", [...props.layerList]);
 }
 </script>
 <style lang="less" scoped>

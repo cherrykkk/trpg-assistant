@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed, type HTMLAttributes, type PropType } from "vue";
+import { ref, onMounted, computed, type HTMLAttributes, type PropType, watch } from "vue";
 import type { CanvasMap } from "@trpg/shared";
 import { createCanvasMapTemplate, useSandboxPainter } from "./useSandboxPainter";
 import { useSandboxCamera } from "./useSandboxCamera";
@@ -45,6 +45,7 @@ const props = defineProps({
   currentColor: String,
   followCamera: Boolean,
 });
+
 
 const emit = defineEmits<{ (event: "change", data: CanvasMap): void }>();
 
@@ -89,6 +90,10 @@ function handleWheelEvent(e: WheelEvent) {
     moveCanvas(e.deltaX, e.deltaY, props.mapInfo.width, props.mapInfo.height);
   }
 }
+
+watch(()=>[props.mapInfo.width, props.mapInfo.height],()=>{
+  requestRefresh()
+})
 
 type ActionType = "brush" | "moveLayer" | "moveCanvas" | "erase" | "auto";
 const brushTypeOfMouse = ref<ActionType>("brush");

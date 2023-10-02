@@ -47,6 +47,7 @@ export function createSocketAndInitAbility(role: "DM" | "player", password: stri
 
   socket.on("data: allCanvasMap", (data) => {
     useSocketStore().allCanvasMap = data;
+    useSocketStore().canvasMapReady = true;
   });
 
   socket.on("data: allOtherTypes", (data) => {

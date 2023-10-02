@@ -26,6 +26,7 @@ export const useSocketStore = defineStore("socket", {
     playerCharacterInfo: null as CharacterInfo | null,
     messageList: [] as Message[],
     allCanvasMap: [] as CanvasMap[],
+    canvasMapReady: false,
     allClientScenes: clientScenes,
     currentMap: null as CanvasMap | null,
     gameInstanceId: "",
