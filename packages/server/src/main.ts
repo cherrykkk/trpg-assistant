@@ -1,4 +1,4 @@
-import { useMongoDB } from "./connect";
+import { useMongoDB } from "./dbConnect";
 import { initSocket } from "./socket-io";
 
 async function start() {
