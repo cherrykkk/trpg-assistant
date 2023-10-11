@@ -1,11 +1,43 @@
 <template>
-  <SandboxMap :map-info="mapInfo" :editable="true" />
-  <LayerEditor :layer-list="mapInfo.layers" @change="(data) => (mapInfo.layers = data)" />
+  <ListEditLayout :data="data">
+    <div><input /></div>
+  </ListEditLayout>
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
-import SandboxMap from "./sandbox-canvas/SandboxMap.vue";
-import LayerEditor from "./sandbox-canvas/LayerEditor.vue";
-const mapInfo = ref();
+import ListEditLayout from "./ListEditLayout.vue";
+
+const data = ref([
+  { name: "111", _id: "12" },
+  { name: "222", _id: "32" },
+  { name: "111", _id: "12" },
+  { name: "222", _id: "32" },
+  { name: "111", _id: "12" },
+  { name: "222", _id: "32" },
+  { name: "111", _id: "12" },
+  { name: "222", _id: "32" },
+  { name: "111", _id: "12" },
+  { name: "222", _id: "32" },
+  { name: "111", _id: "12" },
+  { name: "222", _id: "32" },
+  { name: "111", _id: "12" },
+  { name: "222", _id: "32" },
+  { name: "111", _id: "12" },
+  { name: "222", _id: "32" },
+  { name: "111", _id: "12" },
+  { name: "222", _id: "32" },
+  { name: "111", _id: "12" },
+  { name: "222", _id: "32" },
+  { name: "111", _id: "12" },
+  { name: "222", _id: "32" },
+  { name: "111", _id: "12" },
+  { name: "222", _id: "32" },
+]);
 </script>
-<style lang="less" scoped></style>
+<style>
+#app {
+  width: 800px;
+  height: 500px;
+  border: 1px solid #ccc;
+}
+</style>

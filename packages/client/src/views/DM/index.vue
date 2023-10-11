@@ -5,6 +5,7 @@
         <AccountIcon />
         <el-menu-item index="characterControl">角色编辑</el-menu-item>
         <el-menu-item index="sceneControl">场景演绎</el-menu-item>
+        <el-menu-item index="entityManager">道具信息</el-menu-item>
       </el-menu>
       <div class="router-page"><router-view /></div>
     </div>
@@ -39,7 +40,7 @@ if (!gameInstanceId) {
 
 const socket = createSocketAndInitAbility("DM", gameInstanceId);
 const routeName = ref((route.name as string) ?? "");
-if (!["characterControl", "sceneControl"].includes(routeName.value)) {
+if (!["characterControl", "sceneControl", "entityManager"].includes(routeName.value)) {
   routeName.value = "characterControl";
   router.push({ name: "characterControl" });
 }

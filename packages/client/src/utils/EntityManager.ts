@@ -1,19 +1,21 @@
-import { type ItemInfo } from "@trpg/shared";
+import type { EntityInfo, StoredStackData } from "@trpg/shared";
 import { reactive, ref } from "vue";
 
-export function useEntityManager(database: ItemInfo[]) {
+export function useEntityManager(getDatabase: () => EntityInfo[]) {
   type StackData = ReturnType<typeof addEntityStack>;
 
   let maxTempId = 0;
   const storage = ref<StackData[]>([]);
 
-  function addEntityStack(id: number, num = 1, note = "") {
-    const info = database.find((e) => e.id === id) || database[0];
+  function addEntityStack(infoId: string, num = 1, note = "") {
+    const database = getDatabase();
+    const info = database.find((e) => e._id === infoId) ?? "";
 
     const stack = reactive({
       tempId: ++maxTempId,
       num,
       note,
+      infoId,
       ...info,
     });
     storage.value.push(stack);
@@ -43,9 +45,9 @@ export function useEntityManager(database: ItemInfo[]) {
     }
   }
 
-  function toData() {
+  function toData(): StoredStackData[] {
     return storage.value.map((e) => ({
-      id: e.id,
+      infoId: e.infoId,
       note: e.note,
       num: e.num,
     }));
@@ -53,10 +55,10 @@ export function useEntityManager(database: ItemInfo[]) {
 
   return {
     add: addEntityStack,
-    loadData(data: { id: number; num: number; note: string }[]) {
+    loadData(data: StoredStackData[]) {
       storage.value = [];
       data.forEach((e) => {
-        addEntityStack(e.id, e.num, e.note);
+        addEntityStack(e.infoId, e.num, e.note);
       });
     },
     remove(stack: StackData) {

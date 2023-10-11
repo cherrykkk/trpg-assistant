@@ -3,6 +3,7 @@ import { Socket } from "socket.io";
 import { CollectionList } from "../dbConnect";
 import logger from "../logger";
 import { Binary, ObjectId } from "mongodb";
+import { resolveChangeLog } from "./resolveChangeLog";
 
 const socketToDM = new Map<Socket<ClientEvents, ServerEvents>, string>();
 
@@ -18,6 +19,8 @@ export async function registerDMSocket(
     { characterId: string; characterName: string }
   >
 ) {
+  socket.join(gameInstanceId);
+
   const gameInstance = await collections.games.findOne({ _id: gameInstanceId });
   if (!gameInstance) {
     logger.warn(`客户端上传了不存在的 gameId: ${gameInstanceId} `);
@@ -55,6 +58,16 @@ export async function registerDMSocket(
       .then((data) => {
         socket.emit("data: allCanvasMap", data);
       });
+
+    collections.entities
+      .find({})
+      .toArray()
+      .then((data) => socket.emit("data: allEntityInfo", data));
+
+    collections.features
+      .find({})
+      .toArray()
+      .then((data) => socket.emit("data: allFeatureInfo", data));
   }
 
   function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>, gameInstanceId: string) {

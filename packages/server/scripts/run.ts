@@ -1,10 +1,11 @@
 import { Collection } from "mongodb";
-import { CollectionList, useMongoDB } from "../src/connect";
+import { CollectionList, useMongoDB } from "../src/dbConnect";
 import { renameKey } from "./renameKey";
-import { CharacterInfo, SceneInfo } from "../../shared/constants";
+import { ENTITY_DATABASE, createEntityTemplate } from "@trpg/shared";
 
 useMongoDB().then(({ collections }) => {
-  removeField(collections);
+  // removeField(collections);
+  batchInsertEntityInfo(collections);
 });
 
 async function turnFormat(collection: Collection<any>) {
@@ -44,4 +45,13 @@ async function turnFormat(collection: Collection<any>) {
 
 async function removeField(collections: CollectionList) {
   await collections.characters.updateMany({}, { $unset: { location: 1 } });
+}
+
+function batchInsertEntityInfo(collections: CollectionList) {
+  ENTITY_DATABASE.forEach((e) => {
+    const template = createEntityTemplate();
+    console.log(template);
+    const doc = { ...template, ...e };
+    collections.entities.insertOne(doc);
+  });
 }

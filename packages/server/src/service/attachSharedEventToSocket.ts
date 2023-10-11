@@ -1,21 +1,15 @@
 import type { ClientEvents, ServerEvents } from "@trpg/shared";
-import { Socket } from "socket.io";
+import { Server, Socket } from "socket.io";
 import { CollectionList } from "../dbConnect";
 import { ObjectId } from "mongodb";
+import { resolveChangeLog } from "./resolveChangeLog";
 
 export function attachSharedEventToSocket(
+  io: Server<ClientEvents, ServerEvents>,
   socket: Socket<ClientEvents, ServerEvents>,
   gameInstanceId: string,
   collections: CollectionList
 ) {
-  socket.on("operator: storeAsOtherTypes", (data, _id, name, cb) => {
-    if (!_id) _id = new ObjectId().toString();
-
-    cb(_id);
-
-    collections.otherTypes.insertOne({ _id, data, name });
-  });
-
   socket.on("operator: rollDice", async (characterId, diceType) => {
     let characterName = "DM";
     if (characterId !== "DM") {
@@ -66,12 +60,38 @@ export function attachSharedEventToSocket(
     }
   });
 
+  socket.on("operator: updateEntityInfo", async (data, changerId, changerName) => {
+    const newDoc = resolveChangeLog(data, changerId, changerName);
+
+    if (!newDoc._id) {
+      newDoc._id = new ObjectId().toString();
+      collections.entities.insertOne(newDoc);
+    } else {
+      collections.entities.updateOne({ _id: newDoc._id }, { $set: newDoc });
+    }
+
+    const docs = await collections.entities.find().toArray();
+    socket.emit("data: allEntityInfo", docs);
+    socket.to(gameInstanceId).emit("data: allEntityInfo", docs);
+  });
+
+  socket.on("operator: updateFeatureInfo", (data, changerId, changerName) => {
+    const newDoc = resolveChangeLog(data, changerId, changerName);
+
+    if (!newDoc._id) {
+      newDoc._id = new ObjectId().toString();
+      collections.features.insertOne(newDoc);
+    } else {
+      collections.features.updateOne({ _id: newDoc._id }, { $set: newDoc });
+    }
+  });
+
   function broadcastMessages(gameInstanceId: string) {
     collections.messages
       .find({ gameInstanceId })
       .toArray()
       .then((docs) => {
-        socket.rooms[gameInstanceId].emit("data: allMessage", docs);
+        io.to(gameInstanceId).emit("data: allMessage", docs);
       });
   }
 }

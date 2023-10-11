@@ -15,6 +15,8 @@ async function sendInitDataToSinglePlayerSocket(
   characterInfo: CharacterInfo,
   collections: CollectionList
 ) {
+  socket.join(characterInfo.gameInstanceId);
+
   socket.emit("data: playerCharacter", characterInfo);
 
   collections.messages

@@ -3,9 +3,10 @@ import * as dotenv from "dotenv";
 import type {
   CanvasMap,
   CharacterInfo,
+  EntityInfo,
+  FeatureInfo,
   GameInstance,
   Message,
-  OtherTypeInfo,
   ResourceBlobEntity,
   SceneInfo,
   SpellInfo,
@@ -35,8 +36,9 @@ export async function useMongoDB() {
     scenes: db.collection<SceneInfo>("scenes"),
     messages: db.collection<Message>("messages"),
     canvasMaps: db.collection<CanvasMap>("canvasMaps"),
-    otherTypes: db.collection<OtherTypeInfo>("otherTypes"),
     blobs: db.collection<ResourceBlobEntity>("blobs"),
+    entities: db.collection<EntityInfo>("entities"),
+    features: db.collection<FeatureInfo>("features"),
   };
 
   logger.info(`Successfully connect to database: ${db.databaseName} `);

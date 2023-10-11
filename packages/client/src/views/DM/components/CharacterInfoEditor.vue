@@ -85,7 +85,11 @@
       />
     </div>
     <div class="backpack-container">
-      <EntityStorage :init-stored-stack-data="editedData.backpack" ref="backpackRef" />
+      <EntityStorage
+        :init-stored-stack-data="editedData.backpack"
+        :database="useSocketStore().allEntityInfo"
+        ref="backpackRef"
+      />
     </div>
     <SpellSlotsPanel
       v-if="levelAndConfig.spellSlotNum.length"
@@ -98,11 +102,10 @@
 
 <script lang="ts" setup>
 import { type PropType, onBeforeUnmount, reactive, ref, toRef } from "vue";
-import { createNewCharacterInfoTemplate } from "@/utils/index";
 import { useSocketStore } from "@/stores/useSocketStore";
 import { updateCharacterInfo, createCharacterInfo, deleteCharacterInfo } from "@/api/socket-tasks";
 import EditCell from "../../components/EditCell.vue";
-import type { CharacterInfo } from "@trpg/shared";
+import { createNewCharacterInfoTemplate, type CharacterInfo } from "@trpg/shared";
 import CharacterSpellEditor from "./CharacterSpellEditor.vue";
 import { ElMessage, ElTreeSelect } from "element-plus";
 import ProficienciesEditor from "./ProficienciesEditor.vue";

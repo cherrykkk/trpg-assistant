@@ -1,4 +1,67 @@
-import { type ProficiencyObject } from "@trpg/shared";
+import type { CharacterInfo, SceneInfo, ProficiencyObject, EntityInfo } from "./dbTypes";
+
+export type ClientScene = SceneInfo & {
+  children: ClientScene[];
+};
+export function createSceneTemplate(): ClientScene {
+  return {
+    _id: "",
+    gameInstanceId: "",
+    name: "未命名",
+    richTextDescription: undefined,
+    fatherId: null,
+    relatedMapId: "",
+    children: [],
+    storage: [],
+  };
+}
+
+export function createNewCharacterInfoTemplate(): CharacterInfo {
+  return {
+    _id: "",
+    gameInstanceId: "",
+    scope: "template",
+    name: "",
+    titles: "", //头衔
+    alignment: "",
+    age: 0,
+    sex: "",
+    class: "", //职业
+    race: "",
+    subRace: "", //亚种
+    currentHP: 0,
+    maxHP: 0,
+    backgroundStory: "",
+    proficiencies: createProficienciesTemplate(),
+    proficiencyBonus: 2,
+    experience: 0,
+    strength: 0,
+    dexterity: 0,
+    constitution: 0,
+    intelligence: 0,
+    wisdom: 0,
+    charisma: 0,
+    equipment: [],
+    spells: [],
+    appearance: "",
+    speed: 30,
+    locationSceneId: "",
+    currentInitiative: 0,
+    backpack: [],
+  };
+}
+
+export function createEntityTemplate(): EntityInfo {
+  return {
+    _id: "",
+    name: "",
+    description: "",
+    ounce: 0,
+    pound: 0,
+    isCustom: true,
+    changeLogs: [],
+  };
+}
 
 export function createProficienciesTemplate(): ProficiencyObject[] {
   return [

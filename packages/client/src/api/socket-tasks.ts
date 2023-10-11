@@ -3,6 +3,7 @@ import type {
   CanvasMap,
   CharacterInfo,
   ClientScene,
+  EntityInfo,
   ResourceBlob,
   ResourceType,
   SceneInfo,
@@ -85,14 +86,12 @@ export function rollDice(characterId: string, diceType: number | number[]) {
   useSocketStore().socket.emit("operator: rollDice", characterId, diceType);
 }
 
-function storeOnServer(data: unknown, _id: string, name: string) {
-  return new Promise((resolve, reject) => {
-    useSocketStore().socket.emit("operator: storeAsOtherTypes", data, _id, name, (returnId) => {
-      resolve(returnId);
-    });
-  });
-}
-
 export function updateCanvasMap(mapData: CanvasMap, cb?: (_id: string) => void) {
   useSocketStore().socket.emit("operator: updateCanvasMap", mapData, cb);
+}
+
+export function updateEntityInfo(data: EntityInfo) {
+  const changerId = useSocketStore().playerCharacterInfo?._id || useSocketStore().gameInstanceId;
+  const changerName = useSocketStore().playerCharacterInfo?.name || "DM";
+  useSocketStore().socket.emit("operator: updateEntityInfo", data, changerId, changerName);
 }

@@ -50,8 +50,12 @@ export function createSocketAndInitAbility(role: "DM" | "player", password: stri
     useSocketStore().canvasMapReady = true;
   });
 
-  socket.on("data: allOtherTypes", (data) => {
-    data.forEach((e) => (useSocketStore().allOtherType[e.name] = e.data));
+  socket.on("data: allEntityInfo", (data) => {
+    useSocketStore().allEntityInfo = data;
+  });
+
+  socket.on("data: allFeatureInfo", (data) => {
+    useSocketStore().allFeatureInfo = data;
   });
 
   return socket;

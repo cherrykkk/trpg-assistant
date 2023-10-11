@@ -25,6 +25,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "sceneControl",
         component: () => import("@/views/DM/scene-controller/SceneControl.vue"),
       },
+      {
+        path: "entityManager",
+        name: "entityManager",
+        component: () => import("@/views/DM/EntityManager.vue"),
+      },
     ],
   },
   {

@@ -3,15 +3,15 @@ import { Socket } from "socket.io-client";
 import type {
   ServerEvents,
   ClientEvents,
-  SpellInfo,
   Message,
   CharacterInfo,
   SceneInfo,
   CanvasMap,
   ClientScene,
+  EntityInfo,
+  FeatureInfo,
 } from "@trpg/shared";
 import { ElMessage } from "element-plus";
-import type { ItemInfo } from "@trpg/shared";
 import { getSceneTreeAndClientScenes } from "@/utils";
 
 const localStorageAllScenes = JSON.parse(
@@ -37,11 +37,8 @@ export const useSocketStore = defineStore("socket", {
     clientSceneTree: topSceneTreeList,
     editTarget: null as null | "path" | "story",
     allCharacters: [] as CharacterInfo[],
-    allOtherType: {
-      customAdventuringGears: [],
-    } as { customAdventuringGears: ItemInfo[] } & {
-      [name in string]: any;
-    },
+    allEntityInfo: [] as EntityInfo[],
+    allFeatureInfo: [] as FeatureInfo[],
   }),
   getters: {
     socket(state) {

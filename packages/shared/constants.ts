@@ -1,105 +1,3 @@
-import type { Binary } from "mongodb";
-
-export interface ClientEvents {
-  "signIn: signInAsPlayer": (characterId: string) => void;
-  "signIn: signInAsDM": (gameId: string) => void;
-  "operator: rollDice": (characterId: string | "DM", value: number | number[]) => void;
-  // canvasMap
-  "operator: updateCanvasMap": (data: CanvasMap, cb?: (_id: string) => void) => void;
-  // create
-  "operator: createCharacterInfo": (value: CharacterInfo) => void;
-  "operator: createSceneInfo": (value: SceneInfo) => void;
-  // update
-  "operator: updateCharacterInfo": (characterId: string, value: Partial<CharacterInfo>) => void;
-  "operator: updateSceneInfo": (id: string, value: Partial<SceneInfo>) => void;
-  "operator: uploadImage": (name: string, base64: string) => string;
-  // create or update
-  "operator: storeAsOtherTypes": (
-    data: unknown,
-    _id: string | null,
-    name: string,
-    cb: (_id: string) => void
-  ) => void;
-  // delete
-  "operator: deleteCharacterInfo": (characterId: string) => void;
-  "operator: deleteSceneInfo": (characterId: string) => void;
-  // actions with system message
-  "message: sendMessage": (message: string) => void;
-  "operator: abilityCheck": (characterId: string, ability: string, skill: string) => void;
-  "request: uploadBlob": (
-    resourceType: ResourceType,
-    buffer: ArrayBuffer | Buffer, // 客户端发送时，发送ArrayBuffer, 服务端接收时接收到Buffer
-    mimeType: string,
-    cb: (key: string) => void
-  ) => void;
-  "request: downloadBlob": (id: string, cb: (blob: ResourceBlob | null) => void) => void;
-}
-
-export interface ServerEvents {
-  "data: playerCharacter": (data: CharacterInfo) => void;
-  "data: playerCanvasMapData": (data: CanvasMap) => void;
-  "data: allCharactersInfo": (data: CharacterInfo[]) => void;
-  "data: allMessage": (data: Message[]) => void;
-  "data: allScenes": (data: SceneInfo[]) => void;
-  "data: allCanvasMap": (data: CanvasMap[]) => void;
-  "data: allOtherTypes": (data: OtherTypeInfo[]) => void;
-  "data: image": (key: string, data: string) => void;
-  "message: system": (message: string) => void;
-  "message: player": (message: string) => void;
-  "message: DM": (message: string) => void;
-}
-
-export interface CharacterInfo {
-  _id: string;
-  gameInstanceId: string;
-  scope: "monster" | "NPC" | "PC" | "template";
-  name: string;
-  titles: string; //头衔
-  alignment: string;
-  sex: string;
-  age: number;
-  class: string; //职业
-  race: string;
-  subRace: string; //亚种
-  language?: string;
-  currentHP: number;
-  maxHP: number;
-  armorClass?: string;
-  spellDifficultyClass?: string;
-  spellcastingAbility?: string;
-  backgroundStory?: string;
-  proficiencies: ProficiencyObject[];
-  proficiencyBonus: number;
-  experience: number;
-  strength: number;
-  dexterity: number;
-  constitution: number;
-  intelligence: number;
-  wisdom: number;
-  charisma: number;
-  equipment: string[];
-  spellSlotNum?: number[];
-  spells: SpellOnCharacter[];
-  appearance: string;
-  speed: number;
-  currentInitiative: number;
-  backpack: StoredStackData[];
-  locationSceneId: string;
-}
-
-export interface StoredStackData {
-  id: number;
-  num: number;
-  note: string;
-}
-
-export interface ProficiencyObject {
-  type: "skill" | "armor" | "weapon" | "tool" | "save";
-  name: string;
-  description: string;
-  active: boolean;
-}
-
 export const ProficiencyType = {
   skill: "技能",
   weapon: "武器",
@@ -107,44 +5,6 @@ export const ProficiencyType = {
   armor: "护甲",
   save: "豁免",
 };
-
-export interface SpellOnCharacter {
-  spellId: string;
-  reason: string;
-}
-
-export interface Message {
-  _id: string;
-  gameInstanceId: string;
-  content: string;
-  time: string;
-}
-
-export interface SceneInfo {
-  _id: string;
-  gameInstanceId: string;
-  name: string;
-  fatherId: string | null;
-  richTextDescription: any;
-  relatedMapId: string;
-  storage: StoredStackData[];
-}
-
-export type ClientScene = SceneInfo & {
-  children: ClientScene[];
-};
-export function createSceneTemplate(): ClientScene {
-  return {
-    _id: "",
-    gameInstanceId: "",
-    name: "未命名",
-    richTextDescription: undefined,
-    fatherId: null,
-    relatedMapId: "",
-    children: [],
-    storage: [],
-  };
-}
 
 export interface SceneItem {
   id: number;
@@ -155,35 +15,12 @@ export interface SceneItem {
   backgroundColor: string;
 }
 
-export interface GameInstance {
-  _id: string;
-  name: string;
-  description: string;
-}
-
 export interface OtherTypeInfo {
   _id: string;
   gameInstanceId?: string;
   name: string;
   data: unknown;
 }
-
-export type ResourceType = "image";
-
-interface BaseResourceBlob {
-  _id: string;
-  gameInstanceId: string;
-  resourceType: ResourceType;
-  mimeType: string;
-}
-
-export type ResourceBlob = BaseResourceBlob & {
-  data: ArrayBuffer;
-};
-
-export type ResourceBlobEntity = BaseResourceBlob & {
-  data: Binary;
-};
 
 export const ABILITY_SKILL_ZN = {
   力量: ["运动"],
@@ -215,37 +52,6 @@ export const AbilityPropertyToName = {
   wisdom: "感知",
   charisma: "魅力",
 };
-
-export interface CanvasMap {
-  _id: string;
-  gameInstanceId: string;
-  mapName: string;
-  layers: LayerInfo[];
-  gridSize: number;
-  width: number;
-  height: number;
-  scale: number;
-  offsetX: number;
-  offsetY: number;
-}
-export interface LayerInfo {
-  key: number;
-  layerName: string;
-  playerVisible: boolean;
-  brushActions: BrushAction[];
-  isSelected: boolean;
-}
-
-export interface BrushAction {
-  brushType: "line";
-  points: Point[];
-  color: string;
-}
-
-export interface Point {
-  x: number;
-  y: number;
-}
 
 export interface ItemInfo {
   id: number;

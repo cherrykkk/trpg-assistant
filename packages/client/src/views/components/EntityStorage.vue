@@ -12,8 +12,12 @@
         </button>
       </div>
       <div class="add-item-button">
-        <ElSelect placeholder="添加" @change="(info: ItemInfo)=>{manager.add(info.id);}" filterable>
-          <ElOption v-for="item in ENTITY_DATABASE" :key="item.id" :label="item.name" :value="item"
+        <ElSelect
+          placeholder="添加"
+          @change="(info: EntityInfo)=>{manager.add(info._id);}"
+          filterable
+        >
+          <ElOption v-for="item in database" :key="item._id" :label="item.name" :value="item"
         /></ElSelect>
       </div>
       <span style="font-weight: 500; font-size: 14px"
@@ -38,7 +42,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ENTITY_DATABASE, type ItemInfo, type StoredStackData } from "@trpg/shared";
+import { type EntityInfo, type StoredStackData } from "@trpg/shared";
 import { type PropType, ref, watch } from "vue";
 import { useEntityManager } from "@/utils/EntityManager";
 import { ElOption, ElSelect } from "element-plus";
@@ -49,6 +53,10 @@ const props = defineProps({
     type: Array as PropType<StoredStackData[]>,
     required: true,
   },
+  database: {
+    type: Array as PropType<EntityInfo[]>,
+    required: true,
+  },
 });
 
 defineExpose({
@@ -56,7 +64,7 @@ defineExpose({
 });
 const emits = defineEmits<{ (event: "change", data: StoredStackData[]): void }>();
 
-const manager = useEntityManager(ENTITY_DATABASE);
+const manager = useEntityManager(() => props.database);
 watch(
   props.initStoredStackData,
   () => {

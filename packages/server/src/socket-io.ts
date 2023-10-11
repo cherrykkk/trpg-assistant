@@ -41,7 +41,7 @@ export function initSocket(collections: CollectionList) {
         { broadcastUpdateToPlayers },
         () => socketToPlayer
       );
-      attachSharedEventToSocket(socket, gameInstanceId, collections);
+      attachSharedEventToSocket(io, socket, gameInstanceId, collections);
       socketToDM.set(socket, { gameInstanceId });
       socket.join(gameInstanceId);
     });
@@ -55,7 +55,7 @@ export function initSocket(collections: CollectionList) {
       }
 
       registerPlayerSocket(socket, character, collections);
-      attachSharedEventToSocket(socket, character.gameInstanceId, collections);
+      attachSharedEventToSocket(io, socket, character.gameInstanceId, collections);
       socketToPlayer.set(socket, { characterId, characterName: character.name });
       socket.join(character.gameInstanceId);
     });
