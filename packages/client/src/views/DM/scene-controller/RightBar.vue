@@ -10,6 +10,19 @@
       <div class="append-info">先攻{{ c.currentInitiative }}</div>
     </div>
     <QuickEditCharacter v-if="chosenCharacter" :character="chosenCharacter" />
+    <el-drawer
+      v-model="isEditingCharacterInfo"
+      :size="800"
+      direction="ltr"
+      class="character-edit-dialog"
+      :show-close="false"
+    >
+      <CharacterInfoEditor
+        v-if="isEditingCharacterInfo"
+        :character="chosenCharacter"
+        @close-dialog="() => (isEditingCharacterInfo = false)"
+      />
+    </el-drawer>
   </div>
 
   <div>
@@ -48,14 +61,6 @@
       <TipCombat />
     </TipPopover>
   </div>
-
-  <el-drawer v-model="isEditingCharacterInfo" :size="800" direction="ltr">
-    <CharacterInfoEditor
-      v-if="isEditingCharacterInfo"
-      :character="chosenCharacter"
-      @close-dialog="() => (isEditingCharacterInfo = false)"
-    />
-  </el-drawer>
 </template>
 
 <script lang="ts" setup>
@@ -161,6 +166,12 @@ const isEditingCharacterInfo = ref(false);
   grid-template-areas: "reset up ." "left center right" ". down .";
   .el-button {
     margin: 0;
+  }
+}
+:deep(.character-edit-dialog) {
+  .el-drawer__header {
+    margin: 0;
+    padding: 0;
   }
 }
 </style>

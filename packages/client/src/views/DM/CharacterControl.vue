@@ -1,60 +1,32 @@
 <template>
-  <div class="character-control-page">
-    <el-tabs v-model="characterScope" class="character-control">
-      <el-tab-pane label="PC" name="PC">
-        <CharacterCollapse
-          :characters="useSocketStore().allCharacters.filter((e) => e.scope === 'PC')"
-          @edit-story="openEditBoard"
-        />
-      </el-tab-pane>
-      <el-tab-pane label="NPC" name="NPC">
-        <CharacterCollapse
-          :characters="useSocketStore().allCharacters.filter((e) => e.scope === 'NPC')"
-          @edit-story="openEditBoard"
-        />
-      </el-tab-pane>
-      <el-tab-pane label="monster" name="monster">
-        <CharacterCollapse
-          :characters="useSocketStore().allCharacters.filter((e) => e.scope === 'monster')"
-          @edit-story="openEditBoard"
-        />
-      </el-tab-pane>
-      <el-tab-pane label="template" name="template">
-        <CharacterCollapse
-          :characters="useSocketStore().allCharacters.filter((e) => e.scope === 'template')"
-          @edit-story="openEditBoard"
-        />
-      </el-tab-pane>
-    </el-tabs>
-    <el-button @click="() => openEditBoard(null)">新增角色</el-button>
-    <CharacterInfoEditor
-      v-if="isEditing"
-      :character="editedCharacter"
-      @close-dialog="closeEditBoard"
-    />
-  </div>
+  <ListEditLayout :data="filteredCharacters" class="character-control-page" :showSaveButton="false">
+    <template #header>
+      <ElTabs v-model="characterScope" class="character-control">
+        <ElTabPane label="PC" name="PC" />
+        <ElTabPane label="NPC" name="NPC" />
+        <ElTabPane label="monster" name="monster" />
+        <ElTabPane label="template" name="template" />
+      </ElTabs>
+    </template>
+    <template #editor="{ item }">
+      <CharacterInfoEditor :character="(item as CharacterInfo)" :key="item?._id" v-if="item" />
+    </template>
+  </ListEditLayout>
 </template>
 
 <script lang="ts" setup>
 import CharacterInfoEditor from "./components/CharacterInfoEditor.vue";
-import CharacterCollapse from "./components/CharacterCollapse.vue";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import type { CharacterInfo } from "@trpg/shared";
 import { useSocketStore } from "@/stores/useSocketStore";
+import ListEditLayout from "@trpg/components/ListEditLayout.vue";
+import { ElTabPane, ElTabs } from "element-plus";
 
 const characterScope = ref<"star" | CharacterInfo["scope"]>("PC");
 
-const editedCharacter = ref<CharacterInfo | null>(null);
-const isEditing = ref(false);
-
-function openEditBoard(c: CharacterInfo | null) {
-  editedCharacter.value = c;
-  isEditing.value = true;
-}
-function closeEditBoard() {
-  isEditing.value = false;
-  editedCharacter.value = null;
-}
+const filteredCharacters = computed(() => {
+  return useSocketStore().allCharacters.filter((e) => e.scope === characterScope.value);
+});
 </script>
 
 <style lang="less" scoped>

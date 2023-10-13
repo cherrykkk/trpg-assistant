@@ -1,6 +1,7 @@
 <template>
   <div class="list-edit-layout">
     <div class="filter-container">
+      <slot name="header"></slot>
       <div class="append-button" @click="createNewItem">+</div>
     </div>
     <div class="main-container">
@@ -11,7 +12,7 @@
       </div>
       <div class="edit-board">
         <slot name="editor" :item="currentItem"></slot>
-        <button @click="submitSave" class="submit-button">保存</button>
+        <button v-if="showSaveButton" @click="submitSave" class="submit-button">保存</button>
       </div>
       <div class="system-message">
         {{ systemMessage }}
@@ -37,6 +38,10 @@ const props = defineProps({
   createTemplate: {
     type: Function as PropType<() => ListItem>,
   },
+  showSaveButton: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const systemMessage = ref("");
@@ -53,7 +58,6 @@ const currentItem = ref<null | ListItem>(null);
 function handleClickItem(item: ListItem) {
   // todo 校验修改但未保存的情况
   currentItem.value = { ...item };
-  console.log(currentItem.value);
 }
 
 function createNewItem() {
@@ -72,8 +76,11 @@ function handleKeydown(event: KeyboardEvent) {
 
 function submitSave() {
   if (currentItem.value) {
-    emit("submit", currentItem.value);
-    systemMessage.value = "已保存";
+    const result = emit("submit", currentItem.value);
+    console.log("result", result);
+    if (result) {
+      systemMessage.value = "已保存";
+    }
   }
 }
 
@@ -83,7 +90,7 @@ onBeforeUnmount(() => {
 });
 
 const emit = defineEmits<{
-  (event: "submit", data: any): void;
+  (event: "submit", data: any): boolean;
   (event: "delete", _id: string): void;
 }>();
 </script>
@@ -102,7 +109,6 @@ const emit = defineEmits<{
     .list-board {
       background-color: #f5f5f5;
       border-right: 1px solid #999;
-      height: 98%;
       width: 20%;
     }
     .edit-board {
@@ -126,8 +132,8 @@ const emit = defineEmits<{
     line-height: 39px;
     height: 39px;
     cursor: pointer;
-    &:hover{
-      background-color:rgb(158, 211, 158) ;
+    &:hover {
+      background-color: rgb(158, 211, 158);
     }
   }
 }
@@ -147,7 +153,6 @@ const emit = defineEmits<{
       font-weight: 600;
     }
   }
-
 }
 
 .edit-board {

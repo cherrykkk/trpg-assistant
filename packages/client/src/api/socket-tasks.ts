@@ -8,6 +8,7 @@ import type {
   ResourceType,
   SceneInfo,
 } from "@trpg/shared";
+import { ElMessage } from "element-plus";
 
 export function updateCharacterInfo(characterId: string, property: Partial<CharacterInfo>) {
   useSocketStore().socket.emit("operator: updateCharacterInfo", characterId, property);
@@ -94,4 +95,5 @@ export function updateEntityInfo(data: EntityInfo) {
   const changerId = useSocketStore().playerCharacterInfo?._id || useSocketStore().gameInstanceId;
   const changerName = useSocketStore().playerCharacterInfo?.name || "DM";
   useSocketStore().socket.emit("operator: updateEntityInfo", data, changerId, changerName);
+  ElMessage("已保存");
 }
