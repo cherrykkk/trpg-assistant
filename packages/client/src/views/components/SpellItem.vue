@@ -13,11 +13,12 @@
           <span v-if="spellInfo.concentration">专注 </span>
           <span v-if="spellInfo.ritual">仪式</span>
           {{ spellInfo.duration }}
+          {{ spellInfo.school }} {{ spellInfo.castingTime }} {{ spellInfo.range }}
         </b>
         &nbsp;
-        <span style="color: #ccc; float: right"
-          >{{ spellInfo.castingTime }} {{ spellInfo.range }} 成分：{{ spellInfo.material }}</span
-        >
+        <span style="color: #ccc">
+          <span v-if="spellInfo.material">成分：{{ spellInfo.material }} </span>
+        </span>
       </div>
       <div style="color: #999" v-if="spellInfo.higherLevel">升阶：{{ spellInfo.higherLevel }}</div>
     </div>
