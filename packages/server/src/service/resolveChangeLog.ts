@@ -1,7 +1,7 @@
-import { ChangeLog } from "@trpg/shared";
+import { BasicCollectionStructure, ChangeLog } from "@trpg/shared";
 
-export function resolveChangeLog<T extends { changeLogs: ChangeLog<T>[] }>(
-  data: T,
+export function resolveChangeLog(
+  data: BasicCollectionStructure,
   changerId: string,
   changerName: string
 ) {
@@ -14,6 +14,10 @@ export function resolveChangeLog<T extends { changeLogs: ChangeLog<T>[] }>(
 
   delete changeLog.changeLogs;
 
-  data.changeLogs.push(changeLog);
+  if (data.changeLogs instanceof Array) {
+    data.changeLogs.push(changeLog);
+  } else {
+    data.changeLogs = [changeLog];
+  }
   return data;
 }

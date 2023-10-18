@@ -9,9 +9,9 @@
       </el-menu>
       <div class="router-page"><router-view /></div>
     </div>
-    <ResizablePanel resize-direction="left" :default-width="200" :foldable="true">
+    <!-- <ResizablePanel resize-direction="left" :default-width="200" :foldable="true">
       <MessageRoom />
-    </ResizablePanel>
+    </ResizablePanel> -->
   </div>
 </template>
 <script lang="ts" setup>

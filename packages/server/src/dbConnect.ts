@@ -9,7 +9,6 @@ import type {
   Message,
   ResourceBlobEntity,
   SceneInfo,
-  SpellInfo,
 } from "@trpg/shared";
 import logger from "./logger";
 
@@ -29,21 +28,19 @@ export async function useMongoDB() {
   const db = client.db(process.env.DB_NAME);
 
   const collections = {
-    games: db.collection<GameInstance>("games"),
-    characters: db.collection<CharacterInfo>("characters"),
-    spells: db.collection<SpellInfo>("spells"),
-    equipments: db.collection("equipments"),
-    scenes: db.collection<SceneInfo>("scenes"),
-    messages: db.collection<Message>("messages"),
-    canvasMaps: db.collection<CanvasMap>("canvasMaps"),
+    game: db.collection<GameInstance>("game"),
+    character: db.collection<CharacterInfo>("character"),
+    scene: db.collection<SceneInfo>("scene"),
+    message: db.collection<Message>("message"),
+    canvasMap: db.collection<CanvasMap>("canvasMap"),
     blobs: db.collection<ResourceBlobEntity>("blobs"),
-    entities: db.collection<EntityInfo>("entities"),
-    features: db.collection<FeatureInfo>("features"),
+    entity: db.collection<EntityInfo>("entity"),
+    feature: db.collection<FeatureInfo>("feature"),
   };
 
   logger.info(`Successfully connect to database: ${db.databaseName} `);
 
-  return { collections, client };
+  return { collections, client, db };
 }
 
 export type CollectionList = Awaited<ReturnType<typeof useMongoDB>>["collections"];

@@ -1,7 +1,17 @@
 import { Binary } from "mongodb";
 
-export interface CharacterInfo {
-  _id: string;
+export interface CollectionStructure {
+  character: CharacterInfo;
+  scene: SceneInfo;
+  entity: EntityInfo;
+  canvas: CanvasMap;
+  game: GameInstance;
+  message: Message;
+  feature: FeatureInfo;
+}
+export type CollectionKey = keyof CollectionStructure;
+
+export type CharacterInfo = {
   gameInstanceId: string;
   scope: "monster" | "NPC" | "PC" | "template";
   name: string;
@@ -36,7 +46,7 @@ export interface CharacterInfo {
   currentInitiative: number;
   backpack: StoredStackData[];
   locationSceneId: string;
-}
+} & BasicCollectionStructure;
 
 export interface ProficiencyObject {
   type: "skill" | "armor" | "weapon" | "tool" | "save";
@@ -45,15 +55,14 @@ export interface ProficiencyObject {
   active: boolean;
 }
 
-export interface SceneInfo {
-  _id: string;
+export type SceneInfo = {
   gameInstanceId: string;
   name: string;
   fatherId: string | null;
   richTextDescription: any;
   relatedMapId: string;
   storage: StoredStackData[];
-}
+} & BasicCollectionStructure;
 
 export interface SpellOnCharacter {
   spellId: string;
@@ -66,8 +75,7 @@ export interface StoredStackData {
   note: string;
 }
 
-export interface CanvasMap {
-  _id: string;
+export type CanvasMap = {
   gameInstanceId: string;
   mapName: string;
   layers: LayerInfo[];
@@ -77,7 +85,8 @@ export interface CanvasMap {
   scale: number;
   offsetX: number;
   offsetY: number;
-}
+} & BasicCollectionStructure;
+
 export interface LayerInfo {
   key: number;
   layerName: string;
@@ -97,18 +106,16 @@ export interface Point {
   y: number;
 }
 
-export interface GameInstance {
-  _id: string;
+export type GameInstance = {
   name: string;
   description: string;
-}
+} & BasicCollectionStructure;
 
-export interface Message {
-  _id: string;
+export type Message = {
   gameInstanceId: string;
   content: string;
   time: string;
-}
+} & BasicCollectionStructure;
 
 export type ResourceType = "image";
 
@@ -127,16 +134,20 @@ export type ResourceBlobEntity = BaseResourceBlob & {
   data: Binary;
 };
 
-export interface EntityInfo {
-  _id: string;
+export type EntityInfo = {
   name: string;
   description: string;
   ounce: number;
   pound: number;
   price?: string;
   isCustom: boolean;
-  changeLogs: ChangeLog<EntityInfo>[];
-}
+} & BasicCollectionStructure;
+
+export type FeatureInfo = {
+  _id: string;
+  name: string;
+  description: string;
+} & BasicCollectionStructure;
 
 export type ChangeLog<T> = Omit<T, "changeLogs"> & {
   changeTime: number;
@@ -144,10 +155,7 @@ export type ChangeLog<T> = Omit<T, "changeLogs"> & {
   changerId: string;
   changerName: string;
 };
-
-export interface FeatureInfo {
+export interface BasicCollectionStructure {
   _id: string;
-  name: string;
-  description: string;
-  changeLogs: ChangeLog<FeatureInfo>[];
+  changeLogs?: ChangeLog<this>[];
 }

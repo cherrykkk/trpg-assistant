@@ -13,7 +13,7 @@
       ref="editCharacterInfoRef"
       :character="editedData"
       :accessible-scenes="useSocketStore().clientSceneTree"
-      :entities-database="useSocketStore().allEntityInfo"
+      :entities-database="useSocketStore().collections.entity"
     />
   </div>
 </template>

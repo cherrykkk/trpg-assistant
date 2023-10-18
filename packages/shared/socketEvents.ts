@@ -1,15 +1,15 @@
 import type {
   CanvasMap,
   CharacterInfo,
-  EntityInfo,
-  FeatureInfo,
   Message,
   ResourceBlob,
   ResourceType,
   SceneInfo,
+  CollectionKey,
+  CollectionStructure,
 } from "./dbTypes";
 
-export interface ClientEvents {
+export type ClientEvents = {
   // sign in
   "signIn: signInAsPlayer": (characterId: string) => void;
   "signIn: signInAsDM": (gameId: string) => void;
@@ -33,30 +33,24 @@ export interface ClientEvents {
   "message: sendMessage": (message: string) => void;
   // canvasMap
   "operator: updateCanvasMap": (data: CanvasMap, cb?: (_id: string) => void) => void;
-  // entity
-  "operator: updateEntityInfo": (data: EntityInfo, changerId: string, changerName: string) => void;
-  // feature
-  "operator: updateFeatureInfo": (
-    data: FeatureInfo,
-    changerId: string,
-    changerName: string
-  ) => void;
   // action
   "operator: rollDice": (characterId: string | "DM", value: number | number[]) => void;
   "operator: abilityCheck": (characterId: string, ability: string, skill: string) => void;
-}
+} & {
+  [P in CollectionKey as `update: ${P}`]: (doc: CollectionStructure[P]) => void;
+};
 
-export interface ServerEvents {
+export type ServerEvents = {
   "data: playerCharacter": (data: CharacterInfo) => void;
   "data: playerCanvasMapData": (data: CanvasMap) => void;
   "data: allCharactersInfo": (data: CharacterInfo[]) => void;
   "data: allMessage": (data: Message[]) => void;
-  "data: allScenes": (data: SceneInfo[]) => void;
   "data: allCanvasMap": (data: CanvasMap[]) => void;
-  "data: allEntityInfo": (data: EntityInfo[]) => void;
-  "data: allFeatureInfo": (data: FeatureInfo[]) => void;
   "data: image": (key: string, data: string) => void;
+  "data: socket": () => void; // todo:  show DM the sockets info
   "message: system": (message: string) => void;
   "message: player": (message: string) => void;
   "message: DM": (message: string) => void;
-}
+} & {
+  [P in CollectionKey as `data: ${P}`]: (data: CollectionStructure[P][]) => void;
+};

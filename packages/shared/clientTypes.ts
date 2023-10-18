@@ -1,6 +1,6 @@
 import type { CharacterInfo, SceneInfo, ProficiencyObject, EntityInfo } from "./dbTypes";
 
-export type ClientScene = SceneInfo & {
+export type ClientScene = Omit<SceneInfo, "changeLogs"> & {
   children: ClientScene[];
 };
 export function createSceneTemplate(): ClientScene {

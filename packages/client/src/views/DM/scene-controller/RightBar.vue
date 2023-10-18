@@ -48,7 +48,9 @@
       <template #dropdown>
         <ElDropdownMenu>
           <ElDropdownItem
-            v-for="e in useSocketStore().allCharacters.filter((c) => c.scope === 'template')"
+            v-for="e in useSocketStore().collections.character.filter(
+              (c) => c.scope === 'template'
+            )"
             :command="e"
           >
             {{ e.name }}</ElDropdownItem
@@ -88,7 +90,7 @@ const props = defineProps({
 
 const sortedCharacters = computed(() => {
   return useSocketStore()
-    .allCharacters.filter((character) => character.locationSceneId === props.scene._id)
+    .collections.character.filter((character) => character.locationSceneId === props.scene._id)
     .sort((a, b) => b.currentInitiative - a.currentInitiative);
 });
 
@@ -117,7 +119,7 @@ function handleCreateCharacter(template?: CharacterInfo) {
 
 const charactersToSelect = computed(() => {
   return useSocketStore()
-    .allCharacters.filter((c) => c.locationSceneId !== props.scene._id)
+    .collections.character.filter((c) => c.locationSceneId !== props.scene._id)
     .sort((a, b) => {
       if (b.scope === "PC") return 1;
       else return -1;

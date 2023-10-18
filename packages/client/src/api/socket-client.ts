@@ -3,6 +3,7 @@ import type { ClientEvents, ServerEvents } from "@trpg/shared";
 import { useSocketStore } from "@/stores/useSocketStore";
 import { ElMessage } from "element-plus";
 import { getSceneTreeAndClientScenes } from "@/utils";
+import { getReactiveCollections } from "@/utils/getReactiveCollections";
 
 export function createSocketAndInitAbility(role: "DM" | "player", password: string) {
   const socket: Socket<ServerEvents, ClientEvents> = io(`${location.hostname}:3333`);
@@ -24,6 +25,11 @@ export function createSocketAndInitAbility(role: "DM" | "player", password: stri
   socket.on("disconnect", () => {
     useSocketStore().connectedSocket = null;
   });
+
+  useSocketStore().collections = getReactiveCollections(
+    ["canvas", "character", "entity", "feature", "message", "scene"],
+    socket
+  );
 
   socket.on("data: allCharactersInfo", (data) => {
     useSocketStore().allCharacters = data;

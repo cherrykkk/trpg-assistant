@@ -3,7 +3,6 @@ import { Socket } from "socket.io";
 import { CollectionList } from "../dbConnect";
 import logger from "../logger";
 import { Binary, ObjectId } from "mongodb";
-import { resolveChangeLog } from "./resolveChangeLog";
 
 const socketToDM = new Map<Socket<ClientEvents, ServerEvents>, string>();
 
@@ -21,7 +20,7 @@ export async function registerDMSocket(
 ) {
   socket.join(gameInstanceId);
 
-  const gameInstance = await collections.games.findOne({ _id: gameInstanceId });
+  const gameInstance = await collections.game.findOne({ _id: gameInstanceId });
   if (!gameInstance) {
     logger.warn(`客户端上传了不存在的 gameId: ${gameInstanceId} `);
     return;
@@ -36,7 +35,7 @@ export async function registerDMSocket(
     socket: Socket<ClientEvents, ServerEvents>,
     gameInstanceId: string
   ) {
-    collections.characters
+    collections.character
       .find({ gameInstanceId })
       .toArray()
       .then((characterList) => {
@@ -45,44 +44,34 @@ export async function registerDMSocket(
 
     sendAllScenesInfo(gameInstanceId, socket);
 
-    collections.messages
+    collections.message
       .find({ gameInstanceId })
       .toArray()
       .then((messages) => {
         socket.emit("data: allMessage", messages);
       });
 
-    collections.canvasMaps
+    collections.canvasMap
       .find({ gameInstanceId })
       .toArray()
       .then((data) => {
         socket.emit("data: allCanvasMap", data);
       });
-
-    collections.entities
-      .find({})
-      .toArray()
-      .then((data) => socket.emit("data: allEntityInfo", data));
-
-    collections.features
-      .find({})
-      .toArray()
-      .then((data) => socket.emit("data: allFeatureInfo", data));
   }
 
   function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>, gameInstanceId: string) {
     socket.on("operator: createCharacterInfo", async (data) => {
       data.gameInstanceId = gameInstanceId;
       data._id = new ObjectId().toString();
-      await collections.characters.insertOne(data);
-      const allCharactersInfo = await collections.characters.find({ gameInstanceId }).toArray();
+      await collections.character.insertOne(data);
+      const allCharactersInfo = await collections.character.find({ gameInstanceId }).toArray();
       socket.emit("data: allCharactersInfo", allCharactersInfo);
     });
     socket.on("operator: updateCharacterInfo", async (characterId, characterInfo) => {
       delete characterInfo._id;
-      await collections.characters.updateOne({ _id: characterId }, { $set: characterInfo });
+      await collections.character.updateOne({ _id: characterId }, { $set: characterInfo });
 
-      const allCharactersInfo = await collections.characters.find({ gameInstanceId }).toArray();
+      const allCharactersInfo = await collections.character.find({ gameInstanceId }).toArray();
       tasks.broadcastUpdateToPlayers();
       socket.emit("data: allCharactersInfo", allCharactersInfo);
     });
@@ -90,20 +79,20 @@ export async function registerDMSocket(
     socket.on("operator: createSceneInfo", async (data: SceneInfo) => {
       data.gameInstanceId = gameInstanceId;
       data._id = new ObjectId().toString();
-      await collections.scenes.insertOne(data);
+      await collections.scene.insertOne(data);
       sendAllScenesInfo(gameInstanceId, socket);
     });
 
     socket.on("operator: updateSceneInfo", async (id, data) => {
       delete data._id;
-      await collections.scenes.updateOne({ _id: id }, { $set: data });
+      await collections.scene.updateOne({ _id: id }, { $set: data });
       sendAllScenesInfo(gameInstanceId, socket);
     });
 
     socket.on("operator: deleteCharacterInfo", async (characterId) => {
-      await collections.characters.deleteOne({ _id: characterId });
+      await collections.character.deleteOne({ _id: characterId });
 
-      const allCharactersInfo = await collections.characters.find({ gameInstanceId }).toArray();
+      const allCharactersInfo = await collections.character.find({ gameInstanceId }).toArray();
       socket.emit("data: allCharactersInfo", allCharactersInfo);
     });
 
@@ -128,11 +117,11 @@ export async function registerDMSocket(
       if (!data._id) {
         data._id = new ObjectId().toString();
         data.gameInstanceId = gameInstanceId;
-        collections.canvasMaps.insertOne(data);
+        collections.canvasMap.insertOne(data);
 
         cb?.(data._id);
       } else {
-        collections.canvasMaps.updateOne({ _id: data._id }, { $set: data });
+        collections.canvasMap.updateOne({ _id: data._id }, { $set: data });
       }
 
       broadcastCanvasMapToPlayers(data, collections, getRelatedPlayerSockets());
@@ -140,12 +129,12 @@ export async function registerDMSocket(
   }
 
   function sendAllScenesInfo(gameInstanceId: string, socket: Socket<ClientEvents, ServerEvents>) {
-    collections.scenes
+    collections.scene
       .find({ gameInstanceId })
       .project({ picture: 0, children: 0 })
       .toArray()
       .then((docs: SceneInfo[]) => {
-        socket.emit("data: allScenes", docs);
+        socket.emit("data: scene", docs);
       });
   }
 }
@@ -158,9 +147,9 @@ async function broadcastCanvasMapToPlayers(
     { characterId: string; characterName: string }
   >
 ) {
-  const relatedScenes = await collections.scenes.find({ relatedMapId: canvasMap._id }).toArray();
+  const relatedScenes = await collections.scene.find({ relatedMapId: canvasMap._id }).toArray();
   relatedScenes.forEach(async (scene) => {
-    const relatedCharacters = await collections.characters
+    const relatedCharacters = await collections.character
       .find({ locationSceneId: scene._id })
       .toArray();
 

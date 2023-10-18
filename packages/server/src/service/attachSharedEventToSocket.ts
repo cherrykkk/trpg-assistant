@@ -1,19 +1,36 @@
-import type { ClientEvents, ServerEvents } from "@trpg/shared";
-import { Server, Socket } from "socket.io";
+import type {
+  BasicCollectionStructure,
+  ClientEvents,
+  CollectionKey,
+  ServerEvents,
+} from "@trpg/shared";
+import { BroadcastOperator, Server, Socket } from "socket.io";
 import { CollectionList } from "../dbConnect";
-import { ObjectId } from "mongodb";
+import { Db, ObjectId } from "mongodb";
 import { resolveChangeLog } from "./resolveChangeLog";
 
 export function attachSharedEventToSocket(
   io: Server<ClientEvents, ServerEvents>,
   socket: Socket<ClientEvents, ServerEvents>,
   gameInstanceId: string,
-  collections: CollectionList
+  collections: CollectionList,
+  db: Db,
+  changerId: string,
+  changerName: string
 ) {
+  registerDbChanger(
+    ["character", "entity", "feature", "game", "scene"],
+    db,
+    socket,
+    io.to(gameInstanceId),
+    changerId,
+    changerName
+  );
+
   socket.on("operator: rollDice", async (characterId, diceType) => {
     let characterName = "DM";
     if (characterId !== "DM") {
-      const characterInfo = await collections.characters.findOne({ _id: characterId });
+      const characterInfo = await collections.character.findOne({ _id: characterId });
       if (!characterInfo) return;
       characterName = characterInfo.name;
     }
@@ -41,13 +58,8 @@ export function attachSharedEventToSocket(
       return;
     }
 
-    await writeMessage(collections.messages, gameInstanceId, diceResultMessage);
+    await writeMessage(collections.message, gameInstanceId, diceResultMessage);
 
-    broadcastMessages(gameInstanceId);
-  });
-
-  socket.on("message: sendMessage", (message) => {
-    writeMessage(collections.messages, gameInstanceId, message);
     broadcastMessages(gameInstanceId);
   });
 
@@ -60,34 +72,8 @@ export function attachSharedEventToSocket(
     }
   });
 
-  socket.on("operator: updateEntityInfo", async (data, changerId, changerName) => {
-    const newDoc = resolveChangeLog(data, changerId, changerName);
-
-    if (!newDoc._id) {
-      newDoc._id = new ObjectId().toString();
-      collections.entities.insertOne(newDoc);
-    } else {
-      collections.entities.updateOne({ _id: newDoc._id }, { $set: newDoc });
-    }
-
-    const docs = await collections.entities.find().toArray();
-    socket.emit("data: allEntityInfo", docs);
-    socket.to(gameInstanceId).emit("data: allEntityInfo", docs);
-  });
-
-  socket.on("operator: updateFeatureInfo", (data, changerId, changerName) => {
-    const newDoc = resolveChangeLog(data, changerId, changerName);
-
-    if (!newDoc._id) {
-      newDoc._id = new ObjectId().toString();
-      collections.features.insertOne(newDoc);
-    } else {
-      collections.features.updateOne({ _id: newDoc._id }, { $set: newDoc });
-    }
-  });
-
   function broadcastMessages(gameInstanceId: string) {
-    collections.messages
+    collections.message
       .find({ gameInstanceId })
       .toArray()
       .then((docs) => {
@@ -97,7 +83,7 @@ export function attachSharedEventToSocket(
 }
 
 function writeMessage(
-  messageCollection: CollectionList["messages"],
+  messageCollection: CollectionList["message"],
   gameInstanceId: string,
   messageContent: string
 ) {
@@ -106,5 +92,33 @@ function writeMessage(
     gameInstanceId,
     _id: new ObjectId().toString(),
     time: new Date().toLocaleString(),
+  });
+}
+
+export function registerDbChanger(
+  shareList: CollectionKey[],
+  db: Db,
+  socket: Socket<ClientEvents, ServerEvents>,
+  broadcastOperator: BroadcastOperator<ServerEvents, ClientEvents>,
+  changerId: string,
+  changerName: string
+) {
+  shareList.forEach(async (key) => {
+    socket.on(`update: ${key}`, async (doc) => {
+      doc = resolveChangeLog(doc, changerId, changerName);
+
+      if (!doc._id) {
+        doc._id = new ObjectId().toString();
+        db.collection<BasicCollectionStructure>(key).insertOne(doc);
+      } else {
+        db.collection<BasicCollectionStructure>(key).updateOne({ _id: doc._id }, { $set: doc });
+      }
+
+      const docs = await db.collection(key).find().toArray();
+      broadcastOperator.emit(`data: ${key}`, docs as any[]);
+    });
+
+    const docs = await db.collection(key).find().toArray();
+    socket.emit(`data: ${key}`, docs as any[]);
   });
 }

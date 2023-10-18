@@ -19,7 +19,7 @@ async function sendInitDataToSinglePlayerSocket(
 
   socket.emit("data: playerCharacter", characterInfo);
 
-  collections.messages
+  collections.message
     .find({ gameInstanceId: characterInfo.gameInstanceId })
     .toArray()
     .then((messages) => {
@@ -27,8 +27,8 @@ async function sendInitDataToSinglePlayerSocket(
     });
 
   try {
-    const scene = await collections.scenes.findOne({ _id: characterInfo.locationSceneId });
-    const canvasMap = await collections.canvasMaps.findOne({ _id: scene.relatedMapId });
+    const scene = await collections.scene.findOne({ _id: characterInfo.locationSceneId });
+    const canvasMap = await collections.canvasMap.findOne({ _id: scene.relatedMapId });
     socket.emit("data: playerCanvasMapData", canvasMap);
   } catch {
     socket.emit("data: playerCanvasMapData", null);

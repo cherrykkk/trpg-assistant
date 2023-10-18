@@ -25,7 +25,7 @@ import { ElTabPane, ElTabs } from "element-plus";
 const characterScope = ref<"star" | CharacterInfo["scope"]>("PC");
 
 const filteredCharacters = computed(() => {
-  return useSocketStore().allCharacters.filter((e) => e.scope === characterScope.value);
+  return useSocketStore().collections.character.filter((e) => e.scope === characterScope.value);
 });
 </script>
 

@@ -24,7 +24,7 @@
       <EntityStorage
         :key="scene._id"
         :init-stored-stack-data="scene.storage ?? []"
-        :database="useSocketStore().allEntityInfo"
+        :database="useSocketStore().collections.entity"
         @change="
           (data) => {
             if (!scene) return;

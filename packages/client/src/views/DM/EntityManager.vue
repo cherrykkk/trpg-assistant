@@ -1,6 +1,6 @@
 <template>
   <ListEditLayout
-    :data="useSocketStore().allEntityInfo"
+    :data="useSocketStore().collections.entity"
     @submit="updateEntityInfo"
     :createTemplate="createEntityTemplate"
   >

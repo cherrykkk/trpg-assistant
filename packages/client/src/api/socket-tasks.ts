@@ -92,8 +92,6 @@ export function updateCanvasMap(mapData: CanvasMap, cb?: (_id: string) => void) 
 }
 
 export function updateEntityInfo(data: EntityInfo) {
-  const changerId = useSocketStore().playerCharacterInfo?._id || useSocketStore().gameInstanceId;
-  const changerName = useSocketStore().playerCharacterInfo?.name || "DM";
-  useSocketStore().socket.emit("operator: updateEntityInfo", data, changerId, changerName);
+  useSocketStore().socket.emit("update: entity", data);
   ElMessage("已保存");
 }

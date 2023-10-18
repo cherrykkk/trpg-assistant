@@ -8,11 +8,10 @@ import type {
   SceneInfo,
   CanvasMap,
   ClientScene,
-  EntityInfo,
-  FeatureInfo,
 } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 import { getSceneTreeAndClientScenes } from "@/utils";
+import { getReactiveCollections } from "@/utils/getReactiveCollections";
 
 const localStorageAllScenes = JSON.parse(
   localStorage.getItem("data: allScenes") ?? "[]"
@@ -36,9 +35,7 @@ export const useSocketStore = defineStore("socket", {
     currentScene: null as ClientScene | null,
     clientSceneTree: topSceneTreeList,
     editTarget: null as null | "path" | "story",
-    allCharacters: [] as CharacterInfo[],
-    allEntityInfo: [] as EntityInfo[],
-    allFeatureInfo: [] as FeatureInfo[],
+    collections: {} as ReturnType<typeof getReactiveCollections>,
   }),
   getters: {
     socket(state) {

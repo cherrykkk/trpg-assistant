@@ -5,6 +5,6 @@
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "../shared/useNewShare.ts"],
   "exclude": ["node_modules"]
 }
