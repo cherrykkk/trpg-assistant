@@ -26,7 +26,7 @@
 </template>
 <script lang="ts" setup>
 import { type PropType, computed, nextTick, ref } from "vue";
-import type { CharacterInfo } from "@trpg/shared";
+import type { CharacterDoc } from "@trpg/shared";
 import SpellItem from "@/views/components/SpellItem.vue";
 import TapToEditDescription from "./TapToEditDescription.vue";
 import { turnToSpellsInfo } from "@/utils";
@@ -34,7 +34,7 @@ import SpellSelect from "@/views/components/SpellSelect.vue";
 
 const props = defineProps({
   character: {
-    type: Object as PropType<CharacterInfo>,
+    type: Object as PropType<CharacterDoc>,
     required: true,
   },
 });

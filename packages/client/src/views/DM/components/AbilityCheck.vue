@@ -26,14 +26,14 @@ import {
   AbilityType,
   AbilityPropertyToName,
   AbilityPropertyList,
-  type CharacterInfo,
+  type CharacterDoc,
   type ProficiencyObject,
 } from "@trpg/shared";
 import { getLevelAndBonus } from "@/utils";
 
 const props = defineProps({
   character: {
-    type: Object as PropType<CharacterInfo>,
+    type: Object as PropType<CharacterDoc>,
     required: true,
   },
 });

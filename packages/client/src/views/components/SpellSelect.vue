@@ -101,7 +101,7 @@ const filteredSpellDatabase = computed(() => {
 }
 .spells-in-database {
   overflow: auto;
-  overscroll-behavior: contain;
+  // overscroll-behavior: contain;
   > div {
     position: relative;
     .add-button {

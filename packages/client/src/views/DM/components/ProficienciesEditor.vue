@@ -28,14 +28,14 @@
 </template>
 
 <script lang="ts" setup>
-import { type CharacterInfo, type ProficiencyObject } from "@trpg/shared";
+import { type CharacterDoc, type ProficiencyObject } from "@trpg/shared";
 import { type PropType, computed, onMounted, ref, watch } from "vue";
 import TipPopover from "@/views/components/tip-popovers/TipPopover.vue";
 import ProficiencyBonus from "@/views/components/tip-popovers/ProficiencyBonus.vue";
 
 const props = defineProps({
   characterInfo: {
-    type: Object as PropType<CharacterInfo>,
+    type: Object as PropType<CharacterDoc>,
     required: true,
   },
 });

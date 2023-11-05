@@ -58,7 +58,7 @@ function updateCanvasMapData(newData: CanvasMap) {
     if (currentScene.value && !newData._id) {
       newData._id = _id;
       currentScene.value.relatedMapId = _id;
-      updateSceneInfo(currentScene.value?._id, currentScene.value);
+      updateSceneInfo(currentScene.value);
     }
   });
 }

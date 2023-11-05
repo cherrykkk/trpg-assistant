@@ -9,7 +9,7 @@
       </ElTabs>
     </template>
     <template #editor="{ item }">
-      <CharacterInfoEditor :character="(item as CharacterInfo)" :key="item?._id" v-if="item" />
+      <CharacterInfoEditor :character="(item as CharacterDoc)" :key="item?._id" v-if="item" />
     </template>
   </ListEditLayout>
 </template>
@@ -17,12 +17,12 @@
 <script lang="ts" setup>
 import CharacterInfoEditor from "./components/CharacterInfoEditor.vue";
 import { computed, ref } from "vue";
-import type { CharacterInfo } from "@trpg/shared";
+import type { CharacterDoc } from "@trpg/shared";
 import { useSocketStore } from "@/stores/useSocketStore";
 import ListEditLayout from "@trpg/components/ListEditLayout.vue";
 import { ElTabPane, ElTabs } from "element-plus";
 
-const characterScope = ref<"star" | CharacterInfo["scope"]>("PC");
+const characterScope = ref<"star" | CharacterDoc["scope"]>("PC");
 
 const filteredCharacters = computed(() => {
   return useSocketStore().collections.character.filter((e) => e.scope === characterScope.value);

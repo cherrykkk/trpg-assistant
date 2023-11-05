@@ -3,8 +3,10 @@ import {
   type SpellInfo,
   type SpellOnCharacter,
   SPELL_DATABASE,
-  type SceneInfo,
+  type SceneDoc,
   type ClientScene,
+  type EquippedFeature,
+  type FeatureDoc,
 } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 import { CHARACTER_ADVANCEMENT } from "@/constants/characterAdvancement";
@@ -89,7 +91,7 @@ export function getSpellSlotNum(DNDClass: string, level: number) {
   } else return null;
 }
 
-export function getSceneTreeAndClientScenes(allScenes: SceneInfo[]) {
+export function getSceneTreeAndClientScenes(allScenes: SceneDoc[]) {
   const clientScenes: ClientScene[] = allScenes.map((e) => ({
     ...e,
     children: [],
@@ -109,4 +111,23 @@ export function getSceneTreeAndClientScenes(allScenes: SceneInfo[]) {
 
   const topSceneTreeList = clientScenes.filter((e) => !notTopSceneList.includes(e));
   return { topSceneTreeList, clientScenes };
+}
+
+export function calculateFeatures(equipped: EquippedFeature[], featureCollection: FeatureDoc[]) {
+  const features: FeatureDoc[] = [];
+  equipped.forEach((e) => {
+    findAndAddFeature(e.featureId);
+  });
+
+  function findAndAddFeature(id: string) {
+    const feature = featureCollection.find((e2) => e2._id === id);
+    if (feature) {
+      features.push(feature);
+
+      if (feature.expendedFeatureList) {
+        feature.expendedFeatureList.forEach((e) => findAndAddFeature(e));
+      }
+    }
+  }
+  return features;
 }

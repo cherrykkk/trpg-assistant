@@ -28,7 +28,7 @@
         @change="
           (data) => {
             if (!scene) return;
-            updateSceneInfo(scene._id, { ...scene, storage: data });
+            updateSceneInfo({ ...scene, storage: data });
           }
         "
       />
@@ -36,7 +36,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, toRaw } from "vue";
+import { ref } from "vue";
 import type { ClientScene } from "@trpg/shared";
 import RichTextRenderer from "@/views/components/RichTextRenderer.vue";
 import EntityStorage from "@/views/components/EntityStorage.vue";
@@ -54,10 +54,7 @@ async function updateEdit() {
   if (!scene.value) return;
   scene.value.richTextDescription = await richTextEditorRef.value?.getData();
 
-  updateSceneInfo(scene.value._id, toRaw(scene.value));
-
-  // createSceneInfo(editedScene);
-
+  updateSceneInfo(scene.value);
   useSocketStore().editTarget = null;
 }
 </script>

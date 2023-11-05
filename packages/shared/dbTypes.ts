@@ -1,17 +1,21 @@
 import { Binary } from "mongodb";
 
 export interface CollectionStructure {
-  character: CharacterInfo;
-  scene: SceneInfo;
+  character: CharacterDoc;
+  scene: SceneDoc;
   entity: EntityInfo;
   canvas: CanvasMap;
   game: GameInstance;
   message: Message;
-  feature: FeatureInfo;
+  feature: FeatureDoc;
 }
 export type CollectionKey = keyof CollectionStructure;
 
-export type CharacterInfo = {
+export type CharacterDoc = CharacterInfo & BasicCollectionStructure;
+export type FeatureDoc = FeatureInfo & BasicCollectionStructure;
+export type SceneDoc = SceneInfo & BasicCollectionStructure;
+
+export interface CharacterInfo {
   gameInstanceId: string;
   scope: "monster" | "NPC" | "PC" | "template";
   name: string;
@@ -46,7 +50,13 @@ export type CharacterInfo = {
   currentInitiative: number;
   backpack: StoredStackData[];
   locationSceneId: string;
-} & BasicCollectionStructure;
+  equippedFeatures?: EquippedFeature[];
+}
+
+export interface EquippedFeature {
+  featureId: string;
+  reason: string;
+}
 
 export interface ProficiencyObject {
   type: "skill" | "armor" | "weapon" | "tool" | "save";
@@ -55,14 +65,14 @@ export interface ProficiencyObject {
   active: boolean;
 }
 
-export type SceneInfo = {
+interface SceneInfo {
   gameInstanceId: string;
   name: string;
   fatherId: string | null;
   richTextDescription: any;
   relatedMapId: string;
   storage: StoredStackData[];
-} & BasicCollectionStructure;
+}
 
 export interface SpellOnCharacter {
   spellId: string;
@@ -143,11 +153,12 @@ export type EntityInfo = {
   isCustom: boolean;
 } & BasicCollectionStructure;
 
-export type FeatureInfo = {
-  _id: string;
+interface FeatureInfo {
   name: string;
   description: string;
-} & BasicCollectionStructure;
+  expendedSpellList?: string[];
+  expendedFeatureList?: string[];
+}
 
 export type ChangeLog<T> = Omit<T, "changeLogs"> & {
   changeTime: number;

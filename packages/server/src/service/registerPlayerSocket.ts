@@ -1,10 +1,10 @@
-import { CharacterInfo, ClientEvents, ServerEvents } from "@trpg/shared";
+import { CharacterDoc, ClientEvents, ServerEvents } from "@trpg/shared";
 import { Socket } from "socket.io";
 import { CollectionList } from "../dbConnect";
 
 export function registerPlayerSocket(
   socket: Socket<ClientEvents, ServerEvents>,
-  characterInfo: CharacterInfo,
+  characterInfo: CharacterDoc,
   collections: CollectionList
 ) {
   sendInitDataToSinglePlayerSocket(socket, characterInfo, collections);
@@ -12,7 +12,7 @@ export function registerPlayerSocket(
 
 async function sendInitDataToSinglePlayerSocket(
   socket: Socket<ClientEvents, ServerEvents>,
-  characterInfo: CharacterInfo,
+  characterInfo: CharacterDoc,
   collections: CollectionList
 ) {
   socket.join(characterInfo.gameInstanceId);
@@ -23,7 +23,7 @@ async function sendInitDataToSinglePlayerSocket(
     .find({ gameInstanceId: characterInfo.gameInstanceId })
     .toArray()
     .then((messages) => {
-      socket.emit("data: allMessage", messages);
+      socket.emit("data: message", messages);
     });
 
   try {

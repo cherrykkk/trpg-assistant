@@ -35,13 +35,7 @@ export function initSocket(collections: CollectionList, db: Db) {
 
     socket.on("signIn: signInAsDM", (gameInstanceId) => {
       logger.info(`signInAsDM, socket: ${socket.id}, gameInstanceId: ${gameInstanceId}`);
-      registerDMSocket(
-        socket,
-        gameInstanceId,
-        collections,
-        { broadcastUpdateToPlayers },
-        () => socketToPlayer
-      );
+      registerDMSocket(socket, gameInstanceId, collections, () => socketToPlayer);
       attachSharedEventToSocket(io, socket, gameInstanceId, collections, db, gameInstanceId, "DM");
       socketToDM.set(socket, { gameInstanceId });
       socket.join(gameInstanceId);
@@ -69,12 +63,4 @@ export function initSocket(collections: CollectionList, db: Db) {
       socket.join(character.gameInstanceId);
     });
   });
-
-  function broadcastUpdateToPlayers() {
-    socketToPlayer.forEach((e, socket) => {
-      collections.character.findOne({ _id: e.characterId }).then((playerCharacterInfo) => {
-        if (playerCharacterInfo) socket.emit("data: playerCharacter", playerCharacterInfo);
-      });
-    });
-  }
 }

@@ -6,8 +6,15 @@
         <el-menu-item index="characterControl">角色编辑</el-menu-item>
         <el-menu-item index="sceneControl">场景演绎</el-menu-item>
         <el-menu-item index="entityManager">道具信息</el-menu-item>
+        <el-menu-item index="featureManager">特质信息</el-menu-item>
       </el-menu>
-      <div class="router-page"><router-view /></div>
+      <div class="router-page">
+        <router-view v-slot="{ Component }">
+          <keep-alive>
+            <component :is="Component" />
+          </keep-alive>
+        </router-view>
+      </div>
     </div>
     <!-- <ResizablePanel resize-direction="left" :default-width="200" :foldable="true">
       <MessageRoom />

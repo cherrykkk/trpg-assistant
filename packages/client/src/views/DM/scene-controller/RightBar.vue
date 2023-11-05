@@ -37,7 +37,7 @@
         <div style="display: flex; justify-content: space-between">
           <span>{{ character.name }}</span>
           <span style="text-align: right; color: #999">{{
-            useSocketStore().allClientScenes.find((s) => s._id === character.locationSceneId)?.name
+            useSocketStore().flatClientScenes.find((s) => s._id === character.locationSceneId)?.name
           }}</span>
         </div>
       </el-option>
@@ -68,7 +68,7 @@
 <script lang="ts" setup>
 import { computed, ref, type PropType } from "vue";
 import QuickEditCharacter from "./QuickEditCharacter.vue";
-import type { CharacterInfo, SceneInfo } from "@trpg/shared";
+import type { CharacterDoc, SceneDoc } from "@trpg/shared";
 import CharacterInfoEditor from "../components/CharacterInfoEditor.vue";
 import { useDoubleClick } from "@/utils";
 import { updateCharacterInfo } from "@/api/socket-tasks";
@@ -85,7 +85,7 @@ import TipPopover from "@/views/components/tip-popovers/TipPopover.vue";
 import TipCombat from "@/views/components/tip-popovers/TipCombat.vue";
 
 const props = defineProps({
-  scene: { type: Object as PropType<SceneInfo>, required: true },
+  scene: { type: Object as PropType<SceneDoc>, required: true },
 });
 
 const sortedCharacters = computed(() => {
@@ -94,19 +94,19 @@ const sortedCharacters = computed(() => {
     .sort((a, b) => b.currentInitiative - a.currentInitiative);
 });
 
-const chosenCharacter = ref<CharacterInfo | null>(null);
+const chosenCharacter = ref<CharacterDoc | null>(null);
 
 const handleDoubleClickCharacter = useDoubleClick(() => {
   isEditingCharacterInfo.value = true;
 });
 
-function handleClickCharacter(c: CharacterInfo) {
+function handleClickCharacter(c: CharacterDoc) {
   handleDoubleClickCharacter();
   chosenCharacter.value = c;
 }
-function handleCreateCharacter(template?: CharacterInfo) {
+function handleCreateCharacter(template?: CharacterDoc) {
   if (template) {
-    const newC = JSON.parse(JSON.stringify(template)) as CharacterInfo;
+    const newC = JSON.parse(JSON.stringify(template)) as CharacterDoc;
     newC._id = "";
     newC.locationSceneId = props.scene._id;
     newC.scope = "monster";
@@ -126,9 +126,9 @@ const charactersToSelect = computed(() => {
     });
 });
 
-function moveCharacterToCurrentLocation(character: CharacterInfo) {
+function moveCharacterToCurrentLocation(character: CharacterDoc) {
   character.locationSceneId = props.scene._id;
-  updateCharacterInfo(character._id, character);
+  updateCharacterInfo(character);
 }
 
 const isEditingCharacterInfo = ref(false);

@@ -26,7 +26,6 @@ import ResizablePanel from "../../components/ResizablePanel.vue";
 import RightBar from "./RightBar.vue";
 import { useSocketStore } from "@/stores/useSocketStore";
 import { ref } from "vue";
-import { getSceneTreeAndClientScenes } from "@/utils";
 import ScenePanelIndex from "./scene-panel/ScenePanelIndex.vue";
 import SceneTreePanel from "./SceneTreePanel.vue";
 import { createSceneTemplate, type ClientScene } from "@trpg/shared";
@@ -43,21 +42,13 @@ function handleClickAddButton() {
     newScene.fatherId = fatherScene?._id;
   }
 
-  const { topSceneTreeList, clientScenes } = getSceneTreeAndClientScenes([
-    ...useSocketStore().allClientScenes,
-    newScene,
-  ]);
-
-  useSocketStore().clientSceneTree = topSceneTreeList;
-  useSocketStore().allClientScenes = clientScenes;
-
   changeCurrentScene(newScene);
 }
 
 const localStorageCurrentSceneId = localStorage.getItem("config: currentSceneId") ?? "";
 if (!useSocketStore().currentScene) {
   useSocketStore().currentScene =
-    useSocketStore().allClientScenes.find((e) => e._id === localStorageCurrentSceneId) ?? null;
+    useSocketStore().flatClientScenes.find((e) => e._id === localStorageCurrentSceneId) ?? null;
 }
 function changeCurrentScene(scene: ClientScene) {
   localStorage.setItem("config: currentSceneId", scene._id);

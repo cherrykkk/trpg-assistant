@@ -35,7 +35,7 @@
 
 <script lang="ts" setup>
 import { updateSceneInfo } from "@/api/socket-tasks";
-import type { ClientScene, SceneInfo } from "@trpg/shared";
+import type { ClientScene } from "@trpg/shared";
 import { ElInput, ElTreeSelect } from "element-plus";
 import { ref, type PropType } from "vue";
 
@@ -53,7 +53,7 @@ function handleChangeSceneFather(scene: ClientScene) {
   if (sceneToEdit.value) sceneToEdit.value.fatherId = scene._id;
 }
 function handleOK(scene: ClientScene) {
-  updateSceneInfo(scene._id, scene);
+  updateSceneInfo(scene);
   sceneToEdit.value = null;
 }
 </script>

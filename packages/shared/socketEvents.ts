@@ -1,10 +1,8 @@
 import type {
   CanvasMap,
-  CharacterInfo,
-  Message,
+  CharacterDoc,
   ResourceBlob,
   ResourceType,
-  SceneInfo,
   CollectionKey,
   CollectionStructure,
 } from "./dbTypes";
@@ -13,13 +11,7 @@ export type ClientEvents = {
   // sign in
   "signIn: signInAsPlayer": (characterId: string) => void;
   "signIn: signInAsDM": (gameId: string) => void;
-  // character
-  "operator: createCharacterInfo": (value: CharacterInfo) => void;
-  "operator: updateCharacterInfo": (characterId: string, value: Partial<CharacterInfo>) => void;
   "operator: deleteCharacterInfo": (characterId: string) => void;
-  // scene
-  "operator: createSceneInfo": (value: SceneInfo) => void;
-  "operator: updateSceneInfo": (id: string, value: Partial<SceneInfo>) => void;
   "operator: deleteSceneInfo": (id: string) => void;
   // image
   "request: uploadBlob": (
@@ -41,13 +33,14 @@ export type ClientEvents = {
 };
 
 export type ServerEvents = {
-  "data: playerCharacter": (data: CharacterInfo) => void;
+  "data: playerCharacter": (data: CharacterDoc) => void;
   "data: playerCanvasMapData": (data: CanvasMap) => void;
-  "data: allCharactersInfo": (data: CharacterInfo[]) => void;
-  "data: allMessage": (data: Message[]) => void;
+  "data: allCharactersInfo": (data: CharacterDoc[]) => void;
   "data: allCanvasMap": (data: CanvasMap[]) => void;
   "data: image": (key: string, data: string) => void;
   "data: socket": () => void; // todo:  show DM the sockets info
+
+  // todo: freedom of send chat message
   "message: system": (message: string) => void;
   "message: player": (message: string) => void;
   "message: DM": (message: string) => void;

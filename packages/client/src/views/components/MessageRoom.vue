@@ -2,7 +2,7 @@
   <div class="message-room-vue">
     <DiceController @roll-dice="handleRollDice" />
     <div class="history-area" ref="historyAreaRef">
-      <div v-for="e in useSocketStore().messageList">
+      <div v-for="e in useSocketStore().collections.message">
         <div class="message-time">{{ e.time }}</div>
         <div>
           {{ e.content }}

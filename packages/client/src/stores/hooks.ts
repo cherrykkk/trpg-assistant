@@ -1,7 +1,7 @@
 import { getLevelAndBonus, getSpellSlotNum } from "@/utils";
-import type { CharacterInfo } from "@trpg/shared";
+import type { CharacterDoc } from "@trpg/shared";
 import { ref, watch, type Ref } from "vue";
-export function useLevelAndConfig(character: Ref<CharacterInfo>) {
+export function useLevelAndConfig(character: Ref<CharacterDoc>) {
   const levelAndConfig = ref({ level: 1, proficiencyBonus: 2, spellSlotNum: [] as number[] });
 
   watch(

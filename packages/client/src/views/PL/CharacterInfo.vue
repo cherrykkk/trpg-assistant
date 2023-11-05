@@ -92,14 +92,14 @@
 <script lang="ts" setup>
 import { type PropType, computed, ref, toRef } from "vue";
 import InfoCell from "./components/InfoCell.vue";
-import type { CharacterInfo, SpellInfo } from "@trpg/shared";
+import type { CharacterDoc, SpellInfo } from "@trpg/shared";
 import SpellItem from "../components/SpellItem.vue";
 import { turnToSpellsInfo } from "@/utils/index";
 import SpellSlotsPanel from "../components/SpellSlotsPanel.vue";
 import { useLevelAndConfig } from "@/stores/hooks";
 
 const props = defineProps({
-  characterInfo: { type: Object as PropType<CharacterInfo>, required: true },
+  characterInfo: { type: Object as PropType<CharacterDoc>, required: true },
 });
 
 const spellAndInfo = computed(() => {

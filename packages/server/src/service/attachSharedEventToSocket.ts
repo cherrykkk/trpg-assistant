@@ -77,7 +77,7 @@ export function attachSharedEventToSocket(
       .find({ gameInstanceId })
       .toArray()
       .then((docs) => {
-        io.to(gameInstanceId).emit("data: allMessage", docs);
+        io.to(gameInstanceId).emit("data: message", docs);
       });
   }
 }
@@ -109,9 +109,11 @@ export function registerDbChanger(
 
       if (!doc._id) {
         doc._id = new ObjectId().toString();
-        db.collection<BasicCollectionStructure>(key).insertOne(doc);
+        await db.collection<BasicCollectionStructure>(key).insertOne(doc);
       } else {
-        db.collection<BasicCollectionStructure>(key).updateOne({ _id: doc._id }, { $set: doc });
+        await db
+          .collection<BasicCollectionStructure>(key)
+          .updateOne({ _id: doc._id }, { $set: doc });
       }
 
       const docs = await db.collection(key).find().toArray();

@@ -84,13 +84,24 @@
     :max="levelAndConfig.spellSlotNum"
     v-model="editedData.spellSlotNum"
   />
+  <FeaturesBox
+    :equipped="character.equippedFeatures ?? []"
+    :collection="featuresCollection"
+    @change="handleFeatureChange"
+  />
   <CharacterSpellEditor :character="editedData" />
 </template>
 
 <script lang="ts" setup>
-import { type PropType, reactive, toRef } from "vue";
+import { type PropType, reactive, toRef, provide } from "vue";
 import EditCell from "./EditCell.vue";
-import type { CharacterInfo, ClientScene, EntityInfo } from "@trpg/shared";
+import type {
+  CharacterDoc,
+  ClientScene,
+  EntityInfo,
+  EquippedFeature,
+  FeatureDoc,
+} from "@trpg/shared";
 import CharacterSpellEditor from "../DM/components/CharacterSpellEditor.vue";
 import { ElRadioButton, ElTreeSelect } from "element-plus";
 import ProficienciesEditor from "../DM/components/ProficienciesEditor.vue";
@@ -104,10 +115,11 @@ import TipSpellcastingAbility from "@/views/components/tip-popovers/TipSpellcast
 import SpellSlotsPanel from "@/views/components/SpellSlotsPanel.vue";
 import { useLevelAndConfig } from "@/stores/hooks";
 import { ElRadioGroup } from "element-plus";
+import FeaturesBox from "./FeaturesBox.vue";
 
 const props = defineProps({
   character: {
-    type: Object as PropType<CharacterInfo>,
+    type: Object as PropType<CharacterDoc>,
     required: true,
   },
   accessibleScenes: {
@@ -122,6 +134,18 @@ const props = defineProps({
       return [];
     },
   },
+  featuresCollection: {
+    type: Array as PropType<FeatureDoc[]>,
+    default() {
+      return [];
+    },
+  },
+});
+
+const emit = defineEmits<{ (event: "change", data: CharacterDoc): void }>();
+
+provide("edit-cell-on-blur", () => {
+  emit("change", editedData);
 });
 
 defineExpose({
@@ -133,6 +157,11 @@ defineExpose({
 const editedData = reactive(props.character);
 
 const { levelAndConfig } = useLevelAndConfig(toRef(editedData));
+
+function handleFeatureChange(data: EquippedFeature[]) {
+  editedData.equippedFeatures = data;
+  emit("change", editedData);
+}
 </script>
 
 <style lang="less" scoped>

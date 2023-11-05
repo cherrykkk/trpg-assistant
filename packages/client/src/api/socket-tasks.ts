@@ -1,33 +1,24 @@
 import { useSocketStore } from "@/stores/useSocketStore";
 import type {
   CanvasMap,
-  CharacterInfo,
+  CharacterDoc,
   ClientScene,
   EntityInfo,
+  FeatureDoc,
   ResourceBlob,
   ResourceType,
-  SceneInfo,
+  SceneDoc,
 } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 
-export function updateCharacterInfo(characterId: string, property: Partial<CharacterInfo>) {
-  useSocketStore().socket.emit("operator: updateCharacterInfo", characterId, property);
+export function updateCharacterInfo(data: CharacterDoc) {
+  useSocketStore().socket.emit("update: character", data);
 }
 
-export function updateSceneInfo(id: string, data: SceneInfo | ClientScene) {
+export function updateSceneInfo(data: SceneDoc | ClientScene) {
   data = { ...data, children: undefined };
-  if (!id) {
-    createSceneInfo(data);
-  } else {
-    useSocketStore().socket.emit("operator: updateSceneInfo", id, data);
-  }
-}
-export function createSceneInfo(data: SceneInfo) {
-  useSocketStore().socket.emit("operator: createSceneInfo", data);
-}
 
-export function createCharacterInfo(data: CharacterInfo) {
-  useSocketStore().socket.emit("operator: createCharacterInfo", data);
+  useSocketStore().socket.emit("update: scene", data);
 }
 
 export function deleteCharacterInfo(characterId: string) {
@@ -93,5 +84,10 @@ export function updateCanvasMap(mapData: CanvasMap, cb?: (_id: string) => void) 
 
 export function updateEntityInfo(data: EntityInfo) {
   useSocketStore().socket.emit("update: entity", data);
+  ElMessage("已保存");
+}
+
+export function updateFeatureInfo(data: FeatureDoc) {
+  useSocketStore().socket.emit("update: feature", data);
   ElMessage("已保存");
 }

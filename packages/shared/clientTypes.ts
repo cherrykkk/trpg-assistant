@@ -1,6 +1,6 @@
-import type { CharacterInfo, SceneInfo, ProficiencyObject, EntityInfo } from "./dbTypes";
+import type { CharacterDoc, SceneDoc, ProficiencyObject, EntityInfo, FeatureDoc } from "./dbTypes";
 
-export type ClientScene = Omit<SceneInfo, "changeLogs"> & {
+export type ClientScene = Omit<SceneDoc, "changeLogs"> & {
   children: ClientScene[];
 };
 export function createSceneTemplate(): ClientScene {
@@ -16,7 +16,7 @@ export function createSceneTemplate(): ClientScene {
   };
 }
 
-export function createNewCharacterInfoTemplate(): CharacterInfo {
+export function createNewCharacterInfoTemplate(): CharacterDoc {
   return {
     _id: "",
     gameInstanceId: "",
@@ -60,6 +60,14 @@ export function createEntityTemplate(): EntityInfo {
     pound: 0,
     isCustom: true,
     changeLogs: [],
+  };
+}
+
+export function createFeatureTemplate(): FeatureDoc {
+  return {
+    _id: "",
+    name: "",
+    description: "",
   };
 }
 

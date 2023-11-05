@@ -4,8 +4,7 @@ import type {
   ServerEvents,
   ClientEvents,
   Message,
-  CharacterInfo,
-  SceneInfo,
+  CharacterDoc,
   CanvasMap,
   ClientScene,
 } from "@trpg/shared";
@@ -13,27 +12,15 @@ import { ElMessage } from "element-plus";
 import { getSceneTreeAndClientScenes } from "@/utils";
 import { getReactiveCollections } from "@/utils/getReactiveCollections";
 
-const localStorageAllScenes = JSON.parse(
-  localStorage.getItem("data: allScenes") ?? "[]"
-) as SceneInfo[];
-
-const { topSceneTreeList, clientScenes } = getSceneTreeAndClientScenes(localStorageAllScenes);
-
 export const useSocketStore = defineStore("socket", {
   state: () => ({
     connectedSocket: null as Socket<ServerEvents, ClientEvents> | null,
-    playerCharacterInfo: null as CharacterInfo | null,
-    messageList: [] as Message[],
+    playerCharacterInfo: null as CharacterDoc | null,
     allCanvasMap: [] as CanvasMap[],
     canvasMapReady: false,
-    allClientScenes: clientScenes,
     currentMap: null as CanvasMap | null,
     gameInstanceId: "",
-    handbook: {
-      itemObjects: [{}],
-    },
     currentScene: null as ClientScene | null,
-    clientSceneTree: topSceneTreeList,
     editTarget: null as null | "path" | "story",
     collections: {} as ReturnType<typeof getReactiveCollections>,
   }),
@@ -45,6 +32,12 @@ export const useSocketStore = defineStore("socket", {
         ElMessage.error("未连接上服务器");
         throw Error("未连接服务器");
       }
+    },
+    flatClientScenes(state) {
+      return getSceneTreeAndClientScenes(state.collections.scene).clientScenes;
+    },
+    clientSceneTree(state) {
+      return getSceneTreeAndClientScenes(state.collections.scene).topSceneTreeList;
     },
   },
 });

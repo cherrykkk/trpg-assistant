@@ -14,6 +14,8 @@
       :character="editedData"
       :accessible-scenes="useSocketStore().clientSceneTree"
       :entities-database="useSocketStore().collections.entity"
+      :features-collection="useSocketStore().collections.feature"
+      @change="autoSaveChanges"
     />
   </div>
 </template>
@@ -21,14 +23,14 @@
 <script lang="ts" setup>
 import { type PropType, onBeforeUnmount, reactive, ref } from "vue";
 import { useSocketStore } from "@/stores/useSocketStore";
-import { updateCharacterInfo, createCharacterInfo, deleteCharacterInfo } from "@/api/socket-tasks";
-import { createNewCharacterInfoTemplate, type CharacterInfo } from "@trpg/shared";
+import { updateCharacterInfo, deleteCharacterInfo } from "@/api/socket-tasks";
+import { createNewCharacterInfoTemplate, type CharacterDoc } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 import EditCharacterInfo from "@/views/components/EditCharacterInfo.vue";
 
 const props = defineProps({
   character: {
-    type: Object as PropType<CharacterInfo | null>,
+    type: Object as PropType<CharacterDoc | null>,
   },
 });
 const emit = defineEmits(["closeDialog"]);
@@ -88,12 +90,13 @@ function saveChanges() {
   const newData = editCharacterInfoRef.value?.getEditData();
   if (!newData) return;
 
-  if (!props.character || !props.character._id) {
-    createCharacterInfo(newData);
-  } else {
-    updateCharacterInfo(props.character._id, newData);
-    ElMessage.success("已保存");
-  }
+  updateCharacterInfo(newData);
+  ElMessage.success("已保存");
+}
+
+function autoSaveChanges(data: CharacterDoc) {
+  updateCharacterInfo(data);
+  ElMessage.success("已保存");
 }
 
 onBeforeUnmount(() => {

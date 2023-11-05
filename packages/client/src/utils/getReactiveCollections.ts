@@ -8,9 +8,10 @@ export function getReactiveCollections(
 ) {
   const collections = reactive({}) as { [P in CollectionKey]: CollectionStructure[P][] };
   key.forEach((key) => {
-    collections[key] = [];
+    collections[key] = JSON.parse(localStorage.getItem(`data: ${key}`) ?? "[]");
     socket.on(`data: ${key}`, (data: any) => {
       collections[key] = data;
+      localStorage.setItem(`data: ${key}`, JSON.stringify(data));
     });
   });
   return collections;

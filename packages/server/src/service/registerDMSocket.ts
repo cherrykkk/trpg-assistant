@@ -1,4 +1,4 @@
-import { CanvasMap, ClientEvents, ResourceType, SceneInfo, ServerEvents } from "@trpg/shared";
+import { CanvasMap, ClientEvents, ResourceType, SceneDoc, ServerEvents } from "@trpg/shared";
 import { Socket } from "socket.io";
 import { CollectionList } from "../dbConnect";
 import logger from "../logger";
@@ -10,9 +10,6 @@ export async function registerDMSocket(
   socket: Socket<ClientEvents, ServerEvents>,
   gameInstanceId: string,
   collections: CollectionList,
-  tasks: {
-    broadcastUpdateToPlayers: () => void;
-  },
   getRelatedPlayerSockets: () => Map<
     Socket<ClientEvents, ServerEvents>,
     { characterId: string; characterName: string }
@@ -48,7 +45,7 @@ export async function registerDMSocket(
       .find({ gameInstanceId })
       .toArray()
       .then((messages) => {
-        socket.emit("data: allMessage", messages);
+        socket.emit("data: message", messages);
       });
 
     collections.canvasMap
@@ -60,35 +57,6 @@ export async function registerDMSocket(
   }
 
   function attachEventToSocket(socket: Socket<ClientEvents, ServerEvents>, gameInstanceId: string) {
-    socket.on("operator: createCharacterInfo", async (data) => {
-      data.gameInstanceId = gameInstanceId;
-      data._id = new ObjectId().toString();
-      await collections.character.insertOne(data);
-      const allCharactersInfo = await collections.character.find({ gameInstanceId }).toArray();
-      socket.emit("data: allCharactersInfo", allCharactersInfo);
-    });
-    socket.on("operator: updateCharacterInfo", async (characterId, characterInfo) => {
-      delete characterInfo._id;
-      await collections.character.updateOne({ _id: characterId }, { $set: characterInfo });
-
-      const allCharactersInfo = await collections.character.find({ gameInstanceId }).toArray();
-      tasks.broadcastUpdateToPlayers();
-      socket.emit("data: allCharactersInfo", allCharactersInfo);
-    });
-
-    socket.on("operator: createSceneInfo", async (data: SceneInfo) => {
-      data.gameInstanceId = gameInstanceId;
-      data._id = new ObjectId().toString();
-      await collections.scene.insertOne(data);
-      sendAllScenesInfo(gameInstanceId, socket);
-    });
-
-    socket.on("operator: updateSceneInfo", async (id, data) => {
-      delete data._id;
-      await collections.scene.updateOne({ _id: id }, { $set: data });
-      sendAllScenesInfo(gameInstanceId, socket);
-    });
-
     socket.on("operator: deleteCharacterInfo", async (characterId) => {
       await collections.character.deleteOne({ _id: characterId });
 
@@ -133,7 +101,7 @@ export async function registerDMSocket(
       .find({ gameInstanceId })
       .project({ picture: 0, children: 0 })
       .toArray()
-      .then((docs: SceneInfo[]) => {
+      .then((docs: SceneDoc[]) => {
         socket.emit("data: scene", docs);
       });
   }

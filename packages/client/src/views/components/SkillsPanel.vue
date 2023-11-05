@@ -8,12 +8,12 @@
 </template>
 
 <script lang="ts" setup>
-import { type CharacterInfo, type ProficiencyObject, ABILITY_SKILL_ZN } from "@trpg/shared";
+import { type CharacterDoc, type ProficiencyObject, ABILITY_SKILL_ZN } from "@trpg/shared";
 import { type PropType, computed, onMounted, ref, watch } from "vue";
 
 const props = defineProps({
   characterInfo: {
-    type: Object as PropType<CharacterInfo>,
+    type: Object as PropType<CharacterDoc>,
     required: true,
   },
 });

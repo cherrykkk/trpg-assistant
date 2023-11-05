@@ -30,6 +30,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "entityManager",
         component: () => import("@/views/DM/EntityManager.vue"),
       },
+      {
+        path: "featureManager",
+        name: "featureManager",
+        component: () => import("@/views/DM/FeatureManager.vue"),
+      },
     ],
   },
   {

@@ -1,17 +1,28 @@
 <template>
   <div v-if="textarea" class="textarea-cell edit-cell">
     <div class="title-panel">{{ title }} <slot></slot></div>
-    <textarea ref="textareaRef" :value="modelValue" @input="updateData"></textarea>
+    <textarea
+      ref="textareaRef"
+      :value="modelValue"
+      @input="updateData"
+      @blur="handleBlur"
+    ></textarea>
   </div>
   <div class="input-cell edit-cell" v-else>
     <div class="title-panel">{{ title }} <slot></slot></div>
-    <input v-if="isNumber" type="number" :value="modelValue" @change="updateData" />
-    <input v-else :value="modelValue" @change="updateData" />
+    <input
+      v-if="isNumber"
+      type="number"
+      :value="modelValue"
+      @change="updateData"
+      @blur="handleBlur"
+    />
+    <input v-else :value="modelValue" @change="updateData" @blur="handleBlur" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref, watch } from "vue";
+import { inject, nextTick, ref, watch } from "vue";
 
 const props = defineProps({
   title: String,
@@ -44,6 +55,13 @@ if (props.textarea) {
       }
     );
   });
+}
+
+const onBlurInjection = inject("edit-cell-on-blur", () => {});
+function handleBlur() {
+  if (onBlurInjection) {
+    onBlurInjection();
+  }
 }
 </script>
 

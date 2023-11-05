@@ -2,13 +2,13 @@ import * as mongoDB from "mongodb";
 import * as dotenv from "dotenv";
 import type {
   CanvasMap,
-  CharacterInfo,
+  CharacterDoc,
   EntityInfo,
-  FeatureInfo,
+  FeatureDoc,
   GameInstance,
   Message,
   ResourceBlobEntity,
-  SceneInfo,
+  SceneDoc,
 } from "@trpg/shared";
 import logger from "./logger";
 
@@ -29,13 +29,13 @@ export async function useMongoDB() {
 
   const collections = {
     game: db.collection<GameInstance>("game"),
-    character: db.collection<CharacterInfo>("character"),
-    scene: db.collection<SceneInfo>("scene"),
+    character: db.collection<CharacterDoc>("character"),
+    scene: db.collection<SceneDoc>("scene"),
     message: db.collection<Message>("message"),
     canvasMap: db.collection<CanvasMap>("canvasMap"),
     blobs: db.collection<ResourceBlobEntity>("blobs"),
     entity: db.collection<EntityInfo>("entity"),
-    feature: db.collection<FeatureInfo>("feature"),
+    feature: db.collection<FeatureDoc>("feature"),
   };
 
   logger.info(`Successfully connect to database: ${db.databaseName} `);
