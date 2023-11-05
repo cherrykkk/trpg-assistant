@@ -29,7 +29,7 @@ import { type PropType, computed, nextTick, ref } from "vue";
 import type { CharacterDoc } from "@trpg/shared";
 import SpellItem from "@/views/components/SpellItem.vue";
 import TapToEditDescription from "./TapToEditDescription.vue";
-import { turnToSpellsInfo } from "@/utils";
+import { turnToSpellsInfo } from "@/stores/utils";
 import SpellSelect from "@/views/components/SpellSelect.vue";
 
 const props = defineProps({

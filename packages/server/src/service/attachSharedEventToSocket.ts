@@ -19,7 +19,7 @@ export function attachSharedEventToSocket(
   changerName: string
 ) {
   registerDbChanger(
-    ["character", "entity", "feature", "game", "scene"],
+    ["character", "entity", "feature", "game", "scene", "spell"],
     db,
     socket,
     io.to(gameInstanceId),
@@ -115,7 +115,6 @@ export function registerDbChanger(
           .collection<BasicCollectionStructure>(key)
           .updateOne({ _id: doc._id }, { $set: doc });
       }
-
       const docs = await db.collection(key).find().toArray();
       broadcastOperator.emit(`data: ${key}`, docs as any[]);
     });

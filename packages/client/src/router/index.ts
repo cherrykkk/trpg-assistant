@@ -35,6 +35,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "featureManager",
         component: () => import("@/views/DM/FeatureManager.vue"),
       },
+      {
+        path: "spellManager",
+        name: "spellManager",
+        component: () => import("@/views/DM/SpellManager.vue"),
+      },
     ],
   },
   {

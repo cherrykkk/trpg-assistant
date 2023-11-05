@@ -15,13 +15,6 @@ export interface SceneItem {
   backgroundColor: string;
 }
 
-export interface OtherTypeInfo {
-  _id: string;
-  gameInstanceId?: string;
-  name: string;
-  data: unknown;
-}
-
 export const ABILITY_SKILL_ZN = {
   力量: ["运动"],
   敏捷: ["体操", "巧手", "隐匿"],

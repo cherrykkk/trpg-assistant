@@ -25,7 +25,7 @@ export function createSocketAndInitAbility(role: "DM" | "player", password: stri
   });
 
   useSocketStore().collections = getReactiveCollections(
-    ["canvas", "character", "entity", "feature", "message", "scene"],
+    ["canvas", "character", "entity", "feature", "message", "scene", "spell"],
     socket
   );
 

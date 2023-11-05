@@ -8,6 +8,7 @@ import type {
   ResourceBlob,
   ResourceType,
   SceneDoc,
+  SpellDoc,
 } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 
@@ -89,5 +90,10 @@ export function updateEntityInfo(data: EntityInfo) {
 
 export function updateFeatureInfo(data: FeatureDoc) {
   useSocketStore().socket.emit("update: feature", data);
+  ElMessage("已保存");
+}
+
+export function updateSpellDoc(data: SpellDoc) {
+  useSocketStore().socket.emit("update: spell", data);
   ElMessage("已保存");
 }

@@ -4,7 +4,7 @@
       <div class="level-icon">
         {{ spellInfo.level }}
       </div>
-      {{ spellInfo.spellName }}
+      {{ spellInfo.name }}
     </div>
     <div class="spell-info-description" v-if="showDescription">
       {{ spellInfo.description }}
@@ -26,13 +26,13 @@
 </template>
 
 <script lang="ts" setup>
-import type { SpellInfo } from "@trpg/shared";
+import type { SpellDoc } from "@trpg/shared";
 import { computed, type PropType } from "vue";
 import { SPELL_LEVEL_COLORS } from "@/constants/spellColors";
 
 const props = defineProps({
   spellInfo: {
-    type: Object as PropType<SpellInfo>,
+    type: Object as PropType<SpellDoc>,
     required: true,
   },
   showDescription: {

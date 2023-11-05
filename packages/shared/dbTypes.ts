@@ -8,12 +8,14 @@ export interface CollectionStructure {
   game: GameInstance;
   message: Message;
   feature: FeatureDoc;
+  spell: SpellDoc;
 }
 export type CollectionKey = keyof CollectionStructure;
 
 export type CharacterDoc = CharacterInfo & BasicCollectionStructure;
 export type FeatureDoc = FeatureInfo & BasicCollectionStructure;
 export type SceneDoc = SceneInfo & BasicCollectionStructure;
+export type SpellDoc = SpellInfo & BasicCollectionStructure;
 
 export interface CharacterInfo {
   gameInstanceId: string;
@@ -72,6 +74,21 @@ interface SceneInfo {
   richTextDescription: any;
   relatedMapId: string;
   storage: StoredStackData[];
+}
+
+interface SpellInfo {
+  level: number;
+  name: string;
+  school: string;
+  castingTime: string;
+  range: string;
+  components: string;
+  duration: string;
+  concentration: boolean;
+  ritual: boolean;
+  material: string;
+  description: string;
+  higherLevel: string;
 }
 
 export interface SpellOnCharacter {

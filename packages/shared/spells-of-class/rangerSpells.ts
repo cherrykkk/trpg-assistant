@@ -158,8 +158,8 @@ export const RANGER_SPELLS = [
   {
     spellName: "Commune with Nature 问道自然",
     spellId: "632f2e41fa686d944219aa5e",
-    {
   },
+  {
     spellName: "Conjure Volley 召唤箭雨",
     spellId: "632f2e41fa686d944219aa6b",
   },

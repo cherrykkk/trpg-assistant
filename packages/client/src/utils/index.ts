@@ -1,8 +1,5 @@
 import {
   type LayerInfo,
-  type SpellInfo,
-  type SpellOnCharacter,
-  SPELL_DATABASE,
   type SceneDoc,
   type ClientScene,
   type EquippedFeature,
@@ -11,18 +8,6 @@ import {
 import { ElMessage } from "element-plus";
 import { CHARACTER_ADVANCEMENT } from "@/constants/characterAdvancement";
 import { DNDClassData } from "@/constants/DNDclassData";
-
-export function turnToSpellsInfo(data: SpellOnCharacter[]) {
-  const result: SpellInfo[] = [];
-  data.forEach((e) => {
-    const spellItem = SPELL_DATABASE.find((info) => info._id === e.spellId);
-    if (spellItem) {
-      result.push(spellItem);
-    }
-  });
-  result.sort((a, b) => a.level - b.level);
-  return result;
-}
 
 export function useDoubleClick(func: Function, failedMessage?: string) {
   let lockHandler: number | null = null;

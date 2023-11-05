@@ -92,9 +92,9 @@
 <script lang="ts" setup>
 import { type PropType, computed, ref, toRef } from "vue";
 import InfoCell from "./components/InfoCell.vue";
-import type { CharacterDoc, SpellInfo } from "@trpg/shared";
+import type { CharacterDoc } from "@trpg/shared";
 import SpellItem from "../components/SpellItem.vue";
-import { turnToSpellsInfo } from "@/utils/index";
+import { turnToSpellsInfo } from "@/stores/utils";
 import SpellSlotsPanel from "../components/SpellSlotsPanel.vue";
 import { useLevelAndConfig } from "@/stores/hooks";
 
