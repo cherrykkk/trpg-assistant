@@ -3,7 +3,7 @@
     <div class="equipped-features" style="overflow: auto">
       <div v-for="e in leftFeatures" :key="e._id">
         <span>{{ e.name }}</span>
-        <p>{{ e.description }}</p>
+        <TextRender :text="e.description" />
         <div v-if="spellIdToShowDescription.includes(e._id)" class="spell-on-character-info">
           <div class="delete-button" @click="() => handleRemoveItem(e._id)">-</div>
         </div>
@@ -12,10 +12,10 @@
         {{ showCollection ? `关闭列表` : `打开列表` }}
       </el-button>
     </div>
-    <div v-if="showCollection" style="overflow: auto">
+    <div v-if="showCollection" style="overflow: auto; width: 100%">
       <div v-for="e in collection">
         <span>{{ e.name }}</span>
-        <p>{{ e.description }}</p>
+        <TextRender :text="e.description" />
         <div class="add-button" @click="handleAppendItem(e._id)">+</div>
       </div>
     </div>
@@ -24,6 +24,7 @@
 <script lang="ts" setup>
 import { type PropType, computed, ref } from "vue";
 import type { EquippedFeature, FeatureDoc } from "@trpg/shared";
+import TextRender from "./TextRender.vue";
 
 const props = defineProps({
   equipped: {
@@ -72,7 +73,8 @@ function handleAppendItem(id: string) {
   display: flex;
   border: 2px solid #ccc;
   position: relative;
-  height: 600px;
+  min-height: 200px;
+  max-height: 600px;
   padding: 10px;
 }
 

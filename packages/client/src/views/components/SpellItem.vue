@@ -7,7 +7,7 @@
       {{ spellInfo.name }}
     </div>
     <div class="spell-info-description" v-if="showDescription">
-      {{ spellInfo.description }}
+      <TextRender :text="spellInfo.description" />
       <div style="color: #333">
         <b>
           <span v-if="spellInfo.concentration">专注 </span>
@@ -29,6 +29,7 @@
 import type { SpellDoc } from "@trpg/shared";
 import { computed, type PropType } from "vue";
 import { SPELL_LEVEL_COLORS } from "@/constants/spellColors";
+import TextRender from "./TextRender.vue";
 
 const props = defineProps({
   spellInfo: {

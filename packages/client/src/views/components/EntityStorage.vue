@@ -8,8 +8,9 @@
           @click.right.prevent="handleRightClick(i)"
           @click="handleClick(stack)"
         >
-          {{ stack.name }}{{ (stack.num ?? 1) === 1 ? "" : `*${stack.num}` }}
+          {{ stack.name === "临时物品" ? stack.note : stack.name }}
         </button>
+        <div class="num-badge">{{ (stack.num ?? 1) === 1 ? "" : `${stack.num}` }}</div>
       </div>
       <div class="add-item-button">
         <ElSelect
@@ -32,7 +33,7 @@
         }}</span>
         <button @click="remove" style="float: right">删除</button>
       </h2>
-      <p>{{ stackInDialog.description }}</p>
+      <TextRender :text="stackInDialog.description" />
       <EditCellVue title="备注" v-model="stackInDialog.note" />
       <div>
         <EditCellVue title="数量" v-model="stackInDialog.num" />
@@ -47,6 +48,7 @@ import { type PropType, ref, watch } from "vue";
 import { useEntityManager } from "@/utils/EntityManager";
 import { ElOption, ElSelect } from "element-plus";
 import EditCellVue from "./EditCell.vue";
+import TextRender from "./TextRender.vue";
 
 const props = defineProps({
   initStoredStackData: {
@@ -124,7 +126,6 @@ function remove() {
   .entity-menu {
     display: flex;
     flex-wrap: wrap;
-    min-height: 60px;
     padding: 5px 10px;
   }
   .entity-editor {
@@ -133,7 +134,7 @@ function remove() {
     overflow: auto;
   }
   .edit-chosen {
-    border: 3px solid black;
+    box-shadow: 0 0 2px red;
   }
   .drag-chosen {
     border: 1px solid red;
@@ -141,12 +142,24 @@ function remove() {
 
   .cell-container {
     cursor: pointer;
+    position: relative;
     .clickable-cell {
       width: 40px;
       height: 40px;
       text-align: center;
       background-color: #f5f5f5;
       margin: 2px;
+      overflow: hidden;
+    }
+    .num-badge {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      padding: 0 2px;
+      background: #000;
+      color: #fff;
+      opacity: 0.2;
+      font-size: 11px;
     }
   }
   .add-item-button {

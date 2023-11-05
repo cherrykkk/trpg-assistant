@@ -3,7 +3,7 @@
     <div class="ability-board">
       <div>熟练加值: {{ getLevelAndBonus(character.experience).proficiencyBonus }}</div>
       <div v-for="abilityProperty in AbilityPropertyList" class="ability-tag">
-        {{ AbilityPropertyToName[abilityProperty] }}({{
+        {{ ABILITY_PROPERTY_TRANSLATION[abilityProperty] }}({{
           Math.floor((character[abilityProperty] - 10) / 2)
         }})
         <div v-for="skill in AbilityType[abilityProperty]" class="skill-tag">
@@ -24,7 +24,7 @@
 import { type PropType, ref } from "vue";
 import {
   AbilityType,
-  AbilityPropertyToName,
+  ABILITY_PROPERTY_TRANSLATION,
   AbilityPropertyList,
   type CharacterDoc,
   type ProficiencyObject,

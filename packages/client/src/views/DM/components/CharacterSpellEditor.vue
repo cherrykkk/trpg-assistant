@@ -79,7 +79,8 @@ function getSpellOnCharacterInfo(id: string) {
   display: flex;
   border: 2px solid #ccc;
   position: relative;
-  height: 600px;
+  min-height: 200px;
+  max-height: 600px;
   padding: 10px;
 }
 

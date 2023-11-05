@@ -4,6 +4,7 @@ import {
   type ClientScene,
   type EquippedFeature,
   type FeatureDoc,
+  type CharacterDoc,
 } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 import { CHARACTER_ADVANCEMENT } from "@/constants/characterAdvancement";

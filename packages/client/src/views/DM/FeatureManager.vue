@@ -7,7 +7,7 @@
     <template #editor="{ item }">
       <div v-if="item && isFeatureInfo(item)" style="font-size: 20px">
         <EditCell v-model="item.name" title="名称" />
-        <EditCell v-model="item.description" title="描述" :textarea="true" style="width: 100%" />
+        <EditCell v-model="item.description" title="描述" :textarea="true" />
       </div>
       <div v-else></div>
     </template>

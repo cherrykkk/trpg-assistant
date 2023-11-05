@@ -140,6 +140,7 @@ const emit = defineEmits<{
 
 .list-board {
   overflow-y: auto;
+  overflow-x: hidden;
   .list-item {
     border-bottom: 1px solid #ddd;
     line-height: 30px;

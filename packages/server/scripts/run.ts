@@ -1,6 +1,6 @@
 import { Collection, ObjectId } from "mongodb";
 import { CollectionList, useMongoDB } from "../src/dbConnect";
-import { ENTITY_DATABASE, createEntityTemplate, SpellDoc } from "@trpg/shared";
+import { createEntityTemplate, SpellDoc } from "@trpg/shared";
 
 useMongoDB().then(({ db }) => {
   // do script，and delete it before submit

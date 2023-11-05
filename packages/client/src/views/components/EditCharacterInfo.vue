@@ -35,7 +35,7 @@
         </TipPopover>
       </EditCell>
     </div>
-    <!-- <SkillsPanel :character-info="editedData" /> -->
+    <SkillsPanel :character-info="editedData" />
     <div class="ability-and-proficiencies-area">
       <div class="ability-info-panel">
         <EditCell v-model="editedData.strength">
@@ -58,7 +58,7 @@
         <ProficienciesEditor :character-info="editedData" />
       </div>
     </div>
-
+    <EditCell v-model="editedData.proficiencyNames" title="熟练项" />
     <EditCell :textarea="true" v-model="editedData.appearance" title="角色外貌描述" />
     <EditCell :textarea="true" v-model="editedData.backgroundStory" title="角色背景故事" />
     <ElTreeSelect

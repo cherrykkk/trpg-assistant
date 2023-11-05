@@ -36,6 +36,7 @@ export interface CharacterInfo {
   spellcastingAbility?: string;
   backgroundStory?: string;
   proficiencies: ProficiencyObject[];
+  proficiencyNames?: string;
   proficiencyBonus: number;
   experience: number;
   strength: number;

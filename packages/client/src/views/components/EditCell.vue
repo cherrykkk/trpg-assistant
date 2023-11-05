@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, nextTick, ref, watch } from "vue";
+import { computed, inject, nextTick, ref, watch } from "vue";
 
 const props = defineProps({
   title: String,
@@ -34,6 +34,7 @@ const isNumber = false;
 const emits = defineEmits(["update:modelValue"]);
 
 function updateData(e: Event) {
+  console.log("updateData");
   let value: string | number = (e.target as HTMLInputElement | HTMLTextAreaElement).value;
   if (isNumber) {
     value = Number(value);
@@ -63,6 +64,10 @@ function handleBlur() {
     onBlurInjection();
   }
 }
+
+const width = computed(() => {
+  return String(props.modelValue).length + 3 + "em";
+});
 </script>
 
 <style lang="less" scoped>
@@ -79,6 +84,11 @@ function handleBlur() {
     border-radius: 2px;
   }
 }
+.input-cell {
+  input {
+    width: v-bind(width);
+  }
+}
 
 input,
 textarea {
@@ -93,7 +103,7 @@ input {
 }
 textarea {
   min-height: 40px;
-  width: 100%;
+  width: calc(100% - 4px);
   height: v-bind('textareaHeight + "px"');
   overflow: hidden;
 }
