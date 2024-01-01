@@ -16,6 +16,8 @@ export async function createNewCharacterInfoTemplate(): Promise<CharacterDoc> {
     subRace: "", //亚种
     currentHP: 0,
     maxHP: 0,
+    hitPointRule: "",
+    fakeHP: 0,
     backgroundStory: "",
     proficiencyBonus: 2,
     proficiencyNames: "",

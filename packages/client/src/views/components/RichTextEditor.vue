@@ -16,6 +16,7 @@ const props = defineProps({
 let editorUtils: ReturnType<typeof createRichTextEditor>;
 defineExpose({
   getData: async () => {
+    // @ts-ignore
     return editorUtils.getData();
   },
 });
@@ -24,6 +25,7 @@ const richTextRef = ref();
 onMounted(() => {
   if (!richTextRef.value) throw "unexpected no richTextRef";
 
+  // @ts-ignore
   editorUtils = createRichTextEditor(richTextRef.value, toRaw(props.initialValue) as any, {
     downloadImage,
     uploadImage,

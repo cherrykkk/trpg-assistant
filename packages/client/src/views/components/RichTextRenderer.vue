@@ -26,6 +26,7 @@ const richTextRendererRef = ref();
 onMounted(() => {
   if (!richTextRendererRef.value) throw "unexpected no richTextRendererRef";
 
+  // @ts-ignore
   createRichTextRenderer(richTextRendererRef.value, toRaw(props.initialValue), {
     downloadImage,
     uploadImage: () => {
