@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="layer-list">
-      <div v-for="(e, i) in layerList" @click="handleSelectLayer(e)" class="layer-item">
+      <div v-for="(e, i) in mapInfo.layers" @click="handleSelectLayer(e)" class="layer-item">
         <div v-if="!e.isSelected">
           {{ e.layerName }}
         </div>
@@ -23,33 +23,20 @@
 
 <script lang="ts" setup>
 import type { LayerInfo } from "@trpg/shared";
-import { ref, type PropType, computed } from "vue";
-
-const props = defineProps({
-  layerList: {
-    type: Array as PropType<LayerInfo[]>,
-    default: [],
-  },
-});
-
-const emit = defineEmits<{ (event: "change", data: LayerInfo[]): void }>();
+import { ref, type PropType, computed, toRefs } from "vue";
+import { mapInstance as mapInfo } from "./store";
 
 function handleSelectLayer(l: LayerInfo) {
-  props.layerList.forEach((e) => (e.isSelected = false));
-
+  mapInfo.layers.forEach((e) => (e.isSelected = false));
   l.isSelected = true;
-  emit("change", [...props.layerList]);
 }
 
 function handleDeleteLayer(l: LayerInfo) {
-  emit(
-    "change",
-    props.layerList.filter((e) => e !== l)
-  );
+  mapInfo.layers.filter((e) => e !== l);
 }
 
 function handleAddLayer() {
-  props.layerList.forEach((e) => (e.isSelected = false));
+  mapInfo.layers.forEach((e) => (e.isSelected = false));
   const newLayer: LayerInfo = {
     playerVisible: true,
     brushActions: [],
@@ -58,11 +45,11 @@ function handleAddLayer() {
     key: Date.now(),
   };
 
-  emit("change", [...props.layerList, newLayer]);
+  mapInfo.layers.push(newLayer);
 }
 
 const currentLayerIndex = computed(() => {
-  return props.layerList.findIndex((e) => e.isSelected);
+  return mapInfo.layers.findIndex((e) => e.isSelected);
 });
 
 const layerNameEditingIndex = ref(-1);
@@ -72,9 +59,7 @@ function handleClickLayerName(layerIndex: number) {
   }
 }
 function handleLayerNameBlur(e: FocusEvent) {
-  props.layerList[layerNameEditingIndex.value].layerName = (e.target as HTMLDivElement).innerText;
-
-  emit("change", [...props.layerList]);
+  mapInfo.layers[layerNameEditingIndex.value].layerName = (e.target as HTMLDivElement).innerText;
 }
 </script>
 <style lang="less" scoped>

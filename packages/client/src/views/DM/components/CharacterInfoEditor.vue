@@ -24,13 +24,15 @@
 import { type PropType, onBeforeUnmount, reactive, ref } from "vue";
 import { useSocketStore } from "@/stores/useSocketStore";
 import { updateCharacterInfo, deleteCharacterInfo } from "@/api/socket-tasks";
-import { createNewCharacterInfoTemplate, type CharacterDoc } from "@trpg/shared";
+import { type CharacterDoc } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 import EditCharacterInfo from "@/views/components/EditCharacterInfo.vue";
+import { createNewCharacterInfoTemplate } from "@/stores/template";
 
 const props = defineProps({
   character: {
-    type: Object as PropType<CharacterDoc | null>,
+    type: Object as PropType<CharacterDoc>,
+    required: true,
   },
 });
 const emit = defineEmits(["closeDialog"]);

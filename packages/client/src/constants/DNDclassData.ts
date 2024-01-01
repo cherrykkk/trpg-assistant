@@ -2,6 +2,7 @@ import { SORCERER_CLASS_ADVANCEMENT_CONFIG } from "./classSorcerer";
 import { PALADIN_CLASS_ADVANCEMENT_CONFIG } from "./classPaladin";
 import { BARD_CLASS_ADVANCEMENT_CONFIG } from "./classBard";
 import { WIZARD_CLASS_ADVANCEMENT_CONFIG } from "./classWizard";
+import { WARLOCK_CLASS_ADVANCEMENT_CONFIG } from "./classWarlock";
 export const DNDClassData = [
   {
     class: "吟游诗人",
@@ -42,5 +43,6 @@ export const DNDClassData = [
   {
     class: "邪术师",
     施法关键属性: "魅力",
+    advancementConfig: WARLOCK_CLASS_ADVANCEMENT_CONFIG,
   },
 ];

@@ -46,13 +46,22 @@ export function useSpellFilter(initKey: string) {
     filterClass.value = (e.target as HTMLSelectElement).value;
   }
 
+  const filterByName = ref("");
+  function onNameInputChange(e: Event) {
+    const val = (e.target as HTMLInputElement).value;
+    filterByName.value = val;
+  }
+
   const filteredSpellDatabase = computed(() => {
-    return getSpellByClass(filterClass.value).sort((a, b) => a.level - b.level);
+    return getSpellByClass(filterClass.value)
+      .sort((a, b) => a.level - b.level)
+      .filter((e) => e.name.toLowerCase().includes(filterByName.value.toLowerCase()));
   });
   return {
     filteredSpellDatabase,
     handleSelectClass,
     classOption,
     filterClass,
+    onNameInputChange,
   };
 }

@@ -1,9 +1,8 @@
 import { ref, watch } from "vue";
-import type { BrushAction, CanvasMap, LayerInfo, Point } from "@trpg/shared";
+import type { BrushAction, MapInfo, LayerInfo, Point } from "./types";
 
 export function useSandboxPainter(
-  getMapInfo: () => CanvasMap,
-  emitChange: (data: CanvasMap) => void,
+  getMapInfo: () => MapInfo,
   cameraUtils: {
     moveCanvas: (deltaX: number, deltaY: number) => void;
     getScale: () => number;
@@ -74,7 +73,6 @@ export function useSandboxPainter(
     } else {
       return;
     }
-    emitChange({ ...getMapInfo() });
   }
 
   let lastSelectedKey = 0;
@@ -170,11 +168,9 @@ function paintCanvas(
   });
 }
 
-export function createCanvasMapTemplate(): CanvasMap {
+export function createMapInfoTemplate(): MapInfo {
   return {
-    _id: "",
     mapName: "新建地图",
-    gameInstanceId: "",
     layers: [],
     gridSize: 5,
     width: 400,

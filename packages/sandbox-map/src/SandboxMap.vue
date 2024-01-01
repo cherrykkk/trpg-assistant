@@ -31,36 +31,24 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, computed, type HTMLAttributes, type PropType, watch } from "vue";
-import type { CanvasMap } from "@trpg/shared";
-import { createCanvasMapTemplate, useSandboxPainter } from "./useSandboxPainter";
+import type { MapInfo } from "./types";
+import { useSandboxPainter } from "./useSandboxPainter";
 import { useSandboxCamera } from "./useSandboxCamera";
 import { ElMessage } from "element-plus";
+import { mapInstance as mapInfo } from "./store";
 
 const props = defineProps({
-  mapInfo: {
-    type: Object as PropType<CanvasMap>,
-    default: createCanvasMapTemplate(),
-  },
   editable: Boolean,
   currentColor: String,
   followCamera: Boolean,
 });
 
-
-const emit = defineEmits<{ (event: "change", data: CanvasMap): void }>();
-
-function emitChangeMapInfo(data: CanvasMap) {
-  emit("change", data);
-}
-
-if (!props.mapInfo._id) {
-  emitChangeMapInfo(props.mapInfo);
-}
+const emit = defineEmits<{ (event: "change", data: MapInfo): void }>();
 
 const { cameraTransformStyle, scaleCanvas, moveCanvas, cameraState } = useSandboxCamera();
 
 const mapCanvasStyle = computed<HTMLAttributes["style"]>(() => {
-  const gridSize = props.mapInfo.gridSize * 2;
+  const gridSize = mapInfo.gridSize * 2;
   return {
     ...cameraTransformStyle.value,
     "background-size": `${gridSize}px ${gridSize}px`,
@@ -69,16 +57,14 @@ const mapCanvasStyle = computed<HTMLAttributes["style"]>(() => {
 
 const { inDMView, moveBrush, endBrush, startBrushPaint, autoDetectRefresh, requestRefresh, undo } =
   useSandboxPainter(
-    () => props.mapInfo,
-    (data: CanvasMap) => emitChangeMapInfo(data),
+    () => mapInfo,
     {
-      moveCanvas: (deltaX, deltaY) =>
-        moveCanvas(deltaX, deltaY, props.mapInfo.width, props.mapInfo.height),
+      moveCanvas: (deltaX, deltaY) => moveCanvas(deltaX, deltaY, mapInfo.width, mapInfo.height),
       getScale: () => cameraState.scale,
     },
     props.editable
       ? () => {
-          return props.mapInfo.layers.find((e) => e.isSelected);
+          return mapInfo.layers.find((e) => e.isSelected);
         }
       : undefined
   );
@@ -87,13 +73,16 @@ function handleWheelEvent(e: WheelEvent) {
   if (e.ctrlKey) {
     scaleCanvas(e.deltaY);
   } else {
-    moveCanvas(e.deltaX, e.deltaY, props.mapInfo.width, props.mapInfo.height);
+    moveCanvas(e.deltaX, e.deltaY, mapInfo.width, mapInfo.height);
   }
 }
 
-watch(()=>[props.mapInfo.width, props.mapInfo.height],()=>{
-  requestRefresh()
-})
+watch(
+  () => [mapInfo.width, mapInfo.height],
+  () => {
+    requestRefresh();
+  }
+);
 
 type ActionType = "brush" | "moveLayer" | "moveCanvas" | "erase" | "auto";
 const brushTypeOfMouse = ref<ActionType>("brush");
@@ -110,7 +99,7 @@ const brushTypeButtons: { label: string; value: ActionType }[] = [
 function handlePointerdown(e: PointerEvent) {
   if (!mapCanvasRef.value) throw Error();
 
-  const currentLayer = props.mapInfo.layers.find((e) => e.isSelected);
+  const currentLayer = mapInfo.layers.find((e) => e.isSelected);
   if (!currentLayer) {
     ElMessage("未选择图层！");
     return;

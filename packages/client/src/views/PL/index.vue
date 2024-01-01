@@ -3,7 +3,7 @@
     v-if="characterInfo && selectedPanel === 'character'"
     :character-info="characterInfo"
   />
-  <MapPreviewer v-if="selectedPanel === 'map'" />
+  <!-- <MapPreviewer v-if="selectedPanel === 'map'" /> -->
   <MessageRoom v-if="selectedPanel === 'message'" />
   <SpellDatabase v-if="selectedPanel === 'spellDatabase'" />
   <ElDropdown class="switch-buttons-dropdown" @command="handleClickDropdownItem">
@@ -26,15 +26,27 @@ import { useRoute } from "vue-router";
 import CharacterInfo from "./CharacterInfo.vue";
 import { storeToRefs } from "pinia";
 import { useSocketStore } from "../../stores/useSocketStore";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { ElDropdown } from "element-plus";
 import SpellDatabase from "./SpellDatabase.vue";
-import MapPreviewer from "./components/MapPreviewer.vue";
+import { saveAccount } from "@/stores/accounts";
+// import MapPreviewer from "./components/MapPreviewer.vue";
 
 const route = useRoute();
 const characterId = route.params.id as string;
 const { playerCharacterInfo: characterInfo } = storeToRefs(useSocketStore());
 const socket = createSocketAndInitAbility("player", characterId);
+
+watch(characterInfo, (newVal, oldVal) => {
+  if (!oldVal && newVal) {
+    saveAccount({
+      id: characterId,
+      role: "player",
+      name: newVal.name,
+      lastTime: Date.now(),
+    });
+  }
+});
 
 type PanelType = "character" | "map" | "message" | "spellDatabase";
 const selectedPanel = ref<PanelType>("character");

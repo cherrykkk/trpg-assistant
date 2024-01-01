@@ -17,9 +17,9 @@
         </router-view>
       </div>
     </div>
-    <!-- <ResizablePanel resize-direction="left" :default-width="200" :foldable="true">
+    <ResizablePanel resize-direction="left" :default-width="200" :foldable="true">
       <MessageRoom />
-    </ResizablePanel> -->
+    </ResizablePanel>
   </div>
 </template>
 <script lang="ts" setup>
@@ -28,7 +28,8 @@ import { useRoute, useRouter } from "vue-router";
 import MessageRoom from "../components/MessageRoom.vue";
 import AccountIcon from "../components/AccountIcon.vue";
 import { ref } from "vue";
-import ResizablePanel from "../components/ResizablePanel.vue";
+import { ResizablePanel } from "@trpg/components/main-exports";
+import { saveAccount } from "@/stores/accounts";
 const router = useRouter();
 const route = useRoute();
 
@@ -44,6 +45,8 @@ function getGameInstanceId() {
 const gameInstanceId = getGameInstanceId();
 if (!gameInstanceId) {
   router.push({ name: "notFound" });
+} else {
+  saveAccount({ id: gameInstanceId, role: "master", name: "", lastTime: Date.now() });
 }
 
 const socket = createSocketAndInitAbility("DM", gameInstanceId);

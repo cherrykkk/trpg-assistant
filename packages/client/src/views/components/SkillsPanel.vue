@@ -60,7 +60,9 @@ function getRidOfNullProficiency(arrayData: ProficiencyObject[]) {
 }
 
 onMounted(() => {
-  props.characterInfo.proficiencies = getRidOfNullProficiency(props.characterInfo.proficiencies);
+  props.characterInfo.proficiencies = getRidOfNullProficiency(
+    props.characterInfo.proficiencies ?? []
+  );
   makeNameUnique(props.characterInfo.proficiencies);
 });
 

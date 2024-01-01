@@ -8,7 +8,7 @@
 </template>
 <script lang="ts" setup>
 import { useSocketStore } from "@/stores/useSocketStore";
-import SpellSelect from "../components/SpellSelect.vue";
+import SpellSelect from "../components/spell/SpellSelect.vue";
 </script>
 
 <style lang="less" scoped>

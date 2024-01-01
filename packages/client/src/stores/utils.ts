@@ -1,10 +1,10 @@
-import { type SpellDoc, type SpellOnCharacter, SPELL_OF_CLASS } from "@trpg/shared";
+import { type SpellDoc, SPELL_OF_CLASS, type CharacterDoc } from "@trpg/shared";
 import { useSocketStore } from "./useSocketStore";
 
-export function turnToSpellsInfo(data: SpellOnCharacter[]) {
+export function turnToSpellsInfo(ids: string[]) {
   const result: SpellDoc[] = [];
-  data.forEach((e) => {
-    const spellItem = useSocketStore().collections.spell.find((info) => info._id === e.spellId);
+  ids.forEach((e) => {
+    const spellItem = useSocketStore().collections.spell.find((info) => info._id === e);
     if (spellItem) {
       result.push(spellItem);
     }
@@ -33,9 +33,26 @@ export function getSpellByClass(key: string) {
 
   if (key in SPELL_OF_CLASS) {
     const ids = SPELL_OF_CLASS[key as keyof typeof SPELL_OF_CLASS].map((e) => e.spellId);
-    const spells = useSocketStore().collections.spell.filter((e) => ids.includes(e._id));
+    const spells = getSpellsByIds(ids);
     return spells;
   } else {
     return useSocketStore().collections.spell;
   }
+}
+
+export function getCharacterSelectableSpells(character: CharacterDoc) {
+  const features = useSocketStore().collections.feature.filter((e) =>
+    character.equippedFeatures?.find((e2) => e2.featureId === e._id)
+  );
+  const spellIdsFromFeatures = features.reduce<string[]>((e1, e2) => {
+    return [...e1, ...(e2.expendedSpellList ?? [])];
+  }, []);
+
+  const spells = getSpellsByIds(spellIdsFromFeatures);
+  return spells;
+}
+
+export function getSpellsByIds(ids: string[]) {
+  const spells = useSocketStore().collections.spell.filter((e) => ids.includes(e._id));
+  return spells;
 }

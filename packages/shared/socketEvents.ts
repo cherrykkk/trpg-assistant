@@ -28,8 +28,11 @@ export type ClientEvents = {
   // action
   "operator: rollDice": (characterId: string | "DM", value: number | number[]) => void;
   "operator: abilityCheck": (characterId: string, ability: string, skill: string) => void;
+  "request: newObjectId": (cb: (_id: string) => void) => void;
 } & {
   [P in CollectionKey as `update: ${P}`]: (doc: CollectionStructure[P]) => void;
+} & {
+  [P in CollectionKey as `delete: ${P}`]: (_id: string) => void;
 };
 
 export type ServerEvents = {

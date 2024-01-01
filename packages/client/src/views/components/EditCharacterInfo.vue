@@ -8,59 +8,59 @@
     </ElRadioGroup>
     <br />
     <div class="base-info-list">
-      <EditCell v-model="editedData.name" title="姓名" />
-      <EditCell v-model="editedData.titles" title="头衔" />
-      <EditCell v-model="editedData.sex" title="性别" />
-      <EditCell v-model="editedData.age" title="年龄" />
-      <EditCell v-model="editedData.class" title="职业" />
-      <EditCell v-model="editedData.race" title="种族" />
-      <EditCell v-model="editedData.subRace" title="亚种" />
-      <EditCell v-model="editedData.language" title="语言" />
-      <EditCell v-model="editedData.alignment">
+      <StringInput v-model="editedData.name" title="姓名" />
+      <StringInput v-model="editedData.titles" title="头衔" />
+      <StringInput v-model="editedData.sex" title="性别" />
+      <NumberInput v-model="editedData.age" title="年龄" />
+      <StringInput v-model="editedData.class" title="职业" />
+      <StringInput v-model="editedData.race" title="种族" />
+      <StringInput v-model="editedData.subRace" title="亚种" />
+      <StringInput v-model="editedData.language" title="语言" />
+      <StringInput v-model="editedData.alignment">
         <TipPopover>
           <template #reference>？阵营</template>
           <TipAlignment />
         </TipPopover>
-      </EditCell>
-      <EditCell v-model="editedData.experience">经验（等级：{{ levelAndConfig.level }}）</EditCell>
-      <EditCell v-model="editedData.maxHP" title="最大血量" />
-      <EditCell v-model="editedData.currentHP" title="当前血量" />
-      <EditCell v-model="editedData.speed" title="速度" />
-      <EditCell v-model="editedData.armorClass" title="AC" />
-      <EditCell v-model="editedData.spellDifficultyClass" title="法术豁免" />
-      <EditCell v-model="editedData.spellcastingAbility">
+      </StringInput>
+      <NumberInput v-model="editedData.experience"
+        >经验（等级：{{ levelAndConfig.level }}）</NumberInput
+      >
+      <NumberInput v-model="editedData.maxHP" title="最大血量" />
+      <NumberInput v-model="editedData.currentHP" title="当前血量" />
+      <StringInput v-model="editedData.hitPointRule" title="血量规则" />
+      <NumberInput v-model="editedData.speed" title="速度" />
+      <StringInput v-model="editedData.armorClass" title="AC" />
+      <StringInput v-model="editedData.spellDifficultyClass" title="法术豁免" />
+      <StringInput v-model="editedData.spellcastingAbility">
         <TipPopover>
           <template #reference>？施法关键属性</template>
           <TipSpellcastingAbility />
         </TipPopover>
-      </EditCell>
+      </StringInput>
     </div>
     <SkillsPanel :character-info="editedData" />
     <div class="ability-and-proficiencies-area">
       <div class="ability-info-panel">
-        <EditCell v-model="editedData.strength">
+        <NumberInput v-model="editedData.strength">
           <TipPopover>
             <template #reference>？力量</template>
             <StrengthAbilityVue />
           </TipPopover>
-        </EditCell>
-        <EditCell v-model="editedData.dexterity" title="敏捷" />
-        <EditCell v-model="editedData.constitution" title="体质" />
-        <EditCell v-model="editedData.intelligence" title="智力" />
-        <EditCell v-model="editedData.wisdom" title="感知" />
-        <EditCell v-model="editedData.charisma" title="魅力" />
+        </NumberInput>
+        <NumberInput v-model="editedData.dexterity" title="敏捷" />
+        <NumberInput v-model="editedData.constitution" title="体质" />
+        <NumberInput v-model="editedData.intelligence" title="智力" />
+        <NumberInput v-model="editedData.wisdom" title="感知" />
+        <NumberInput v-model="editedData.charisma" title="魅力" />
         <TipPopover>
           <template #reference>tip: 被动检定</template>
           <PassiveChecks />
         </TipPopover>
       </div>
-      <div style="padding: 5px; min-width: 300px">
-        <ProficienciesEditor :character-info="editedData" />
-      </div>
     </div>
-    <EditCell v-model="editedData.proficiencyNames" title="熟练项" />
-    <EditCell :textarea="true" v-model="editedData.appearance" title="角色外貌描述" />
-    <EditCell :textarea="true" v-model="editedData.backgroundStory" title="角色背景故事" />
+    <NumberInput v-model="editedData.proficiencyNames" title="熟练项" />
+    <TextareaInput v-model="editedData.appearance" title="角色外貌描述" />
+    <TextareaInput v-model="editedData.backgroundStory" title="角色背景故事" />
     <ElTreeSelect
       v-model="editedData.locationSceneId"
       placeholder="所属"
@@ -79,22 +79,24 @@
       @change="(data) => (editedData.backpack = data)"
     />
   </div>
-  <SpellSlotsPanel
-    v-if="levelAndConfig.spellSlotNum.length"
-    :max="levelAndConfig.spellSlotNum"
-    v-model="editedData.spellSlotNum"
-  />
   <FeaturesBox
     :equipped="character.equippedFeatures ?? []"
     :collection="featuresCollection"
     @change="handleFeatureChange"
+  />
+  <SpellSlotsPanel
+    v-if="levelAndConfig.spellSlotNum.length"
+    :max="levelAndConfig.spellSlotNum"
+    v-model="editedData.spellSlotNum"
   />
   <CharacterSpellEditor :character="editedData" />
 </template>
 
 <script lang="ts" setup>
 import { type PropType, reactive, toRef, provide } from "vue";
-import EditCell from "./EditCell.vue";
+import TextareaInput from "./editor/TextareaEditor.vue";
+import StringInput from "./editor/StringInput.vue";
+import NumberInput from "./editor/NumberInput.vue";
 import type {
   CharacterDoc,
   ClientScene,
@@ -104,7 +106,6 @@ import type {
 } from "@trpg/shared";
 import CharacterSpellEditor from "../DM/components/CharacterSpellEditor.vue";
 import { ElRadioButton, ElTreeSelect } from "element-plus";
-import ProficienciesEditor from "../DM/components/ProficienciesEditor.vue";
 import EntityStorage from "@/views/components/EntityStorage.vue";
 import TipPopover from "@/views/components/tip-popovers/TipPopover.vue";
 import TipAlignment from "@/views/components/tip-popovers/TipAlignment.vue";

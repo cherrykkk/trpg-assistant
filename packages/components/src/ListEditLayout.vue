@@ -6,8 +6,13 @@
     </div>
     <div class="main-container">
       <div class="list-board">
+      
         <div class="list-item" v-for="e in data" :key="e._id" @click="handleClickItem(e)">
-          {{ e.name }}
+         <div v-if="!$slots['list-item']">
+
+           {{ e.name }}
+         </div>
+          <slot name="list-item" :item="e" v-else></slot>
         </div>
       </div>
       <div class="edit-board">
@@ -36,7 +41,7 @@ const props = defineProps({
     },
   },
   createTemplate: {
-    type: Function as PropType<() => ListItem>,
+    type: Function as PropType<() => Promise<ListItem>>,
   },
   showSaveButton: {
     type: Boolean,
@@ -60,11 +65,11 @@ function handleClickItem(item: ListItem) {
   currentItem.value = { ...item };
 }
 
-function createNewItem() {
-  if (!props.createTemplate) return;
-
-  const item = props.createTemplate();
-  currentItem.value = item;
+async function createNewItem() {
+  if (props.createTemplate) {
+    const item = await props.createTemplate();
+    currentItem.value = item;
+  } 
 }
 
 function handleKeydown(event: KeyboardEvent) {
@@ -73,6 +78,12 @@ function handleKeydown(event: KeyboardEvent) {
     submitSave();
   }
 }
+
+defineExpose({
+  getCurrentItem(){
+    return currentItem.value
+  }
+})
 
 function submitSave() {
   if (currentItem.value) {

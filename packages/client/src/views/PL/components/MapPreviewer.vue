@@ -1,13 +1,13 @@
 <template>
   <div class="map-previewer">
-    <SandboxMap v-if="currentMap" :map-info="currentMap" :follow-camera="false" />
+    <!-- <SandboxMap v-if="currentMap" :map-info="currentMap" :follow-camera="false" /> -->
   </div>
 </template>
 
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
 import { useSocketStore } from "@/stores/useSocketStore";
-import SandboxMap from "@trpg/components/sandbox-canvas/SandboxMap.vue";
+// import SandboxMap from "@trpg/components/sandbox-canvas/SandboxMap.vue";
 
 const { currentMap } = storeToRefs(useSocketStore());
 </script>

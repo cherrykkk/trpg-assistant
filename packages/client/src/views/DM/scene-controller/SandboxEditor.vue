@@ -1,6 +1,6 @@
 <template>
   <template v-if="useSocketStore().canvasMapReady">
-    <SandboxMap :map-info="mapInfo" :editable="true" @change="updateCanvasMapData"></SandboxMap>
+    <!-- <SandboxMap :map-info="mapInfo" :editable="true" @change="updateCanvasMapData"></SandboxMap> -->
   </template>
   <div v-else>
     <div>加载中...</div>
@@ -9,7 +9,7 @@
     <RightBar v-if="currentScene" :scene="currentScene" />
     <div class="map-info-editor">
       <h5>图层</h5>
-      <LayerEditor v-if="mapInfo" :layer-list="mapInfo.layers" @change="updateCanvasLayer" />
+      <!-- <LayerEditor v-if="mapInfo" :layer-list="mapInfo.layers" @change="updateCanvasLayer" /> -->
       <h5>画布尺寸</h5>
       <input :value="mapInfo?.width" @blur="changeMapInfo($event, 'width')" />x<input
         :value="mapInfo?.height"
@@ -23,8 +23,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import SandboxMap from "@trpg/components/sandbox-canvas/SandboxMap.vue";
-import LayerEditor from "@trpg/components/sandbox-canvas/LayerEditor.vue";
+// import SandboxMap from "@trpg/components/sandbox-canvas/SandboxMap.vue";
+// import LayerEditor from "@trpg/components/sandbox-canvas/LayerEditor.vue";
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useSocketStore } from "@/stores/useSocketStore";

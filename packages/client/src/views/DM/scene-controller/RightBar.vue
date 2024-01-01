@@ -1,15 +1,10 @@
 <template>
   <div class="characters-panel">
-    <div
+    <RightBarCharacter
       v-for="c in sortedCharacters"
-      class="character-item"
-      :class="{ 'character-item-chosen': c._id === chosenCharacter?._id }"
-      @click="() => handleClickCharacter(c)"
-    >
-      <div>{{ c.name }}</div>
-      <div class="append-info">先攻{{ c.currentInitiative }}</div>
-    </div>
-    <QuickEditCharacter v-if="chosenCharacter" :character="chosenCharacter" />
+      :character="c"
+      @click-more="handleOpenCharacterDetail(c)"
+    />
     <el-drawer
       v-model="isEditingCharacterInfo"
       :size="800"
@@ -18,7 +13,7 @@
       :show-close="false"
     >
       <CharacterInfoEditor
-        v-if="isEditingCharacterInfo"
+        v-if="isEditingCharacterInfo && chosenCharacter"
         :character="chosenCharacter"
         @close-dialog="() => (isEditingCharacterInfo = false)"
       />
@@ -67,11 +62,10 @@
 
 <script lang="ts" setup>
 import { computed, ref, type PropType } from "vue";
-import QuickEditCharacter from "./QuickEditCharacter.vue";
 import type { CharacterDoc, SceneDoc } from "@trpg/shared";
 import CharacterInfoEditor from "../components/CharacterInfoEditor.vue";
 import { useDoubleClick } from "@/utils";
-import { updateCharacterInfo } from "@/api/socket-tasks";
+import { getNewObjectId, updateCharacterInfo } from "@/api/socket-tasks";
 import {
   ElSelect,
   ElOption,
@@ -83,6 +77,8 @@ import {
 import { useSocketStore } from "@/stores/useSocketStore";
 import TipPopover from "@/views/components/tip-popovers/TipPopover.vue";
 import TipCombat from "@/views/components/tip-popovers/TipCombat.vue";
+import { createNewCharacterInfoTemplate } from "@/stores/template";
+import RightBarCharacter from "./RightBarCharacter.vue";
 
 const props = defineProps({
   scene: { type: Object as PropType<SceneDoc>, required: true },
@@ -100,19 +96,20 @@ const handleDoubleClickCharacter = useDoubleClick(() => {
   isEditingCharacterInfo.value = true;
 });
 
-function handleClickCharacter(c: CharacterDoc) {
-  handleDoubleClickCharacter();
-  chosenCharacter.value = c;
-}
-function handleCreateCharacter(template?: CharacterDoc) {
+const handleOpenCharacterDetail = (e: CharacterDoc) => {
+  isEditingCharacterInfo.value = true;
+  chosenCharacter.value = e;
+};
+
+async function handleCreateCharacter(template?: CharacterDoc) {
   if (template) {
     const newC = JSON.parse(JSON.stringify(template)) as CharacterDoc;
-    newC._id = "";
+    newC._id = await getNewObjectId();
     newC.locationSceneId = props.scene._id;
     newC.scope = "monster";
     chosenCharacter.value = newC;
   } else {
-    chosenCharacter.value = null;
+    chosenCharacter.value = await createNewCharacterInfoTemplate();
   }
   isEditingCharacterInfo.value = true;
 }
@@ -134,26 +131,6 @@ function moveCharacterToCurrentLocation(character: CharacterDoc) {
 const isEditingCharacterInfo = ref(false);
 </script>
 <style lang="less" scoped>
-.characters-panel {
-  .character-item {
-    border: 1px solid #ccc;
-    margin: 10px;
-    box-sizing: border-box;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    .append-info {
-      font-size: 12px;
-      color: #aaa;
-    }
-  }
-  .character-item-chosen {
-    border: 2px solid red;
-  }
-}
-
 .el-input-number {
   margin: 0 10px;
   width: 80px;

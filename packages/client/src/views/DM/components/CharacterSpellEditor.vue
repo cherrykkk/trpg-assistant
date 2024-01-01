@@ -16,12 +16,14 @@
         {{ showSpellList ? `关闭列表` : `打开列表` }}
       </el-button>
     </div>
-    <SpellSelect
-      v-if="showSpellList"
-      :exist-spell="character.spells"
-      @select="handleAddSpell"
-      :default-class-option="character.class"
-    />
+    <div>
+      <SpellSelect
+        v-if="showSpellList"
+        :exist-spell="character.spells"
+        @select="handleAddSpell"
+        :default-class-option="character.class"
+      />
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -30,7 +32,7 @@ import type { CharacterDoc } from "@trpg/shared";
 import SpellItem from "@/views/components/SpellItem.vue";
 import TapToEditDescription from "./TapToEditDescription.vue";
 import { turnToSpellsInfo } from "@/stores/utils";
-import SpellSelect from "@/views/components/SpellSelect.vue";
+import SpellSelect from "@/views/components/spell/SpellSelect.vue";
 
 const props = defineProps({
   character: {
@@ -62,7 +64,7 @@ const spellIdToShowDescription = ref<string[]>([]);
 const showSpellList = ref(false);
 
 const spellInfoToShowInLeftList = computed(() => {
-  return turnToSpellsInfo(props.character.spells);
+  return turnToSpellsInfo(props.character.spells.map((e) => e.spellId));
 });
 
 function getSpellOnCharacterInfo(id: string) {
@@ -88,10 +90,6 @@ function getSpellOnCharacterInfo(id: string) {
   width: 100%;
   overflow: auto;
   overscroll-behavior: contain;
-
-  .switch-button {
-    margin: 20px;
-  }
 
   .spell-on-character-info {
     display: flex;

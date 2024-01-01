@@ -1,11 +1,6 @@
 <template>
   <div class="spell-item">
-    <div class="spell-info-item" @click="() => emits('switchDescription', spellInfo._id)">
-      <div class="level-icon">
-        {{ spellInfo.level }}
-      </div>
-      {{ spellInfo.name }}
-    </div>
+    <SpellTitle @click="() => emits('switchDescription', spellInfo._id)" :spell="spellInfo" />
     <div class="spell-info-description" v-if="showDescription">
       <TextRender :text="spellInfo.description" />
       <div style="color: #333">
@@ -30,7 +25,7 @@ import type { SpellDoc } from "@trpg/shared";
 import { computed, type PropType } from "vue";
 import { SPELL_LEVEL_COLORS } from "@/constants/spellColors";
 import TextRender from "./TextRender.vue";
-
+import SpellTitle from "./spell/SpellTitle.vue";
 const props = defineProps({
   spellInfo: {
     type: Object as PropType<SpellDoc>,
@@ -53,25 +48,6 @@ const mainColor = computed(() => {
 .spell-item {
   border: 1px solid v-bind(mainColor);
   margin: 2px;
-}
-.spell-info-item {
-  text-align: left;
-  border-radius: 2px;
-  padding: 2px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-
-  .level-icon {
-    width: 1.2em;
-    height: 1.2em;
-    border-radius: 50%;
-    background: v-bind(mainColor);
-    font-size: 12px;
-    text-align: center;
-    margin: 0 4px;
-    color: white;
-  }
 }
 
 .spell-info-description {

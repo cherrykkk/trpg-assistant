@@ -5,7 +5,7 @@
       ref="textareaRef"
       :value="modelValue"
       @input="updateData"
-      @blur="handleBlur"
+      @blur="handleComplete"
     ></textarea>
   </div>
   <div class="input-cell edit-cell" v-else>
@@ -15,9 +15,17 @@
       type="number"
       :value="modelValue"
       @change="updateData"
-      @blur="handleBlur"
+      @blur="handleComplete"
+      @keydown.enter="handleComplete"
     />
-    <input v-else :value="modelValue" @change="updateData" @blur="handleBlur" />
+    <input
+      v-else
+      ref="inputContainerRef"
+      :value="modelValue"
+      @change="updateData"
+      @blur="handleComplete"
+      @keydown.enter="handleComplete"
+    />
   </div>
 </template>
 
@@ -58,10 +66,14 @@ if (props.textarea) {
   });
 }
 
+const inputContainerRef = ref<HTMLElement>();
 const onBlurInjection = inject("edit-cell-on-blur", () => {});
-function handleBlur() {
+function handleComplete() {
   if (onBlurInjection) {
     onBlurInjection();
+  }
+  if (inputContainerRef.value) {
+    inputContainerRef.value.blur();
   }
 }
 

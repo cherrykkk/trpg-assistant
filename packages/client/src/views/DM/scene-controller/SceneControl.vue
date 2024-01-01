@@ -22,20 +22,21 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import ResizablePanel from "../../components/ResizablePanel.vue";
+import { ResizablePanel } from "@trpg/components/main-exports";
 import RightBar from "./RightBar.vue";
 import { useSocketStore } from "@/stores/useSocketStore";
 import { ref } from "vue";
 import ScenePanelIndex from "./scene-panel/ScenePanelIndex.vue";
 import SceneTreePanel from "./SceneTreePanel.vue";
-import { createSceneTemplate, type ClientScene } from "@trpg/shared";
+import type { ClientScene } from "@trpg/shared";
 import SandboxEditor from "./SandboxEditor.vue";
+import { createSceneTemplate } from "@/stores/template";
 
 const { currentScene } = storeToRefs(useSocketStore());
 const isCombating = ref(false);
 
-function handleClickAddButton() {
-  const newScene = createSceneTemplate();
+async function handleClickAddButton() {
+  const newScene = await createSceneTemplate();
 
   const fatherScene = useSocketStore().currentScene;
   if (fatherScene) {

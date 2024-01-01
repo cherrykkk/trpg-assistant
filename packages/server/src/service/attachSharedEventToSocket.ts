@@ -72,6 +72,10 @@ export function attachSharedEventToSocket(
     }
   });
 
+  socket.on("request: newObjectId", (cb) => {
+    cb(new ObjectId().toString());
+  });
+
   function broadcastMessages(gameInstanceId: string) {
     collections.message
       .find({ gameInstanceId })
@@ -107,14 +111,14 @@ export function registerDbChanger(
     socket.on(`update: ${key}`, async (doc) => {
       doc = resolveChangeLog(doc, changerId, changerName);
 
-      if (!doc._id) {
-        doc._id = new ObjectId().toString();
+      const result = await db
+        .collection<BasicCollectionStructure>(key)
+        .updateOne({ _id: doc._id }, { $set: doc });
+
+      if (result.matchedCount === 0) {
         await db.collection<BasicCollectionStructure>(key).insertOne(doc);
-      } else {
-        await db
-          .collection<BasicCollectionStructure>(key)
-          .updateOne({ _id: doc._id }, { $set: doc });
       }
+
       const docs = await db.collection(key).find().toArray();
       broadcastOperator.emit(`data: ${key}`, docs as any[]);
     });

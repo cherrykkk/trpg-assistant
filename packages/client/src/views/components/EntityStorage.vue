@@ -34,9 +34,9 @@
         <button @click="remove" style="float: right">删除</button>
       </h2>
       <TextRender :text="stackInDialog.description" />
-      <EditCellVue title="备注" v-model="stackInDialog.note" />
+      <StringInput title="备注" v-model="stackInDialog.note" />
       <div>
-        <EditCellVue title="数量" v-model="stackInDialog.num" />
+        <NumberInput title="数量" v-model="stackInDialog.num" />
       </div>
     </div>
     <button v-if="dragChosen.length > 0">转移</button>
@@ -47,8 +47,9 @@ import { type EntityInfo, type StoredStackData } from "@trpg/shared";
 import { type PropType, ref, watch } from "vue";
 import { useEntityManager } from "@/utils/EntityManager";
 import { ElOption, ElSelect } from "element-plus";
-import EditCellVue from "./EditCell.vue";
 import TextRender from "./TextRender.vue";
+import NumberInput from "./editor/NumberInput.vue";
+import StringInput from "./editor/StringInput.vue";
 
 const props = defineProps({
   initStoredStackData: {

@@ -31,11 +31,13 @@ export interface CharacterInfo {
   language?: string;
   currentHP: number;
   maxHP: number;
+  fakeHP: number;
+  hitPointRule: string;
   armorClass?: string;
   spellDifficultyClass?: string;
   spellcastingAbility?: string;
   backgroundStory?: string;
-  proficiencies: ProficiencyObject[];
+  proficiencies?: ProficiencyObject[];
   proficiencyNames?: string;
   proficiencyBonus: number;
   experience: number;

@@ -38,11 +38,12 @@
   </ListEditLayout>
 </template>
 <script lang="ts" setup>
-import ListEditLayout from "@trpg/components/ListEditLayout.vue";
+import { ListEditLayout } from "@trpg/components/main-exports";
 import { useSocketStore } from "@/stores/useSocketStore";
 import { updateEntityInfo } from "@/api/socket-tasks";
-import { type EntityInfo, createEntityTemplate } from "@trpg/shared";
+import { type EntityInfo } from "@trpg/shared";
 import EditCell from "../components/EditCell.vue";
+import { createEntityTemplate } from "@/stores/template";
 
 function isEntityInfo(data: Object): data is EntityInfo {
   return true;

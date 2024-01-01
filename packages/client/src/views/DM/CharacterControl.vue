@@ -1,5 +1,10 @@
 <template>
-  <ListEditLayout :data="filteredCharacters" class="character-control-page" :showSaveButton="false">
+  <ListEditLayout
+    :data="filteredCharacters"
+    class="character-control-page"
+    :showSaveButton="false"
+    :createTemplate="createNewCharacterInfoTemplate"
+  >
     <template #header>
       <ElTabs v-model="characterScope" class="character-control">
         <ElTabPane label="PC" name="PC" />
@@ -19,8 +24,9 @@ import CharacterInfoEditor from "./components/CharacterInfoEditor.vue";
 import { computed, ref } from "vue";
 import type { CharacterDoc } from "@trpg/shared";
 import { useSocketStore } from "@/stores/useSocketStore";
-import ListEditLayout from "@trpg/components/ListEditLayout.vue";
+import { ListEditLayout } from "@trpg/components/main-exports";
 import { ElTabPane, ElTabs } from "element-plus";
+import { createNewCharacterInfoTemplate } from "@/stores/template";
 
 const characterScope = ref<"star" | CharacterDoc["scope"]>("PC");
 

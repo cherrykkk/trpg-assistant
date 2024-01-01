@@ -3,7 +3,8 @@ import { createRouter, createWebHashHistory, type RouteRecordRaw } from "vue-rou
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    redirect: "/notFound",
+    name: "home",
+    component: () => import("@/views/HomePage.vue"),
   },
   {
     path: "/player/:id",
@@ -23,7 +24,11 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "sceneControl",
         name: "sceneControl",
-        component: () => import("@/views/DM/scene-controller/SceneControl.vue"),
+        component: () => {
+          return isMobile
+            ? import("@/views/DM/scene-controller/SceneControlMobile.vue")
+            : import("@/views/DM/scene-controller/SceneControl.vue");
+        },
       },
       {
         path: "entityManager",
@@ -55,3 +60,5 @@ const router = createRouter({
 });
 
 export default router;
+
+const isMobile = window.innerWidth < 600;

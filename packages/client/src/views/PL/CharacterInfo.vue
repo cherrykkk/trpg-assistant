@@ -11,7 +11,8 @@
       <el-descriptions-item label="经验">{{ characterInfo.experience }}</el-descriptions-item>
       <el-descriptions-item label="速度">{{ characterInfo.speed }}</el-descriptions-item>
       <el-descriptions-item label="HP"
-        >{{ characterInfo.currentHP }}/{{ characterInfo.maxHP }}</el-descriptions-item
+        >{{ characterInfo.currentHP }}/{{ characterInfo.maxHP
+        }}<button>修改</button></el-descriptions-item
       >
       <el-descriptions-item label="力量">{{ characterInfo.strength }}</el-descriptions-item>
       <el-descriptions-item label="敏捷">{{ characterInfo.dexterity }}</el-descriptions-item>
@@ -19,51 +20,10 @@
       <el-descriptions-item label="智力">{{ characterInfo.intelligence }}</el-descriptions-item>
       <el-descriptions-item label="感知">{{ characterInfo.wisdom }}</el-descriptions-item>
       <el-descriptions-item label="魅力">{{ characterInfo.charisma }}</el-descriptions-item>
+      <el-descriptions-item label="熟练项">{{
+        characterInfo.proficiencyNames
+      }}</el-descriptions-item>
     </el-descriptions>
-    <InfoCell prefix="熟练项">
-      <div style="text-align: left">
-        <div>
-          技能熟练项：{{
-            characterInfo.proficiencies
-              .filter((p) => p.active && p.type === "skill")
-              .map((e) => e.name)
-              .join("，") || "无"
-          }}
-        </div>
-        <div>
-          武器熟练项：{{
-            characterInfo.proficiencies
-              .filter((p) => p.active && p.type === "weapon")
-              .map((e) => e.name)
-              .join("，") || "无"
-          }}
-        </div>
-        <div>
-          护甲熟练项：{{
-            characterInfo.proficiencies
-              .filter((p) => p.active && p.type === "armor")
-              .map((e) => e.name)
-              .join("，") || "无"
-          }}
-        </div>
-        <div>
-          豁免熟练项：{{
-            characterInfo.proficiencies
-              .filter((p) => p.active && p.type === "save")
-              .map((e) => e.name)
-              .join("，") || "无"
-          }}
-        </div>
-        <div>
-          工具熟练项：{{
-            characterInfo.proficiencies
-              .filter((p) => p.active && p.type === "tool")
-              .map((e) => e.name)
-              .join("，") || "无"
-          }}
-        </div>
-      </div>
-    </InfoCell>
     <SpellSlotsPanel
       :max="levelAndConfig.spellSlotNum"
       v-model="characterInfo.spellSlotNum"
@@ -103,8 +63,7 @@ const props = defineProps({
 });
 
 const spellAndInfo = computed(() => {
-  console.log(turnToSpellsInfo(props.characterInfo.spells));
-  return turnToSpellsInfo(props.characterInfo.spells);
+  return turnToSpellsInfo(props.characterInfo.spells.map((e) => e.spellId));
 });
 
 const spellToShowDescription = ref<string | null>(null);
@@ -115,7 +74,6 @@ function switchDescription(id: string) {
     spellToShowDescription.value = id;
   }
 }
-console.log(props.characterInfo);
 
 const { levelAndConfig } = useLevelAndConfig(toRef(props.characterInfo));
 </script>

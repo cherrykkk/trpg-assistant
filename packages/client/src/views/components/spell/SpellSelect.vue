@@ -1,6 +1,7 @@
 <template>
   <div class="spell-select">
     <div class="filter-option">
+      <input @input="onNameInputChange" />
       <select @change="handleSelectClass">
         <option v-for="e in classOption" :selected="filterClass === e">{{ e }}</option>
       </select>
@@ -27,10 +28,10 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { type PropType, computed, ref } from "vue";
+import { type PropType, ref } from "vue";
 import SpellItem from "@/views/components/SpellItem.vue";
-import { type SpellDoc, type SpellOnCharacter } from "@trpg/shared";
-import { getSpellByClass } from "@/stores/utils";
+import { type SpellOnCharacter } from "@trpg/shared";
+import { useSpellFilter } from "@/stores/hooks";
 
 const props = defineProps({
   existSpell: {
@@ -42,8 +43,6 @@ const props = defineProps({
   },
   hideAddButton: Boolean,
 });
-
-type ClassOption = keyof SpellDoc | "全部";
 
 const emits = defineEmits<{
   (event: "select", id: string): void;
@@ -67,22 +66,8 @@ function handleAddSpell(spellId: string) {
 
 const spellIdToShowDescription = ref<string[]>([]);
 
-// filter
-const classOption = ["全部", "诗人", "牧师", "德鲁伊", "圣武士", "游侠", "术士", "邪术师", "法师"];
-const filterClass = ref("全部");
-(function initFilterClass() {
-  if (classOption.includes(props.defaultClassOption ?? "")) {
-    filterClass.value = props.defaultClassOption as ClassOption;
-  }
-})();
-
-function handleSelectClass(e: Event) {
-  filterClass.value = (e.target as HTMLSelectElement).value as ClassOption;
-}
-
-const filteredSpellDatabase = computed(() => {
-  return getSpellByClass(filterClass.value).sort((a, b) => a.level - b.level);
-});
+const { filteredSpellDatabase, classOption, handleSelectClass, filterClass, onNameInputChange } =
+  useSpellFilter("全部");
 </script>
 <style lang="less" scoped>
 .spell-select {

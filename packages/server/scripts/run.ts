@@ -1,8 +1,7 @@
 import { Collection, ObjectId } from "mongodb";
 import { CollectionList, useMongoDB } from "../src/dbConnect";
-import { createEntityTemplate, SpellDoc } from "@trpg/shared";
 
-useMongoDB().then(({ db }) => {
+useMongoDB().then(({ db, collections }) => {
   // do script，and delete it before submit
 
   console.log("script done");
@@ -10,7 +9,30 @@ useMongoDB().then(({ db }) => {
 
 /**
   remove filed：
-  await collections.characters.updateMany({}, { $unset: { location: 1 } });
+  await collections.characters.updateMany({}, { $unset: { location: 1 } }); 
+  ps. the 1 in {location: 1} can be 2 or '' or any, don't matter 
+ */
+
+/**
+  add key: 
+  collection.updateMany(
+    {},
+    {
+      $set: {
+        spellsKnown: "spells",
+      },
+    }
+  );
+ */
+
+/**
+  update document: 
+  collection.updateMany(
+    {},
+    {
+      $set: `${newDoc}`
+    }
+  );
  */
 
 /**

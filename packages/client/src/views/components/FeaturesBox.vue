@@ -81,7 +81,6 @@ function handleAppendItem(id: string) {
 .equipped-features {
   width: 100%;
   overflow: auto;
-  overscroll-behavior: contain;
 
   .switch-button {
     margin: 20px;

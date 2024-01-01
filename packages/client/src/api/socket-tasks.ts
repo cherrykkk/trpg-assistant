@@ -12,6 +12,14 @@ import type {
 } from "@trpg/shared";
 import { ElMessage } from "element-plus";
 
+export function getNewObjectId() {
+  return new Promise<string>((resolve) => {
+    useSocketStore().socket.emit("request: newObjectId", (_id) => {
+      resolve(_id);
+    });
+  });
+}
+
 export function updateCharacterInfo(data: CharacterDoc) {
   useSocketStore().socket.emit("update: character", data);
 }
